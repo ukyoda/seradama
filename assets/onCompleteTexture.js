@@ -1,0 +1,4 @@
+
+Game.fn.onCompleteTexture = function(){
+
+};

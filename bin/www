@@ -23,12 +23,7 @@ io.sockets.on('connection', function(socket) {
   console.log("connection");
   // メッセージを受けたときの処理
   socket.on('message', function(data) {
-    // つながっているクライアント全員に送信
-    var rotation = data.data;
-    if(rotation.alpha && rotation.beta && rotation.gamma) {
-      console.log(rotation);
-    }
-    io.sockets.emit('message', {});
+    io.sockets.emit('message', data.data);
   });
 
   // クライアントが切断したときの処理

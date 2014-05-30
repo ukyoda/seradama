@@ -1,23 +1,33 @@
 
 $(function(){
-
-	var game = srdm.game("#game-display");
+	var Game = srdm.Game;
+	var game = new Game({
+		target: "#game-display"
+	});
 	window.game = game;
-	//フィールドロード完了後の処理
-	game.onCompleteGameData = function(data){
-		//フィールド作成
-		var world = data.world;
-		var width = world.width, height = world.height, grid = world.grid;
-		var map = data.mapdata;
-		var name = "chip_0.png";
-		map.forEach(function(val, index){
-			var x = 32 * (index % width);
-			var y = 32 * Math.floor(index / width);
-			var sprite = game.createFieldChip("chip_"+val+".png");
-			sprite.position.x=x;sprite.position.y=y;
-			game.stage.addChild(sprite);
-		});
-	};
+
+	$(document).on('keypress',function(e){
+		var Game = srdm.Game;
+		var keyCode = e.keyCode;
+		var move = -1;
+		switch(keyCode) {
+		case Game.CODE_UP:
+			move = Game.MOVE_UP;
+			break;
+		case Game.CODE_RIGHT:
+			move = Game.MOVE_RIGHT;
+			break;
+		case Game.CODE_BOTTOM:
+			move = Game.MOVE_BOTTOM;
+			break;
+		case Game.CODE_LEFT:
+			move = Game.MOVE_LEFT;
+			break;
+		default:
+			return;
+		}
+		game.onController(move);
+	});
 
 	game.start().then(function(){
 		console.log("animation");
@@ -25,7 +35,7 @@ $(function(){
 		return $.Deferred().resolve();
 	}).then(function(){
 		console.log('socket');
-		return game.connect();
+		return game.socketConnect();
 	}).then(function(){
 		console.log("controller");
 		game.onController();
