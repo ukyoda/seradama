@@ -50,7 +50,7 @@ Game.MOVE_RIGHT = 2;
 Game.MOVE_BOTTOM = 3;
 Game.MOVE_LEFT = 4;
 
-Game.CODE_UP = 119;
-Game.CODE_RIGHT = 115;
-Game.CODE_BOTTOM = 122;
-Game.CODE_LEFT = 97;
+Game.CODE_UP = 38;
+Game.CODE_RIGHT = 39;
+Game.CODE_BOTTOM = 40;
+Game.CODE_LEFT = 37;
