@@ -6,7 +6,7 @@ $(function(){
 	});
 	window.game = game;
 
-	$(document).on('keypress',function(e){
+	$(document).on('keydown',function(e){
 		var Game = srdm.Game;
 		var keyCode = e.keyCode;
 		var move = -1;
