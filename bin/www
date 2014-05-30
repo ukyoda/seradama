@@ -23,7 +23,7 @@ io.sockets.on('connection', function(socket) {
   console.log("connection");
   // メッセージを受けたときの処理
   socket.on('message', function(data) {
-    io.sockets.emit('message', data.data);
+    io.sockets.emit('message', data);
   });
 
   // クライアントが切断したときの処理

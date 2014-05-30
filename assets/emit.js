@@ -2,8 +2,10 @@
 /**
  * データ更新
  */
-Game.fn.emit = function(data) {
+Game.fn.emit = function(position) {
+	var myId = this._socket.socket.transport.sessid;
 	this._socket.emit('message', {
-		data: data
+		id: myId,
+		position: position
 	});
 };

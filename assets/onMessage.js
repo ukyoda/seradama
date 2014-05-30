@@ -3,11 +3,12 @@
  */
 Game.fn.onMessage = function(data) {
 	//ユーザ追加判定
-	var id = this._socket.socket.transport.sessid;
+	var id = data.id;
+	var position = data.position;
 	if(!this.players[id]) {
-		this.players[id] = this.createPlayer(id, data, 2);
+		this.addPlayers(this.createPlayer(id, position, 2));
 	} else {
-		this.movePlayer(id, data);
+		this.movePlayer(id, position);
 	}
 	window.console.log(this._socket.socket.transport.sessid);
 	window.console.log(this._socket.socket.sessionid);
