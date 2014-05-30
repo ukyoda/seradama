@@ -8,7 +8,7 @@ Game.fn.onController = function(cursor){
 		x: this.player1.position.x,
 		y: this.player1.position.y
 	};
-	var moveVal = 32/60 * 2;
+	var moveVal = 32/2;
 	switch(cursor) {
 	case Game.MOVE_UP:
 		position.y -= moveVal;
