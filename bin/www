@@ -22,26 +22,26 @@ var world = new b2d.b2World(worldAABB, gravity, doSleep);
 
 // 地面
 var groundBodyDef = new b2d.b2BodyDef();
-groundBodyDef.position.Set(0.0, -10.0);
+groundBodyDef.position.Set(0.0, -12.5);
 var groundBody = world.CreateBody(groundBodyDef);
 var groundShapeDef = new b2d.b2PolygonDef();
-groundShapeDef.SetAsBox(10.0, 1.0);
+groundShapeDef.SetAsBox(25.0, 1.0);
 groundBody.CreateShape(groundShapeDef);
 
 // 壁左
 var wallLeftBodyDef = new b2d.b2BodyDef();
-wallLeftBodyDef.position.Set(-10.0, 0.0);
+wallLeftBodyDef.position.Set(-12.5, 0.0);
 var wallLeftBody = world.CreateBody(wallLeftBodyDef);
 var wallLeftShapeDef = new b2d.b2PolygonDef();
-wallLeftShapeDef.SetAsBox(1.0, 10.0);
+wallLeftShapeDef.SetAsBox(1.0, 25.0);
 wallLeftBody.CreateShape(wallLeftShapeDef);
 
 // 壁右
 var wallRightBodyDef = new b2d.b2BodyDef();
-wallRightBodyDef.position.Set(10.0, 0.0);
+wallRightBodyDef.position.Set(12.5, 0.0);
 var wallRightBody = world.CreateBody(wallRightBodyDef);
 var wallRightShapeDef = new b2d.b2PolygonDef();
-wallRightShapeDef.SetAsBox(1.0, 10.0);
+wallRightShapeDef.SetAsBox(1.0, 25.0);
 wallRightBody.CreateShape(wallRightShapeDef);
 
 // add start
@@ -67,7 +67,7 @@ io.sockets.on('connection', function(socket) {
       console.log("無いから作るよ");
       // ころころ追加
       var corocoroDef = new b2d.b2BodyDef();
-      corocoroDef.position.Set(5.0, 5.0);
+      corocoroDef.position.Set(1.0, 1.0);
       var corocoro = world.CreateBody(corocoroDef);
       var corocoroShapeDef = new b2d.b2PolygonDef();
       corocoroShapeDef.SetAsBox(0.5, 0.5);
@@ -105,8 +105,8 @@ function doAnim() {
     var count = 0;
     for(var i in objs){
       var position = objs[i].GetPosition();
-      var x = (position.x * 32) + 320;
-      var y = (position.y * -32) + 320;
+      var x = (position.x * 32) + (32 * 12.5);
+      var y = (position.y * -32) + (32 * 12.5);
       var angle = (objs[i].GetAngle() * -1);
       var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:objs[i].m_userData.id};
       msgs[count] = xya;
