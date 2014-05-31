@@ -17,6 +17,30 @@ var gravity = new b2d.b2Vec2(0.0, -10.0);
 var doSleep = true;
 var world = new b2d.b2World(worldAABB, gravity, doSleep);
 
+// 地面
+var groundBodyDef = new b2d.b2BodyDef();
+groundBodyDef.position.Set(0.0, -10.0);
+var groundBody = world.CreateBody(groundBodyDef);
+var groundShapeDef = new b2d.b2PolygonDef();
+groundShapeDef.SetAsBox(10.0, 1.0);
+groundBody.CreateShape(groundShapeDef);
+
+// 壁左
+var wallLeftBodyDef = new b2d.b2BodyDef();
+wallLeftBodyDef.position.Set(-10.0, 0.0);
+var wallLeftBody = world.CreateBody(wallLeftBodyDef);
+var wallLeftShapeDef = new b2d.b2PolygonDef();
+wallLeftShapeDef.SetAsBox(1.0, 10.0);
+wallLeftBody.CreateShape(wallLeftShapeDef);
+
+// 壁右
+var wallRightBodyDef = new b2d.b2BodyDef();
+wallRightBodyDef.position.Set(10.0, 0.0);
+var wallRightBody = world.CreateBody(wallRightBodyDef);
+var wallRightShapeDef = new b2d.b2PolygonDef();
+wallRightShapeDef.SetAsBox(1.0, 10.0);
+wallRightBody.CreateShape(wallRightShapeDef);
+
 // add start
 var socketIO = require('socket.io');
 // クライアントの接続を待つ(IPアドレスとポート番号を結びつけます)
