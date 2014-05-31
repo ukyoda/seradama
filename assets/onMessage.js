@@ -10,7 +10,4 @@ Game.fn.onMessage = function(data) {
 	} else {
 		this.movePlayer(id, position);
 	}
-	window.console.log(this._socket.socket.transport.sessid);
-	window.console.log(this._socket.socket.sessionid);
-	window.console.log(data);
 };

@@ -20,7 +20,8 @@ import "onDisconnected";
 import "emit";
 
 //コントローラ
-import "onController";
+//import "onController";
+import "onController-motion";
 
 //プレイヤー操作
 import "addPlayers";

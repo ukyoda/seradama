@@ -7,9 +7,9 @@ Game.fn.onCompleteGameData = function(data){
 	//
 	map.forEach(function(val, index){
 		var x = 32 * (index % width);
-			var y = 32 * Math.floor(index / width);
-			var sprite = game.createFieldChip("chip_"+val+".png");
-			sprite.position.x=x;sprite.position.y=y;
-			game.stage.addChild(sprite);
+		var y = 32 * Math.floor(index / width);
+		var sprite = game.createFieldChip("chip_"+val+".png");
+		sprite.position.x=x;sprite.position.y=y;
+		game.stage.addChild(sprite);
 	});
 };

@@ -37,7 +37,9 @@ var Game = function Game(manifest) {
 	this.players = {};	//IDをキーとしたオブジェクトで管理
 
 	//コントローラ関連の情報を記憶する為のオブジェクト (プライベート)
-	this._controller = {};
+	this._controller = {
+		gravity:{x: 0, y:0}
+	};
 
 	//Socket.ioを記憶しておく為のメンバ
 	this._socket = null;
@@ -98,10 +100,10 @@ Game.fn.onCompleteGameData = function(data){
 	//
 	map.forEach(function(val, index){
 		var x = 32 * (index % width);
-			var y = 32 * Math.floor(index / width);
-			var sprite = game.createFieldChip("chip_"+val+".png");
-			sprite.position.x=x;sprite.position.y=y;
-			game.stage.addChild(sprite);
+		var y = 32 * Math.floor(index / width);
+		var sprite = game.createFieldChip("chip_"+val+".png");
+		sprite.position.x=x;sprite.position.y=y;
+		game.stage.addChild(sprite);
 	});
 };
 
@@ -142,9 +144,6 @@ Game.fn.onMessage = function(data) {
 	} else {
 		this.movePlayer(id, position);
 	}
-	window.console.log(this._socket.socket.transport.sessid);
-	window.console.log(this._socket.socket.sessionid);
-	window.console.log(data);
 };
 
 Game.fn.onDisconnected = function(){
@@ -156,13 +155,25 @@ Game.fn.onDisconnected = function(){
  */
 Game.fn.emit = function(position) {
 	var myId = this._socket.socket.transport.sessid;
+	var gravity = this._controller.gravity;
 	this._socket.emit('message', {
 		id: myId,
+		gravity: gravity,
 		position: position
 	});
 };
 
 //コントローラ
+//import "onController";
+
+Game.fn.setDeviceMotion = function(gravity){
+	if(typeof gravity !== "object") {
+		gravity = {};
+	}
+	gravity.x = gravity.x || 0;
+	gravity.y = gravity.y || 0;
+	this._controller.gravity = gravity;
+};
 
 /**
  * コントローラで実行する処理
@@ -173,7 +184,9 @@ Game.fn.onController = function(cursor){
 		x: this.player1.position.x,
 		y: this.player1.position.y
 	};
+	var gravity = this._controller.gravity;
 	var moveVal = 32/2;
+
 	switch(cursor) {
 	case Game.MOVE_UP:
 		position.y -= moveVal;
@@ -188,8 +201,10 @@ Game.fn.onController = function(cursor){
 		position.y += moveVal;
 		break;
 	default:
-		return;
+		break;
+		//rturn;
 	}
+
 	this.emit(position);
 };
 
