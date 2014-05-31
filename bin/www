@@ -90,6 +90,7 @@ io.sockets.on('connection', function(socket) {
   // クライアントが切断したときの処理
   socket.on('disconnect', function(){
     console.log("disconnect");
+
   });
 });
 
@@ -104,7 +105,7 @@ function doAnim() {
     var count = 0;
     for(var i in objs){
       var position = objs[i].GetPosition();
-      var x = (position.x * 32);
+      var x = (position.x * 32) + 320;
       var y = (position.y * -32) + 320;
       var angle = (objs[i].GetAngle() * -1);
       var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:objs[i].m_userData.id};
