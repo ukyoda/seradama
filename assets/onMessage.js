@@ -15,14 +15,12 @@ Game.fn.onMessage = function(data) {
 		var sessId = that._socket.socket.transport.sessid;
 		var playerType = sessId === id ? 1: 0;
 		var player = that.players[id] || that.createPlayer(id, position, playerType);
-		player.anchor.x = 0.5; player.anchor.y = 0.5;
-		player.rotation = angle;
 		if(playerType === 1) {
 			that.setPlayer1(player);
 		} else {
 			that.addPlayers(player);
 		}
-		that.movePlayer(id, position);
+		that.movePlayer(id, position, angle);
 	});
 	//ユーザ追加判定
 

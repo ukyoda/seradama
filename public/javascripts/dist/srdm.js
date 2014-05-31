@@ -121,7 +121,6 @@ Game.fn.socketConnect = function(socketURL) {
 		var id = that._socket.socket.sessionid;
 		var player1 = that.createPlayer(id, {x: 32, y: 32}, 1);
 		that.setPlayer1(player1);
-		that.emit(player1.position);
 		deferred.resolve();
 	});
 
@@ -137,6 +136,7 @@ Game.fn.socketConnect = function(socketURL) {
  */
 var flg = 0;
 Game.fn.onMessage = function(data) {
+
 	var that = this;
 	data.value.forEach(function(val, index){
 		var id = val.id;
@@ -148,18 +148,17 @@ Game.fn.onMessage = function(data) {
 		var sessId = that._socket.socket.transport.sessid;
 		var playerType = sessId === id ? 1: 0;
 		var player = that.players[id] || that.createPlayer(id, position, playerType);
-		player.anchor.x = 0.5; player.anchor.y = 0.5;
-		player.rotation = angle;
 		if(playerType === 1) {
 			that.setPlayer1(player);
 		} else {
 			that.addPlayers(player);
 		}
-		that.movePlayer(id, position);
+		that.movePlayer(id, position, angle);
 	});
 	//ユーザ追加判定
 
 };
+
 
 Game.fn.onDisconnected = function(){
 
@@ -255,10 +254,11 @@ Game.fn.removePlayer = function(id) {
 	return this;
 };
 
-Game.fn.movePlayer = function(id, position) {
+Game.fn.movePlayer = function(id, position, angle) {
 	if(this.players[id]) {
 		this.players[id].position.x = position.x;
 		this.players[id].position.y = position.y;
+		this.players[id].rotation = angle;
 	}
 	return this;
 };
@@ -286,6 +286,8 @@ Game.fn.createPlayer = function(id, position, type) {
 	sprite.id = id;
 	sprite.position.x = position.x;
 	sprite.position.y = position.y;
+	sprite.anchor.x = 0.5;
+	sprite.anchor.y = 0.5;
 	return sprite;
 };
 

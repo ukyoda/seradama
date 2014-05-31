@@ -11,7 +11,6 @@ Game.fn.socketConnect = function(socketURL) {
 		var id = that._socket.socket.sessionid;
 		var player1 = that.createPlayer(id, {x: 32, y: 32}, 1);
 		that.setPlayer1(player1);
-		that.emit(player1.position);
 		deferred.resolve();
 	});
 

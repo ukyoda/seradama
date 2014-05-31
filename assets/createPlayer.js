@@ -16,5 +16,7 @@ Game.fn.createPlayer = function(id, position, type) {
 	sprite.id = id;
 	sprite.position.x = position.x;
 	sprite.position.y = position.y;
+	sprite.anchor.x = 0.5;
+	sprite.anchor.y = 0.5;
 	return sprite;
 };
