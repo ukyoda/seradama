@@ -6,30 +6,6 @@ $(function(){
 	});
 	window.game = game;
 
-	$(document).on('keydown',function(e){
-		e.preventDefault();
-		var Game = srdm.Game;
-		var keyCode = e.keyCode;
-		var move = -1;
-		switch(keyCode) {
-		case Game.CODE_UP:
-			move = Game.MOVE_UP;
-			break;
-		case Game.CODE_RIGHT:
-			move = Game.MOVE_RIGHT;
-			break;
-		case Game.CODE_BOTTOM:
-			move = Game.MOVE_BOTTOM;
-			break;
-		case Game.CODE_LEFT:
-			move = Game.MOVE_LEFT;
-			break;
-		default:
-			return;
-		}
-		game.onController(move);
-	});
-
 	$(window).on('devicemotion', function(e) {
 		var x = event.accelerationIncludingGravity.x || 0;
 		var y = event.accelerationIncludingGravity.y || 0;
@@ -39,6 +15,18 @@ $(function(){
 	window.setInterval(function(){
 		game.onController.call(game, -1);
 	}, 200);
+
+	var nowAngle = 0;
+	game.rotate = function(angle) {
+		nowAngle +=angle;
+		nowAngle = nowAngle < 2*Math.PI? nowAngle: nowAngle-2*Math.PI;
+		game.stage.worldTransform.a = -Math.sin(nowAngle);
+		game.stage.worldTransform.b = Math.cos(nowAngle);
+		game.stage.worldTransform.c = Math.cos(nowAngle);
+		game.stage.worldTransform.d = Math.sin(nowAngle);
+		game.stage.worldTransform.tx += 400;
+		game.stage.worldTransform.ty += 400;
+	};
 
 	game.start().then(function(){
 		console.log("animation");

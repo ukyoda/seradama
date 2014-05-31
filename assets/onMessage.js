@@ -7,8 +7,6 @@ Game.fn.onMessage = function(data) {
 	var that = this;
 	data.value.forEach(function(val, index){
 		var id = val.id;
-		var angle = window.parseInt(val.angle, 10);
-		window.console.log(angle);
 		var x = window.parseFloat(val.x, 10);
 		var y = window.parseFloat(val.y, 10);
 		var position = {x:x, y:y};
