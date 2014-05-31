@@ -90,7 +90,13 @@ io.sockets.on('connection', function(socket) {
       objs[data.id] = corocoro;
       obj = objs[data.id];
     }
-    obj.ApplyForce(new b2d.b2Vec2(data.gravity.x, data.gravity.y), obj.GetPosition());
+    if(data.gravity.x == 0 || data.gravity.y == 0){
+      // 
+    }else{
+      var ax = (data.gravity.x / Math.sqrt((Math.pow(data.gravity.x, 2) + Math.pow(data.gravity.y, 2)))) * (10.0 + 5.0);
+      var ay = (data.gravity.y / Math.sqrt((Math.pow(data.gravity.x, 2) + Math.pow(data.gravity.y, 2)))) * (10.0 + 5.0);
+      obj.ApplyForce(new b2d.b2Vec2(ax, ay), obj.GetPosition());
+    }  
 
     //io.sockets.emit('message', data);
   });
