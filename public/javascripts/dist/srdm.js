@@ -141,10 +141,11 @@ Game.fn.onMessage = function(data) {
 	data.value.forEach(function(val, index){
 		var id = val.id;
 		var angle = window.parseInt(val.angle, 10);
-		var x = window.parseInt(val.x, 10);
-		var y = window.parseInt(val.y, 10);
+		window.console.log(angle);
+		var x = window.parseFloat(val.x, 10);
+		var y = window.parseFloat(val.y, 10);
 		var position = {x:x, y:y};
-		var angle = window.parseInt(val.angle, 10);
+		var angle = window.parseFloat(val.angle, 10);
 		var sessId = that._socket.socket.transport.sessid;
 		var playerType = sessId === id ? 1: 0;
 		var player = that.players[id] || that.createPlayer(id, position, playerType);
