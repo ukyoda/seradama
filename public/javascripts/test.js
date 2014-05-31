@@ -38,7 +38,7 @@ $(function(){
 
 	window.setInterval(function(){
 		game.onController.call(game, -1);
-	}, 1000);
+	}, 200);
 
 	game.start().then(function(){
 		console.log("animation");
