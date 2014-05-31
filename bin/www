@@ -8,6 +8,14 @@ var server = app.listen(app.get('port'), function() {
   debug('Express server listening on port ' + server.address().port);
 });
 
+// 世界
+var b2d = require("box2d");
+var worldAABB = new b2d.b2AABB();
+worldAABB.lowerBound.Set(-100.0, -100.0);
+worldAABB.upperBound.Set(100.0, 100.0);
+var gravity = new b2d.b2Vec2(0.0, -10.0);
+var doSleep = true;
+var world = new b2d.b2World(worldAABB, gravity, doSleep);
 
 // add start
 var socketIO = require('socket.io');
