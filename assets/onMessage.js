@@ -3,6 +3,7 @@
  */
 var flg = 0;
 Game.fn.onMessage = function(data) {
+
 	var that = this;
 	data.value.forEach(function(val, index){
 		var id = val.id;
@@ -26,3 +27,4 @@ Game.fn.onMessage = function(data) {
 	//ユーザ追加判定
 
 };
+
