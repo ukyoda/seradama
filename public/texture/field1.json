@@ -1,36 +1,24 @@
 {
 	"frames": {
 		"chip_0.png": {
-			"frame": {"x":32,"y":0,"w":32,"h":32},
+		"frame": {"x":0,"y":164,"w":32,"h":32},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {
 				"x":0,
-				"y":0,
+				"y":164,
 				"w":32,
 				"h":32
 			},
 			"sourceSize":{"w":32, "h":32}
 		},
 		"chip_1.png": {
-			"frame": {"x":0,"y":288,"w":32,"h":32},
+			"frame": {"x":0,"y":82,"w":32,"h":32},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {
 				"x":0,
-				"y":0,
-				"w":32,
-				"h":32
-			},
-			"sourceSize":{"w":32, "h":32}
-		},
-		"chip_2.png": {
-			"frame": {"x":128,"y":32,"w":32,"h":32},
-			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {
-				"x":0,
-				"y":0,
+				"y":82,
 				"w":32,
 				"h":32
 			},
@@ -38,7 +26,7 @@
 		}
 	},
 	"meta": {
-		"image": "map.png",
+		"image": "field/field.png",
 		"format": "RGBA8888",
 		"size": {"w":256,"h":512},
 		"scale": "1"
