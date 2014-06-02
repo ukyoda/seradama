@@ -115,6 +115,17 @@ function makeStage(){
   for(var i in stage1){
     var b2dobj = stage1[i];
     
+    // ゴール配置
+    if(b2dobj.goal){
+      var goalDef = new b2d.b2BodyDef();
+      goalDef.position.Set(b2dobj.x, b2dobj.y);
+      var goal = world.CreateBody(goalDef);
+      var goalShapeDef = new b2d.b2PolygonDef();
+      goalShapeDef.SetAsBox(b2dobj.w, b2dobj.h);
+      goal.CreateShape(goalShapeDef);
+      continue;
+    }
+    
     // 障害物追加
     var kabeDef = new b2d.b2BodyDef();
     kabeDef.position.Set(b2dobj.x, b2dobj.y);
