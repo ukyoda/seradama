@@ -4,6 +4,7 @@ var app = require('../app');
 
 var objs = {};
 var msgs = [];
+var stage1 = require('../stage/stage1.json');
 
 app.set('port', process.env.PORT || 3000);
 
@@ -107,9 +108,23 @@ io.sockets.on('connection', function(socket) {
   // クライアントが切断したときの処理
   socket.on('disconnect', function(){
     console.log("disconnect");
-
   });
 });
+
+function makeStage(){
+  for(var i in stage1){
+    var b2dobj = stage1[i];
+    
+    // 障害物追加
+    var kabeDef = new b2d.b2BodyDef();
+    kabeDef.position.Set(b2dobj.x, b2dobj.y);
+    var kabe = world.CreateBody(kabeDef);
+    var kabeShapeDef = new b2d.b2PolygonDef();
+    kabeShapeDef.SetAsBox(b2dobj.w, b2dobj.h);
+    kabe.CreateShape(kabeShapeDef);
+  }
+}
+makeStage();
 
 // 精度
 var iterations = 10;
