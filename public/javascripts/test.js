@@ -6,10 +6,12 @@ $(function(){
 	});
 	window.game = game;
 
+
+	var gravityDirection = Game.getGravityDirection();
 	$(window).on('devicemotion', function(e) {
 		var x = event.accelerationIncludingGravity.x || 0;
 		var y = event.accelerationIncludingGravity.y || 0;
-		game.setDeviceMotion({x: x, y: y});
+		game.setDeviceMotion({x: x * gravityDirection, y: y * gravityDirection});
 	});
 
 	window.setInterval(function(){
