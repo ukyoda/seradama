@@ -61,6 +61,43 @@ Game.CODE_RIGHT = 39;
 Game.CODE_BOTTOM = 40;
 Game.CODE_LEFT = 37;
 
+//スタティックメソッド
+
+Game.getAgent = (function(){
+	var android = 'Android';
+	var ios = 'iOS';
+	var other = 'Other';
+
+	var getAgent = function(){
+		var agent = window.navigator.userAgent, ua = '';
+		if(agent.search(/iPhone/) != -1) {
+			ua = ios;
+		} else if(agent.search(/Android/) != -1) {
+			ua = android;
+		} else {
+			ua = other;
+		}
+		return ua;
+	};
+	getAgent.ios = ios;
+	getAgent.android = android;
+	getAgent.other = other;
+
+	return getAgent;
+
+}());
+
+Game.getGravityDirection = function(){
+	var agent = Game.getAgent();
+	switch(agent) {
+	case Game.getAgent.ios:
+		return 1;
+	case Game.getAgent.android:
+		return -1;
+	default:
+		return 1;
+	}
+};
 
 //テクスチャロード
 

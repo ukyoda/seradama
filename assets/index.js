@@ -4,6 +4,9 @@ var name = "srdm";
 //コンストラクタ
 import "constructor";
 
+//スタティックメソッド
+import "static/getAgent";
+import "static/getGravityDirection";
 
 //テクスチャロード
 import "loadTexture";
