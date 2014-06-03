@@ -20,6 +20,18 @@ var Game = function Game(manifest) {
 	var target = manifest.target || "body";
 	var width = $(target).width();
 	var height = $(target).height();
+	this.viewerSize = {
+		width: width,
+		height: height
+	};
+	this.worldSize = {
+		width: width,
+		height: height
+	};
+	this.scale = {
+		x:Game.scale(),
+		y:Game.scale()
+	};
 	//ターゲットのタグ
 	this.$el = $(manifest.target);
 	this.el = this.$el.get(0);

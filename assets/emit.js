@@ -2,12 +2,10 @@
 /**
  * データ更新
  */
-Game.fn.emit = function(position) {
+Game.fn.emit = function(data) {
 	var myId = this._socket.socket.transport.sessid;
-	var gravity = this._controller.gravity;
-	this._socket.emit('message', {
-		id: myId,
-		gravity: gravity,
-		position: position
-	});
+	if(!myId) {return;}
+	data.id = myId;
+
+	this._socket.emit('message', data);
 };

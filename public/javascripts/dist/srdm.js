@@ -24,6 +24,18 @@ var Game = function Game(manifest) {
 	var target = manifest.target || "body";
 	var width = $(target).width();
 	var height = $(target).height();
+	this.viewerSize = {
+		width: width,
+		height: height
+	};
+	this.worldSize = {
+		width: width,
+		height: height
+	};
+	this.scale = {
+		x:Game.scale(),
+		y:Game.scale()
+	};
 	//ターゲットのタグ
 	this.$el = $(manifest.target);
 	this.el = this.$el.get(0);
@@ -99,6 +111,41 @@ Game.getGravityDirection = function(){
 	}
 };
 
+Game.checkDeviceMotion = function(){
+	if('ondevicemotion' in window) {
+		return true;
+	} else {
+		return false;
+	}
+};
+Game.scale = function(){
+	var value = {};
+	value.domain = [0,1];
+	value.range = [0,1];
+
+	var rescale = function(val){
+		var domain = value.domain;
+		var range = value.range;
+		var a = (range[0]-range[1]) / (domain[0]-domain[1]);
+		var b = range[0] - a*domain[0];
+		return a*val + b;
+	};
+
+
+	rescale.domain = function(distribution) {
+		value.domain = distribution;
+		return rescale;
+	};
+
+	rescale.range = function(distribution) {
+		value.range = distribution;
+		return rescale;
+	};
+
+	return rescale;
+
+};
+
 //テクスチャロード
 
 Game.fn.loadTexture = function(){
@@ -134,6 +181,11 @@ Game.fn.onCompleteGameData = function(data){
 	var width = world.width, height = world.height, grid = world.grid;
 	var map = data.mapdata;
 	var name = "chip_0.png";
+	this.worldSize = {
+		width: width*grid,
+		height: height*grid,
+		grid: grid
+	};
 	//
 	map.forEach(function(val, index){
 		var x = 32 * (index % width);
@@ -203,19 +255,25 @@ Game.fn.onDisconnected = function(){
 /**
  * データ更新
  */
-Game.fn.emit = function(position) {
+Game.fn.emit = function(data) {
 	var myId = this._socket.socket.transport.sessid;
-	var gravity = this._controller.gravity;
-	this._socket.emit('message', {
-		id: myId,
-		gravity: gravity,
-		position: position
-	});
+	if(!myId) {return;}
+	data.id = myId;
+
+	this._socket.emit('message', data);
 };
 
 //コントローラ
-//import "onController";
-
+/**
+ * コントローラで実行する処理
+ */
+Game.fn.onController = function(){
+	if(!this.player1) {return ;}
+	var gravity = this._controller.gravity;
+	this.emit({
+		gravity: gravity
+	});
+};
 Game.fn.setDeviceMotion = function(gravity){
 	if(typeof gravity !== "object") {
 		gravity = {};
@@ -223,39 +281,6 @@ Game.fn.setDeviceMotion = function(gravity){
 	gravity.x = gravity.x || 0;
 	gravity.y = gravity.y || 0;
 	this._controller.gravity = gravity;
-};
-
-/**
- * コントローラで実行する処理
- */
-Game.fn.onController = function(cursor){
-	if(!this.player1) {return ;}
-	var position = {
-		x: this.player1.position.x,
-		y: this.player1.position.y
-	};
-	var gravity = this._controller.gravity;
-	var moveVal = 32/2;
-
-	switch(cursor) {
-	case Game.MOVE_UP:
-		position.y -= moveVal;
-		break;
-	case Game.MOVE_LEFT:
-		position.x -= moveVal;
-		break;
-	case Game.MOVE_RIGHT:
-		position.x += moveVal;
-		break;
-	case Game.MOVE_BOTTOM:
-		position.y += moveVal;
-		break;
-	default:
-		break;
-		//rturn;
-	}
-
-	this.emit(position);
 };
 
 //プレイヤー操作
@@ -331,6 +356,8 @@ Game.fn.createPlayer = function(id, position, type) {
 
 Game.fn.animate = function(){
 	var that = this;
+
+
 	this.renderer.render(this.stage);
 	window.requestAnimFrame(function(){
 		that.animate.call(that);

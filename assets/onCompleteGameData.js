@@ -4,6 +4,11 @@ Game.fn.onCompleteGameData = function(data){
 	var width = world.width, height = world.height, grid = world.grid;
 	var map = data.mapdata;
 	var name = "chip_0.png";
+	this.worldSize = {
+		width: width*grid,
+		height: height*grid,
+		grid: grid
+	};
 	//
 	map.forEach(function(val, index){
 		var x = 32 * (index % width);

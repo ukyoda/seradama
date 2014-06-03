@@ -1,9 +1,14 @@
 
 $(function(){
 	var Game = srdm.Game;
+	if(!Game.checkDeviceMotion()) {
+		window.alert('このゲームは加速度センサを使用します。\nご利用の端末では動作させる事が出来ません');
+		return;
+	}
 	var game = new Game({
 		target: "#game-display"
 	});
+
 	window.game = game;
 
 

@@ -7,6 +7,8 @@ import "constructor";
 //スタティックメソッド
 import "static/getAgent";
 import "static/getGravityDirection";
+import "static/checkDeviceMotion";
+import "static/scale";
 
 //テクスチャロード
 import "loadTexture";
@@ -23,8 +25,8 @@ import "onDisconnected";
 import "emit";
 
 //コントローラ
-//import "onController";
-import "onController-motion";
+import "onController";
+import "setDeviceMotion";
 
 //プレイヤー操作
 import "addPlayers";
