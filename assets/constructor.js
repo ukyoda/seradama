@@ -37,12 +37,23 @@ var Game = function Game(manifest) {
 	this.el = this.$el.get(0);
 
 	//PIXI.jsのオブジェクト
-	this.stage = new PIXI.Stage('black');
+	this.stage = new PIXI.Stage(0xffffff);
 	this.renderer = new PIXI.autoDetectRenderer(width, height);
 
 	//プレイヤー情報コンテナ
 	this.player1 = null;
 	this.players = {};	//IDをキーとしたオブジェクトで管理
+
+	this.fieldLayer = new PIXI.DisplayObjectContainer();
+	this.fieldLayer.position.x = 0;
+	this.fieldLayer.position.y = 0;
+
+	this.playerLayer = new PIXI.DisplayObjectContainer();
+	this.playerLayer.position.x = 0;
+	this.playerLayer.position.y = 0;
+
+	this.stage.addChild(this.fieldLayer);
+	this.stage.addChild(this.playerLayer);
 
 	//コントローラ関連の情報を記憶する為のオブジェクト (プライベート)
 	this._controller = {

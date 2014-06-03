@@ -41,12 +41,23 @@ var Game = function Game(manifest) {
 	this.el = this.$el.get(0);
 
 	//PIXI.jsのオブジェクト
-	this.stage = new PIXI.Stage('black');
+	this.stage = new PIXI.Stage(0xffffff);
 	this.renderer = new PIXI.autoDetectRenderer(width, height);
 
 	//プレイヤー情報コンテナ
 	this.player1 = null;
 	this.players = {};	//IDをキーとしたオブジェクトで管理
+
+	this.fieldLayer = new PIXI.DisplayObjectContainer();
+	this.fieldLayer.position.x = 0;
+	this.fieldLayer.position.y = 0;
+
+	this.playerLayer = new PIXI.DisplayObjectContainer();
+	this.playerLayer.position.x = 0;
+	this.playerLayer.position.y = 0;
+
+	this.stage.addChild(this.fieldLayer);
+	this.stage.addChild(this.playerLayer);
 
 	//コントローラ関連の情報を記憶する為のオブジェクト (プライベート)
 	this._controller = {
@@ -183,6 +194,8 @@ Game.fn.onCompleteGameData = function(data){
 	var width = world.width, height = world.height, grid = world.grid;
 	var map = data.mapdata;
 	var name = "chip_0.png";
+	var fieldSet = this.fieldLayer;
+	var that = this;
 	this.worldSize = {
 		width: width*grid,
 		height: height*grid,
@@ -192,9 +205,9 @@ Game.fn.onCompleteGameData = function(data){
 	map.forEach(function(val, index){
 		var x = 32 * (index % width);
 		var y = 32 * Math.floor(index / width);
-		var sprite = game.createFieldChip("chip_"+val+".png");
+		var sprite = that.createFieldChip("chip_"+val+".png");
 		sprite.position.x=x;sprite.position.y=y;
-		game.stage.addChild(sprite);
+		fieldSet.addChild(sprite);
 	});
 };
 
@@ -294,7 +307,7 @@ Game.fn.setDeviceMotion = function(gravity){
  */
 Game.fn.addPlayers = function(player) {
 	//ステージに追加する
-	this.stage.addChild(player);
+	this.playerLayer.addChild(player);
 	//プレイヤー一覧コンテナに追加する（参照用）
 	this.players[player.id] = player;
 	return this;
@@ -304,7 +317,7 @@ Game.fn.addPlayers = function(player) {
  * 自プレイヤーを登録する
  */
 Game.fn.setPlayer1 = function(player) {
-	this.stage.addChild(player);
+	this.playerLayer.addChild(player);
 	this.player1 = player;
 	this.players[player.id] = player;
 	return this;
@@ -360,6 +373,26 @@ Game.fn.createPlayer = function(id, position, type) {
 
 Game.fn.animate = function(){
 	var that = this;
+
+	//ウインドウサイズ取得
+	var windowWidth = $(window).width();
+	var windowHeight = $(window).height();
+	var size, scale;
+	if(windowWidth < windowHeight) {
+		size = windowWidth;
+	} else {
+		size = windowHeight;
+	}
+	size *= 0.8;	//0.8倍にする
+	scale = size/800;
+	size = 800*scale;
+	//ウインドウサイズリサイズ
+	this.renderer.resize(size, size);
+	this.$el.width(size).height(size);
+	//スケール変換
+	this.playerLayer.scale.set(scale,scale);
+	this.fieldLayer.scale.set(scale, scale);
+
 	this.renderer.render(this.stage);
 	window.requestAnimFrame(function(){
 		that.animate.call(that);
