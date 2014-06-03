@@ -8,6 +8,8 @@ Game.getAgent = (function(){
 		var agent = window.navigator.userAgent, ua = '';
 		if(agent.search(/iPhone/) != -1) {
 			ua = ios;
+		} else if(agent.search(/iPad/) != -1) {
+			ua = ios;
 		} else if(agent.search(/Android/) != -1) {
 			ua = android;
 		} else {
