@@ -58,6 +58,7 @@ wallRightBody.CreateShape(wallRightShapeDef);
 var socketIO = require('socket.io');
 // クライアントの接続を待つ(IPアドレスとポート番号を結びつけます)
 var io = socketIO.listen(server);
+io.set("log level", 2);
 
 var getPosition = function(data) {
 	rotation = event.rotation;
