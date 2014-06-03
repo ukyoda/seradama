@@ -1,11 +1,13 @@
 /**
  * サーバからデータを取得したとき
  */
-var flg = 0;
 Game.fn.onMessage = function(data) {
 
 	var that = this;
 	data.value.forEach(function(val, index){
+		if(val.delflag) {
+			that.removePlayer(val.id);
+		}
 		var id = val.id;
 		var x = window.parseFloat(val.x, 10);
 		var y = window.parseFloat(val.y, 10);

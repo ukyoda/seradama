@@ -223,11 +223,13 @@ Game.fn.socketConnect = function(socketURL) {
 /**
  * サーバからデータを取得したとき
  */
-var flg = 0;
 Game.fn.onMessage = function(data) {
 
 	var that = this;
 	data.value.forEach(function(val, index){
+		if(val.delflag) {
+			that.removePlayer(val.id);
+		}
 		var id = val.id;
 		var x = window.parseFloat(val.x, 10);
 		var y = window.parseFloat(val.y, 10);
@@ -356,8 +358,6 @@ Game.fn.createPlayer = function(id, position, type) {
 
 Game.fn.animate = function(){
 	var that = this;
-
-
 	this.renderer.render(this.stage);
 	window.requestAnimFrame(function(){
 		that.animate.call(that);
