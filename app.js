@@ -8,7 +8,18 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
+//ゲーム管理変数
+var gameInfoData = {
+    fieldNo: 1 //現在のステージNo ※APIは"stage[No].json"を読み込む
+};
+
+//APIルート読み込み
+var api = require('./routes/api')(gameInfoData);
+
 var app = express();
+
+//ゲーム管理変数をappに記憶させる(wwwからアクセスできるように)
+app.gameInfo = gameInfoData;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -23,6 +34,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/field.json', api.field);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
