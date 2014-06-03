@@ -1,33 +1,26 @@
 <!doctype html>
 <html>
-		<head>
-				<meta charset="utf-8">
-				<!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
-				<meta name="keywords" content="gravitycorocoro,グラコロ,gcc,html5j,japancup,seradama" />
-				<meta name="description" content="GravityCoroCoroは最大300人で対戦できるボールコロコロゲームです。さあ一緒にコロコロライフを始めよう！" />
-				<meta name="author" content="GravityCoroCoroTeam" />
-				<meta name="robots" content="index,follow,noydir,noodp" />
+	<head>
+			<meta charset="utf-8">
+			<!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+			<meta name="keywords" content="gravitycorocoro,グラコロ,gcc,html5j,japancup,seradama" />
+			<meta name="description" content="GravityCoroCoroは最大300人で対戦できるボールコロコロゲームです。さあ一緒にコロコロライフを始めよう！" />
+			<meta name="author" content="GravityCoroCoroTeam" />
+			<meta name="robots" content="index,follow,noydir,noodp" />
 
-				<title>GaravityCoroCoro</title>
-				<script src="/socket.io/socket.io.js"></script>
-				<script src="/libs/jquery/dist/jquery.min.js"></script>
-				<script src="/libs/pixi/bin/pixi.js"></script>
+			<title>GaravityCoroCoro</title>
+			<script src="/socket.io/socket.io.js"></script>
+			<script src="/libs/jquery/dist/jquery.min.js"></script>
+			<script src="/libs/pixi/bin/pixi.js"></script>
 
-				<script src="/javascripts/dist/srdm.js"></script>
-				<script src="/javascripts/test.js"></script>
-				<style type="text/css">
-				body {
-					width: 100%;
-					height: 100%;
-				}
-				.game-display {
-					width: 800px;
-					height: 800px;
-				}
-				</style>
-		</head>
-		<body>
-			<div class="game-display" id="game-display">
-			</div>
-		</body>
+			<script src="/javascripts/dist/srdm.js"></script>
+			<script src="/javascripts/test.js"></script>
+			<link rel="stylesheet" href="/stylesheets/gamedisplay.css"></link>
+	</head>
+	<body>
+		<!-- <div class="game-title">グラビティコロコロ</div> -->
+		<div class="game-body">
+			<div class="game-display" id="game-display"></div>
+		</div>
+	</body>
 </html>
