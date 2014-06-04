@@ -1,5 +1,5 @@
 [
-{"x":0.0, "y":5.0, "w":5.0, "h":1.0, "angle":0.0, "id":"kabe_001", "texture":"texture_kabe_001"},
-{"x":-5.0, "y":0.0, "w":1.0, "h":5.0, "angle":0.0, "id":"kabe_002", "texture":"texture_kabe_002"},
+{"x":0.0, "y":5.0, "w":3.890625, "h":1.0, "angle":0.0, "id":"kabe_001", "texture":"texture_kabe_001"},
+{"x":-5.0, "y":0.0, "w":3.890625, "h":1.0, "angle":1.57, "id":"kabe_002", "texture":"texture_kabe_002"},
 {"x":0.0, "y":0.0, "w":0.5, "h":0.5, "angle":0.0, "id":"goal", "texture":"texture_goal"}
 ]
