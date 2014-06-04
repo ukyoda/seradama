@@ -14,7 +14,7 @@
 var Game = function Game(manifest) {
 
 	//URL設定
-	this.textureURLs = manifest.textureURLs || ["texture/field1.json", "texture/player.json"];
+	this.textureURLs = manifest.textureURLs || ["texture/field1.json", "texture/kabe.json", "texture/player.json"];
 	this.gameInfoURL = manifest.gameInfoURL || "game/gamedata.json";
 	this.socketURL = manifest.socketURL || "//";
 	var target = manifest.target || "body";
@@ -40,9 +40,8 @@ var Game = function Game(manifest) {
 	this.stage = new PIXI.Stage(0xffffff);
 	this.renderer = new PIXI.autoDetectRenderer(width, height);
 
-	//プレイヤー情報コンテナ
-	this.player1 = null;
-	this.players = {};	//IDをキーとしたオブジェクトで管理
+	//自ボールスプライト
+	this.player = null;
 
 	this.fieldLayer = new PIXI.DisplayObjectContainer();
 	this.fieldLayer.position.x = 0;
@@ -52,7 +51,13 @@ var Game = function Game(manifest) {
 	this.playerLayer.position.x = 0;
 	this.playerLayer.position.y = 0;
 
+	this.objectLayer = new PIXI.DisplayObjectContainer();
+	this.objectLayer.position.x = 0;
+	this.objectLayer.position.y = 0;
+
+	//レイヤーをステージに登録
 	this.stage.addChild(this.fieldLayer);
+	this.stage.addChild(this.objectLayer);
 	this.stage.addChild(this.playerLayer);
 
 	//コントローラ関連の情報を記憶する為のオブジェクト (プライベート)

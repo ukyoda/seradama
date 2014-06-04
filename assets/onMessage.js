@@ -1,29 +1,33 @@
 /**
  * サーバからデータを取得したとき
  */
-Game.fn.onMessage = function(data) {
 
+Game.fn.onMessage = function(data) {
 	var that = this;
 	data.value.forEach(function(val, index){
-		if(val.delflag) {
-			that.removePlayer(val.id);
-		}
-		var id = val.id;
-		var x = window.parseFloat(val.x, 10);
-		var y = window.parseFloat(val.y, 10);
-		var position = {x:x, y:y};
-		var angle = window.parseFloat(val.angle, 10);
-		var sessId = that._socket.socket.transport.sessid;
-		var playerType = sessId === id ? 1: 0;
-		var player = that.players[id] || that.createPlayer(id, position, playerType);
-		if(playerType === 1) {
-			that.setPlayer1(player);
+		var datatype = val.datatype;
+
+		//datatypeオーバーライド(特殊処理)
+		if(val.texture === "player_1_1.png") {
+			val.datatype = datatype = "you";
+		} else if(val.texture.search(/player/) !== -1) {
+			val.datatype = datatype = "player";
 		} else {
-			that.addPlayers(player);
+			val.datatype = datatype = "object";
 		}
-		that.movePlayer(id, position, angle);
+
+		switch(datatype) {
+		case "object": //障害物情報
+			that.updateObject(val);
+			break;
+		case "you": //自プレイヤー情報
+			that.updatePlayer(val);
+			break;
+		case "player": //プレイヤー情報
+			that.updatePlayer(val);
+			break;
+		}
 	});
-	//ユーザ追加判定
 
 };
 

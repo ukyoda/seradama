@@ -18,7 +18,7 @@ var name = "srdm";
 var Game = function Game(manifest) {
 
 	//URL設定
-	this.textureURLs = manifest.textureURLs || ["texture/field1.json", "texture/player.json"];
+	this.textureURLs = manifest.textureURLs || ["texture/field1.json", "texture/kabe.json", "texture/player.json"];
 	this.gameInfoURL = manifest.gameInfoURL || "game/gamedata.json";
 	this.socketURL = manifest.socketURL || "//";
 	var target = manifest.target || "body";
@@ -44,9 +44,8 @@ var Game = function Game(manifest) {
 	this.stage = new PIXI.Stage(0xffffff);
 	this.renderer = new PIXI.autoDetectRenderer(width, height);
 
-	//プレイヤー情報コンテナ
-	this.player1 = null;
-	this.players = {};	//IDをキーとしたオブジェクトで管理
+	//自ボールスプライト
+	this.player = null;
 
 	this.fieldLayer = new PIXI.DisplayObjectContainer();
 	this.fieldLayer.position.x = 0;
@@ -56,7 +55,13 @@ var Game = function Game(manifest) {
 	this.playerLayer.position.x = 0;
 	this.playerLayer.position.y = 0;
 
+	this.objectLayer = new PIXI.DisplayObjectContainer();
+	this.objectLayer.position.x = 0;
+	this.objectLayer.position.y = 0;
+
+	//レイヤーをステージに登録
 	this.stage.addChild(this.fieldLayer);
+	this.stage.addChild(this.objectLayer);
 	this.stage.addChild(this.playerLayer);
 
 	//コントローラ関連の情報を記憶する為のオブジェクト (プライベート)
@@ -222,9 +227,6 @@ Game.fn.socketConnect = function(socketURL) {
 
 	this._socket = io.connect(socketURL);
 	this._socket.on('connect', function(){
-		var id = that._socket.socket.sessionid;
-		var player1 = that.createPlayer(id, {x: 32, y: 32}, 1);
-		that.setPlayer1(player1);
 		deferred.resolve();
 	});
 
@@ -238,29 +240,33 @@ Game.fn.socketConnect = function(socketURL) {
 /**
  * サーバからデータを取得したとき
  */
-Game.fn.onMessage = function(data) {
 
+Game.fn.onMessage = function(data) {
 	var that = this;
 	data.value.forEach(function(val, index){
-		if(val.delflag) {
-			that.removePlayer(val.id);
-		}
-		var id = val.id;
-		var x = window.parseFloat(val.x, 10);
-		var y = window.parseFloat(val.y, 10);
-		var position = {x:x, y:y};
-		var angle = window.parseFloat(val.angle, 10);
-		var sessId = that._socket.socket.transport.sessid;
-		var playerType = sessId === id ? 1: 0;
-		var player = that.players[id] || that.createPlayer(id, position, playerType);
-		if(playerType === 1) {
-			that.setPlayer1(player);
+		var datatype = val.datatype;
+
+		//datatypeオーバーライド(特殊処理)
+		if(val.texture === "player_1_1.png") {
+			val.datatype = datatype = "you";
+		} else if(val.texture.search(/player/) !== -1) {
+			val.datatype = datatype = "player";
 		} else {
-			that.addPlayers(player);
+			val.datatype = datatype = "object";
 		}
-		that.movePlayer(id, position, angle);
+
+		switch(datatype) {
+		case "object": //障害物情報
+			that.updateObject(val);
+			break;
+		case "you": //自プレイヤー情報
+			that.updatePlayer(val);
+			break;
+		case "player": //プレイヤー情報
+			that.updatePlayer(val);
+			break;
+		}
 	});
-	//ユーザ追加判定
 
 };
 
@@ -273,7 +279,12 @@ Game.fn.onDisconnected = function(){
  * データ更新
  */
 Game.fn.emit = function(data) {
-	var myId = this._socket.socket.transport.sessid;
+	//var _socket = this._socket || {};
+	//var socket = _socket.socket || {};
+	//var transport = socket.transport || {};
+	//var myId = transport.sessid;
+	var player = this.player || {};
+	var myId = player.id;
 	if(!myId) {return;}
 	data.id = myId;
 
@@ -285,7 +296,7 @@ Game.fn.emit = function(data) {
  * コントローラで実行する処理
  */
 Game.fn.onController = function(){
-	if(!this.player1) {return ;}
+	//if(!this.player) {return ;}
 	var gravity = this._controller.gravity;
 	this.emit({
 		gravity: gravity
@@ -300,73 +311,109 @@ Game.fn.setDeviceMotion = function(gravity){
 	this._controller.gravity = gravity;
 };
 
-//プレイヤー操作
-
-/**
- * プレイヤー追加
- */
-Game.fn.addPlayers = function(player) {
-	//ステージに追加する
-	this.playerLayer.addChild(player);
-	//プレイヤー一覧コンテナに追加する（参照用）
-	this.players[player.id] = player;
-	return this;
-};
-
-/**
- * 自プレイヤーを登録する
- */
-Game.fn.setPlayer1 = function(player) {
-	this.playerLayer.addChild(player);
-	this.player1 = player;
-	this.players[player.id] = player;
-	return this;
-};
+//プレイヤー関連
 
 Game.fn.removePlayer = function(id) {
-	this.playerLayer.removeChild(this.players[id]);
-	this.players[id] = undefined;
-	if(this.player1.id === id) {
-		this.player1 = undefined;
+	var filterSprite = this.playerLayer.children.filter(function(val){
+		return (val.id === id);
+	});
+	if(!filterSprite.length){
+		return false;
+	}
+	var sprite = filterSprite[0];
+	this.playerLayer.removeChild(sprite);
+	if(this.player === sprite) {
+		this.player = undefined;
 	}
 	return this;
 };
 
-Game.fn.movePlayer = function(id, position, angle) {
-	if(this.players[id]) {
-		this.players[id].position.x = position.x;
-		this.players[id].position.y = position.y;
-		this.players[id].rotation = angle;
+Game.fn.updatePlayer = function(data){
+	var id = data.id;
+	var position = {
+		x:window.parseFloat(data.x, 10),
+		y:window.parseFloat(data.y, 10)
+	};
+	var textureId = data.texture;
+	var datatype = data.datatype || "object";
+	var angle = window.parseFloat(data.angle, 10);
+	var layer = this.playerLayer, filterVal=[], sprite;
+	if(data.delflag) {
+		that.removePlayer(data.id);
 	}
+	filterVal = layer.children.filter(function(val){
+		return (val.id === id);
+	});
+	if(filterVal.length) {
+		sprite = filterVal[0];
+	} else {
+		sprite = new PIXI.Sprite.fromFrame(textureId);
+		sprite.id = id;	//固有ID記憶
+		layer.addChild(sprite);
+	}
+
+	//スプライト情報を更新
+	sprite.position.set(position.x,position.y);
+	sprite.anchor.set(0.5,0.5);
+	sprite.rotation = angle;
+	//自ボールの場合，プロパティに参照を追加
+	if(datatype === "you") {
+		this.player = sprite;
+	}
+	return sprite;
+
+};
+
+//障害物関連
+
+Game.fn.removeObject = function(id) {
+	var filterSprite = this.objectLayer.children.filter(function(val){
+		return (val.id === id);
+	});
+	if(!filterSprite.length){
+		return false;
+	}
+	var sprite = filterSprite[0];
+	this.objectLayer.removeChild(sprite);
 	return this;
 };
 
-//スプライト作成
+Game.fn.updateObject = function(data){
+	var id = data.id;
+	var position = {
+		x:window.parseFloat(data.x, 10),
+		y:window.parseFloat(data.y, 10)
+	};
+	var textureId = data.texture;
+	var datatype = data.datatype || "object";
+	var angle = window.parseFloat(data.angle, 10);
+	var layer = this.objectLayer, filterVal=[], sprite;
+	if(data.delflag) {
+		this.removeObject(data.id);
+	}
+	filterVal = layer.children.filter(function(val){
+		return (val.id === id);
+	});
+	if(filterVal.length) {
+		sprite = filterVal[0];
+	} else {
+		sprite = new PIXI.Sprite.fromFrame(textureId);
+		sprite.id = id;	//固有ID記憶
+		layer.addChild(sprite);
+	}
+
+	//スプライト情報を更新
+	sprite.position.set(position.x,position.y);
+	sprite.anchor.set(0.5,0.5);
+	sprite.rotation = angle;
+	return sprite;
+
+};
+
+//フィールド関連
 
 Game.fn.createFieldChip = function(name) {
 	return PIXI.Sprite.fromFrame(name);
-};
-
-Game.fn.createPlayer = function(id, position, type) {
-	if(this.players[id]) {
-		return this.players.id;
-	}
-	var name, sprite;
-	switch(type) {
-	case 1:
-		name = "player_3_1.png";
-		break;
-	default:
-		name = "player_1_1.png";
-		break;
-	}
-	sprite = PIXI.Sprite.fromFrame(name);
-	sprite.id = id;
-	sprite.position.x = position.x;
-	sprite.position.y = position.y;
-	sprite.anchor.x = 0.5;
-	sprite.anchor.y = 0.5;
-	return sprite;
 };
 
 //アニメーション
@@ -392,6 +439,7 @@ Game.fn.animate = function(){
 	//スケール変換
 	this.playerLayer.scale.set(scale,scale);
 	this.fieldLayer.scale.set(scale, scale);
+	this.objectLayer.scale.set(scale, scale);
 
 	this.renderer.render(this.stage);
 	window.requestAnimFrame(function(){

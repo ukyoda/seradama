@@ -3,7 +3,12 @@
  * データ更新
  */
 Game.fn.emit = function(data) {
-	var myId = this._socket.socket.transport.sessid;
+	//var _socket = this._socket || {};
+	//var socket = _socket.socket || {};
+	//var transport = socket.transport || {};
+	//var myId = transport.sessid;
+	var player = this.player || {};
+	var myId = player.id;
 	if(!myId) {return;}
 	data.id = myId;
 
