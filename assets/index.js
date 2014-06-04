@@ -28,15 +28,16 @@ import "emit";
 import "onController";
 import "setDeviceMotion";
 
-//プレイヤー操作
-import "addPlayers";
-import "setPlayer1";
+//プレイヤー関連
 import "removePlayer";
-import "movePlayer";
+import "updatePlayer";
 
-//スプライト作成
+//障害物関連
+import "removeObject";
+import "updateObject";
+
+//フィールド関連
 import "createFieldChip";
-import "createPlayer";
 
 //アニメーション
 import "animate";

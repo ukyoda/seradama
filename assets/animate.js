@@ -20,6 +20,7 @@ Game.fn.animate = function(){
 	//スケール変換
 	this.playerLayer.scale.set(scale,scale);
 	this.fieldLayer.scale.set(scale, scale);
+	this.objectLayer.scale.set(scale, scale);
 
 	this.renderer.render(this.stage);
 	window.requestAnimFrame(function(){
