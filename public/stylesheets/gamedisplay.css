@@ -1,6 +1,13 @@
+@charset "UTF-8";
+/*-------------------------------------
+CREDIT : GravityCoroCoro
+CREATE : 2014.06.04
+Var : 1.0
+-------------------------------------*/
 html {
 	height: 100%;
 }
+
 body {
 	width: 100%;
 	height: 100%;
