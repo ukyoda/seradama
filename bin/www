@@ -206,6 +206,14 @@ var interval;
 function doAnim() {
   interval = setInterval(function() {
     world.Step(1.0/fps, iterations);
+    
+    var contact = goals["goal"].m_contactList;
+    if(contact){
+      for(var i in objs){
+        objs[i].SetXForm(new b2d.b2Vec2(-10.0, 10.0), 0.0);
+      }
+    }
+    
     var count = 0;
     var msgs = [];
     for(var i in objs){
