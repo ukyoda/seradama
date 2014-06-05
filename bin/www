@@ -79,7 +79,7 @@ io.sockets.on('connection', function(socket) {
     var x = (position.x * 32) + (32 * 12.5);
     var y = (position.y * -32) + (32 * 12.5);
     var angle = (kabes[i].GetAngle() * -1);
-    var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:kabes[i].m_userData.id, texture:kabes[i].m_userData.texture};
+    var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:kabes[i].m_userData.id, texture:kabes[i].m_userData.texture, datatype:"object"};
     msgs[count] = xya;
     count++;
   }
@@ -89,7 +89,7 @@ io.sockets.on('connection', function(socket) {
     var x = (position.x * 32) + (32 * 12.5);
     var y = (position.y * -32) + (32 * 12.5);
     var angle = (goals[i].GetAngle() * -1);
-    var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:goals[i].m_userData.id, texture:goals[i].m_userData.texture};
+    var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:goals[i].m_userData.id, texture:goals[i].m_userData.texture, datatype:"object"};
     msgs[count] = xya;
     count++;
   }
@@ -108,13 +108,14 @@ io.sockets.on('connection', function(socket) {
   var userData = {};
   userData.id = "ball_" + userCount;
   userData.texture = "player_1_1.png";
+  userData.datatype = "player";
   corocoro.m_userData = userData;
   objs[socket.id] = corocoro;
   var position = corocoro.GetPosition();
   var x = (position.x * 32) + (32 * 12.5);
   var y = (position.y * -32) + (32 * 12.5);
   var angle = (corocoro.GetAngle() * -1);
-  var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:corocoro.m_userData.id, texture:"player_3_1.png"};
+  var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:corocoro.m_userData.id, texture:"player_3_1.png", datatype:"you"};
   msgs[count] = xya;
   count++;
 
@@ -212,7 +213,7 @@ function doAnim() {
       var x = (position.x * 32) + (32 * 12.5);
       var y = (position.y * -32) + (32 * 12.5);
       var angle = (objs[i].GetAngle() * -1);
-      var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:objs[i].m_userData.id, texture:objs[i].m_userData.texture};
+      var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:objs[i].m_userData.id, texture:objs[i].m_userData.texture, datatype:"player"};
       msgs[count] = xya;
       count++;
     }
