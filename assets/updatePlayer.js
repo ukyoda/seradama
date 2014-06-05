@@ -10,8 +10,10 @@ Game.fn.updatePlayer = function(data){
 	var angle = window.parseFloat(data.angle, 10);
 	var layer = this.playerLayer, filterVal=[], sprite;
 	if(data.delflag) {
-		that.removePlayer(data.id);
+		this.removePlayer(data.id);
+		return null;
 	}
+
 	filterVal = layer.children.filter(function(val){
 		return (val.id === id);
 	});

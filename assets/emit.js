@@ -9,6 +9,7 @@ Game.fn.emit = function(data) {
 	//var myId = transport.sessid;
 	var player = this.player || {};
 	var myId = player.id;
+	//プレイヤーデータが出来ていないならemitしない
 	if(!myId) {return;}
 	data.id = myId;
 
