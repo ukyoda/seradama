@@ -244,16 +244,9 @@ Game.fn.socketConnect = function(socketURL) {
 Game.fn.onMessage = function(data) {
 	var that = this;
 	data.value.forEach(function(val, index){
-		var datatype = val.datatype;
+		var datatype = val.datatype || 'object';
 
 		//datatypeオーバーライド(特殊処理)
-		if(val.texture === "player_1_1.png") {
-			val.datatype = datatype = "you";
-		} else if(val.texture.search(/player/) !== -1) {
-			val.datatype = datatype = "player";
-		} else {
-			val.datatype = datatype = "object";
-		}
 
 		switch(datatype) {
 		case "object": //障害物情報
