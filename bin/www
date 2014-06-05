@@ -147,7 +147,7 @@ io.sockets.on('connection', function(socket) {
     console.log("disconnect:" + socket.id);
     delObj = objs[socket.id];
     if(delObj){
-      var xya = {x:-100.0, y:-100.0, angle:0.0, id:objs[socket.id].m_userData.id, delflag:1};
+      var xya = {x:-100.0, y:-100.0, angle:0.0, id:objs[socket.id].m_userData.id, delflag:1, datatype:"player"};
       var msgs = [];
       msgs[0] = xya;
       delete objs[socket.id];
