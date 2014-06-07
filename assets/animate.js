@@ -5,16 +5,17 @@ Game.fn.animate = function(){
 	//ウインドウサイズ取得
 	var windowWidth = $(window).width();
 	var windowHeight = $(window).height();
+	var worldWidth = this.worldSize.width;
+	var worldHeight = this.worldSize.height;
 	var size={x:1,y:1},scale={x:1,y:1};
+
 	if(windowWidth < windowHeight) {
-		size.x = windowWidth;
-		size.y = size.x / 2 * 3;
+		size.x = windowWidth * 0.8;
+		size.y = size.x / worldWidth * worldHeight;
 	} else {
-		size.y = windowHeight;
-		size.x = size.y / 3 * 2;
+		size.y = windowHeight * 0.8;
+		size.x = size.y / worldHeight * worldWidth;
 	}
-	size.x *= 0.8;	//0.8倍にする
-	size.y *= 0.8;
 	scale.x = size.x/this.worldSize.width;
 	scale.y = size.y/this.worldSize.height;
 
