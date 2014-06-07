@@ -103,7 +103,7 @@ io.sockets.on('connection', function(socket) {
   corocoroDef.position.Set(-5.0, 5.0);
   var corocoro = world.CreateBody(corocoroDef);
   var corocoroShapeDef = new b2d.b2CircleDef();
-  corocoroShapeDef.radius = 0.5;
+  corocoroShapeDef.radius = 1.0;
   corocoroShapeDef.density = 1.0;
   corocoroShapeDef.friction = 0.5;
   corocoroShapeDef.restitution = 0.7;
