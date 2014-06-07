@@ -119,7 +119,7 @@ io.sockets.on('connection', function(socket) {
   var x = (position.x * 32) + (gamedata.world.width / 2.0);
   var y = (position.y * -32) + (gamedata.world.height / 2.0);
   var angle = (corocoro.GetAngle() * -1);
-  var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:corocoro.m_userData.id, texture:objs[i].m_userData.texture, datatype:"you"};
+  var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:corocoro.m_userData.id, texture:corocoro.m_userData.texture, datatype:"you"};
   msgs[count] = xya;
   count++;
 
