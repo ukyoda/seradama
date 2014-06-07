@@ -50,21 +50,22 @@ var Game = function Game(manifest) {
 	this.player = null;
 
 	this.fieldLayer = new PIXI.DisplayObjectContainer();
-	this.fieldLayer.position.x = 0;
-	this.fieldLayer.position.y = 0;
+	this.fieldLayer.position.set(0,0);
 
 	this.playerLayer = new PIXI.DisplayObjectContainer();
-	this.playerLayer.position.x = 0;
-	this.playerLayer.position.y = 0;
+	this.playerLayer.position.set(0,0);
 
 	this.objectLayer = new PIXI.DisplayObjectContainer();
-	this.objectLayer.position.x = 0;
-	this.objectLayer.position.y = 0;
+	this.objectLayer.position.set(0,0);
+
+	this.menuLayer = new PIXI.DisplayObjectContainer();
+	this.menuLayer.position.set(0,0);
 
 	//レイヤーをステージに登録
 	this.stage.addChild(this.fieldLayer);
 	this.stage.addChild(this.objectLayer);
 	this.stage.addChild(this.playerLayer);
+	this.stage.addChild(this.menuLayer);
 
 	//コントローラ関連の情報を記憶する為のオブジェクト (プライベート)
 	this._controller = {
@@ -425,12 +426,10 @@ Game.fn.createFieldChip = function(name) {
 	return PIXI.Sprite.fromFrame(name);
 };
 
-//アニメーション
+//アニメーション・描画
 
-Game.fn.animate = function(){
-	var that = this;
-
-	//ウインドウサイズ取得
+//全体をリスケール
+Game.fn.rescale = function(){
 	var windowWidth = $(window).width();
 	var windowHeight = $(window).height();
 	var worldWidth = this.worldSize.width;
@@ -454,10 +453,18 @@ Game.fn.animate = function(){
 	this.playerLayer.scale.set(scale.x, scale.y);
 	this.fieldLayer.scale.set(scale.x, scale.y);
 	this.objectLayer.scale.set(scale.x, scale.y);
+	this.menuLayer.scale.set(scale.x, scale.y);
+};
+
+Game.fn.animate = function(){
+	var that = this;
+
+	//ウインドウサイズ取得
+	this.rescale();
 
 	this.renderer.render(this.stage);
 	window.requestAnimFrame(function(){
-		that.animate.call(that);
+		that.animate(that);
 	});
 };
 

@@ -46,21 +46,22 @@ var Game = function Game(manifest) {
 	this.player = null;
 
 	this.fieldLayer = new PIXI.DisplayObjectContainer();
-	this.fieldLayer.position.x = 0;
-	this.fieldLayer.position.y = 0;
+	this.fieldLayer.position.set(0,0);
 
 	this.playerLayer = new PIXI.DisplayObjectContainer();
-	this.playerLayer.position.x = 0;
-	this.playerLayer.position.y = 0;
+	this.playerLayer.position.set(0,0);
 
 	this.objectLayer = new PIXI.DisplayObjectContainer();
-	this.objectLayer.position.x = 0;
-	this.objectLayer.position.y = 0;
+	this.objectLayer.position.set(0,0);
+
+	this.menuLayer = new PIXI.DisplayObjectContainer();
+	this.menuLayer.position.set(0,0);
 
 	//レイヤーをステージに登録
 	this.stage.addChild(this.fieldLayer);
 	this.stage.addChild(this.objectLayer);
 	this.stage.addChild(this.playerLayer);
+	this.stage.addChild(this.menuLayer);
 
 	//コントローラ関連の情報を記憶する為のオブジェクト (プライベート)
 	this._controller = {

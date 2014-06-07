@@ -39,7 +39,8 @@ import "updateObject";
 //フィールド関連
 import "createFieldChip";
 
-//アニメーション
+//アニメーション・描画
+import "rescale";
 import "animate";
 
 //ゲームスタート
