@@ -8,7 +8,7 @@ Game.fn.onCompleteGameData = function(data){
 		width: width,
 		height: height
 	};
-	var sprite = new PIXI.Sprite.fromImage('texture/background/background.jpg');
+	var sprite = new PIXI.Sprite.fromImage(this.backgroundURL);
 	sprite.width = this.worldSize.width;
 	sprite.height = this.worldSize.height;
 	fieldSet.addChild(sprite);

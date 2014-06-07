@@ -12,6 +12,5 @@ Game.fn.emit = function(data) {
 	//プレイヤーデータが出来ていないならemitしない
 	if(!myId) {return;}
 	data.id = myId;
-
 	this._socket.emit('message', data);
 };

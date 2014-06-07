@@ -16,7 +16,7 @@ var Game = function Game(manifest) {
 
 	//URL設定
 	this.textureURLs = manifest.textureURLs || ["texture/field1.json", "texture/kabe.json", "texture/player.json"];
-	this.backgroundURL = manifest.backgroundURL || 'texture/background/background.jpg';
+	this.backgroundURL = manifest.backgroundURL || 'texture/background/background.png';
 	this.gameInfoURL = manifest.gameInfoURL || "game/gamedata.json";
 	this.socketURL = manifest.socketURL || "//";
 	var target = manifest.target || "body";
@@ -77,13 +77,3 @@ var Game = function Game(manifest) {
 };
 //prototypeショートカット
 Game.fn = Game.prototype;
-
-Game.MOVE_UP = 1;
-Game.MOVE_RIGHT = 2;
-Game.MOVE_BOTTOM = 3;
-Game.MOVE_LEFT = 4;
-
-Game.CODE_UP = 38;
-Game.CODE_RIGHT = 39;
-Game.CODE_BOTTOM = 40;
-Game.CODE_LEFT = 37;
