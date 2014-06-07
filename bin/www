@@ -3,6 +3,11 @@ var debug = require('debug')('sera-dev2');
 var app = require('../app');
 
 var gamedata = require('../public/game/gamedata.json');
+var stages = [];
+stages[0] = require('../stage/stage1.json');
+stages[1] = require('../stage/stage2.json');
+stages[2] = require('../stage/stage3.json');
+
 
 var player_textures = require('../public/texture/player.json');
 var player_texture_names = [];
@@ -16,7 +21,6 @@ var objs = {};
 //var msgs = [];
 var goals = {};
 var kabes = {};
-var stage1 = require('../stage/stage1.json');
 var userCount = 0;
 
 app.set('port', process.env.PORT || 80);
@@ -122,6 +126,7 @@ io.sockets.on('connection', function(socket) {
 //  userData.texture = "player_1.png";
   userData.texture = player_texture_names[Math.floor(Math.random() * p_t_n_count)];
   userData.datatype = "player";
+  userData.win = 0;
   corocoro.m_userData = userData;
   objs[socket.id] = corocoro;
   var position = corocoro.GetPosition();
@@ -171,8 +176,9 @@ io.sockets.on('connection', function(socket) {
 });
 
 function makeStage(){
-  for(var i in stage1){
-    var b2dobj = stage1[i];
+  var stage = stages[Math.floor(Math.random() * stages.length)];
+  for(var i in stage){
+    var b2dobj = stage[i];
     
     // ゴール配置
     if(b2dobj.goal){
@@ -219,17 +225,33 @@ var interval;
 function doAnim() {
   interval = setInterval(function() {
     world.Step(1.0/fps, iterations);
+    var count = 0;
+    var msgs = [];
     
     // ゴール判定
     var contact = goals["goal"].m_contactList;
     if(contact){
+      contact.other.m_userData.win += 1;
+      var ranking = new Array();
+      for(var i in objs){
+        objs[i].SetXForm(new b2d.b2Vec2(-10.0 + Math.random(), 10.0 + Math.random()), 0.0);
+        var rank = {id:objs[i].m_userData.id, win:objs[i].m_userData.win};
+        ranking.push(rank);
+      }
+      ranking.sort(
+        function(a,b){
+          return b.win - a.win;
+        }
+      );
+      var xya = {datatype:"ranking", data:ranking};
+      msgs[count] = xya;
+      count++;
+
       for(var i in objs){
         objs[i].SetXForm(new b2d.b2Vec2(-10.0 + Math.random(), 10.0 + Math.random()), 0.0);
       }
     }
     
-    var count = 0;
-    var msgs = [];
     for(var i in objs){
       var position = objs[i].GetPosition();
       var x = (position.x * 32) + (gamedata.world.width / 2.0);
