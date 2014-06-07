@@ -2,7 +2,16 @@
 var debug = require('debug')('sera-dev2');
 var app = require('../app');
 
-var gamedata = require('../public/game/gamedata.json')
+var gamedata = require('../public/game/gamedata.json');
+
+var player_textures = require('../public/texture/player.json');
+var player_texture_names = [];
+var p_t_n_count = 0;
+for(var i in player_textures.frames){
+  console.log(i);
+  player_texture_names[p_t_n_count] = i;
+  p_t_n_count++;
+}
 
 var objs = {};
 //var msgs = [];
@@ -111,7 +120,8 @@ io.sockets.on('connection', function(socket) {
   corocoro.SetMassFromShapes();
   var userData = {};
   userData.id = "ball_" + userCount;
-  userData.texture = "player_1.png";
+//  userData.texture = "player_1.png";
+  userData.texture = player_texture_names[Math.floor(Math.random() * p_t_n_count)];
   userData.datatype = "player";
   corocoro.m_userData = userData;
   objs[socket.id] = corocoro;
