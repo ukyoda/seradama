@@ -21,6 +21,7 @@ $OBJECT_SET_HEIGHT		= "";		# オブジェクト(高さ)設定値
 $OBJECT_SET_ANGLE		= "";		# オブジェクト(角度)設定値
 $OBJECT_SET_ID			= "";		# オブジェクト(ID)設定値
 $OBJECT_SET_TEXTURE		= "";		# オブジェクト(テクスチャー)設定値
+$OBJECT_SET_GOAL		= "";		# オブジェクト(ゴールフラグ)設定値
 # --------------------------------------------------------
 
 
@@ -136,6 +137,7 @@ sub SET_OBJECT_PARAM_CHK
 	printf("オブジェクト(角度)設定値           =[%3.1f]\n", @_[4]); 
 	printf("オブジェクト(ID)設定値             =[%s]\n", @_[5]); 
 	printf("オブジェクト(テクスチャー)設定値   =[%s]\n", @_[6]); 
+	printf("オブジェクト(ゴールフラグ)設定値   =[%s]\n", @_[7]); 
 	printf("\n※ 表示上、小数点第一位までしか表示していませんが、ファイルには入力した値が出力されます。\n");
 	printf("★-------------------------------★\n\n");
 	printf("上記設定内容でオブジェクトを作成します。\n設定内容に問題なければ y を入力してください。 > ");
@@ -171,11 +173,21 @@ sub MAKE_OBJECT_FILE
 	}
 
 	# オブジェクトマップ情報文字列作成
-	$make_object_val = "\t\{" . "\"x\":" . $OBJECT_SET_X . ", " . "\"y\":" . $OBJECT_SET_Y . ", " . 
-						"\"w\":" . $OBJECT_SET_WIDTH . ", " . "\"h\":" . $OBJECT_SET_HEIGHT . ", " .
-						"\"angle\":" . $OBJECT_SET_ANGLE . ", " . "\"id\":" . $OBJECT_SET_ID . ", " .
-						"\"texture\":" . $OBJECT_SET_TEXTURE . "\"\}";
-
+	if($OBJECT_SET_GOAL == 0)
+	{
+		$make_object_val = "\t\{" . "\"x\":" . $OBJECT_SET_X . ", " . "\"y\":" . $OBJECT_SET_Y . ", " . 
+							"\"w\":" . $OBJECT_SET_WIDTH . ", " . "\"h\":" . $OBJECT_SET_HEIGHT . ", " .
+							"\"angle\":" . $OBJECT_SET_ANGLE . ", " . "\"id\":\"" . $OBJECT_SET_ID . "\", " .
+							"\"texture\":\"" . $OBJECT_SET_TEXTURE . "\"\}";
+	}
+	else
+	{
+		$make_object_val = "\t\{" . "\"x\":" . $OBJECT_SET_X . ", " . "\"y\":" . $OBJECT_SET_Y . ", " . 
+							"\"w\":" . $OBJECT_SET_WIDTH . ", " . "\"h\":" . $OBJECT_SET_HEIGHT . ", " .
+							"\"angle\":" . $OBJECT_SET_ANGLE . ", " . "\"id\":\"" . $OBJECT_SET_ID . "\", " .
+							"\"texture\":\"" . $OBJECT_SET_TEXTURE . "\", \"goal\":1\}";
+	}
+	
 	printf(FD "%s", $make_object_val);
 
 	close(FD);
@@ -242,10 +254,19 @@ sub MAKE_OBJECT_STR
 
 			printf("\nオブジェクト(テクスチャー)を再入力してください。\n\n");
 		}
+
+		printf("ゴールフラグを設定してください。 (1:ON／1以外:OFF)> ");
+		$OBJECT_SET_GOAL = <STDIN>;
+		$OBJECT_SET_GOAL = DEL_CLRF($OBJECT_SET_GOAL);
+
+		if($OBJECT_SET_GOAL !~ /^[1]$/)
+		{
+			$OBJECT_SET_GOAL=0;
+		}
 		
 		$RET = SET_OBJECT_PARAM_CHK( $OBJECT_SET_X, $OBJECT_SET_Y, 
 										$OBJECT_SET_WIDTH, $OBJECT_SET_HEIGHT, $OBJECT_SET_ANGLE,
-										$OBJECT_SET_ID, $OBJECT_SET_TEXTURE );
+										$OBJECT_SET_ID, $OBJECT_SET_TEXTURE, $OBJECT_SET_GOAL );
 		if($RET == $RET_OK)
 		{
 			last;
