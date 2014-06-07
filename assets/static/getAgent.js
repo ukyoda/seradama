@@ -2,6 +2,7 @@
 Game.getAgent = (function(){
 	var android = 'Android';
 	var ios = 'iOS';
+	var windows = 'Windows';
 	var other = 'Other';
 
 	var getAgent = function(){
@@ -12,6 +13,8 @@ Game.getAgent = (function(){
 			ua = ios;
 		} else if(agent.search(/Android/) != -1) {
 			ua = android;
+		} else if(agent.search(/Windows/) != -1){
+			ua = windows;
 		} else {
 			ua = other;
 		}
@@ -19,6 +22,7 @@ Game.getAgent = (function(){
 	};
 	getAgent.ios = ios;
 	getAgent.android = android;
+	getAgent.windows = windows;
 	getAgent.other = other;
 
 	return getAgent;
