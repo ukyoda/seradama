@@ -232,11 +232,22 @@ function doAnim() {
     var contact = goals["goal"].m_contactList;
     if(contact){
       contact.other.m_userData.win += 1;
+      var ranking = new Array();
       for(var i in objs){
         objs[i].SetXForm(new b2d.b2Vec2(-10.0 + Math.random(), 10.0 + Math.random()), 0.0);
-        var ranking = {datatype:"ranking", id:objs[i].m_userData.id, win:objs[i].m_userData.win};
-        msgs[count] = ranking;
-        count++;
+        var rank = {id:objs[i].m_userData.id, win:objs[i].m_userData.win};
+        ranking.push(rank);
+      }
+      ranking.sort(
+        function(a,b){
+          return b.win - a.win;
+        }
+      );
+      msgs[count] = ranking;
+      count++;
+
+      for(var i in objs){
+        objs[i].SetXForm(new b2d.b2Vec2(-10.0 + Math.random(), 10.0 + Math.random()), 0.0);
       }
     }
     
