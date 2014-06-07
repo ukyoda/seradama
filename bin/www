@@ -243,7 +243,8 @@ function doAnim() {
           return b.win - a.win;
         }
       );
-      msgs[count] = ranking;
+      var xya = {datatype:"ranking", data:ranking};
+      msgs[count] = xya;
       count++;
 
       for(var i in objs){
