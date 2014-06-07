@@ -7,16 +7,12 @@ Game.fn.onCompleteGameData = function(data){
 	var fieldSet = this.fieldLayer;
 	var that = this;
 	this.worldSize = {
-		width: width*grid,
-		height: height*grid,
-		grid: grid
+		width: width,
+		height: height
 	};
-	//
-	map.forEach(function(val, index){
-		var x = 32 * (index % width);
-		var y = 32 * Math.floor(index / width);
-		var sprite = that.createFieldChip("chip_"+val+".png");
-		sprite.position.x=x;sprite.position.y=y;
-		fieldSet.addChild(sprite);
-	});
+	var sprite = new PIXI.Sprite.fromImage('texture/background/background.jpg');
+	sprite.width = this.worldSize.width;
+	sprite.height = this.worldSize.height;
+	fieldSet.addChild(sprite);
+
 };

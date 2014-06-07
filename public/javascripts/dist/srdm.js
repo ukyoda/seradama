@@ -10,6 +10,7 @@ var name = "srdm";
  * {
  *     target: ゲームを描画する
  *     textureURLs: [...],
+ *     backgroundURL: "背景画像UrL"
  *     gameInfoURL: "http://...",
  *     socketURL: ""
  * }
@@ -19,6 +20,7 @@ var Game = function Game(manifest) {
 
 	//URL設定
 	this.textureURLs = manifest.textureURLs || ["texture/field1.json", "texture/kabe.json", "texture/player.json"];
+	this.backgroundURL = manifest.backgroundURL || 'texture/background/background.jpg';
 	this.gameInfoURL = manifest.gameInfoURL || "game/gamedata.json";
 	this.socketURL = manifest.socketURL || "//";
 	var target = manifest.target || "body";
@@ -208,18 +210,14 @@ Game.fn.onCompleteGameData = function(data){
 	var fieldSet = this.fieldLayer;
 	var that = this;
 	this.worldSize = {
-		width: width*grid,
-		height: height*grid,
-		grid: grid
+		width: width,
+		height: height
 	};
-	//
-	map.forEach(function(val, index){
-		var x = 32 * (index % width);
-		var y = 32 * Math.floor(index / width);
-		var sprite = that.createFieldChip("chip_"+val+".png");
-		sprite.position.x=x;sprite.position.y=y;
-		fieldSet.addChild(sprite);
-	});
+	var sprite = new PIXI.Sprite.fromImage('texture/background/background.jpg');
+	sprite.width = this.worldSize.width;
+	sprite.height = this.worldSize.height;
+	fieldSet.addChild(sprite);
+
 };
 
 //Websocket関連処理
