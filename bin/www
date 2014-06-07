@@ -126,6 +126,7 @@ io.sockets.on('connection', function(socket) {
 //  userData.texture = "player_1.png";
   userData.texture = player_texture_names[Math.floor(Math.random() * p_t_n_count)];
   userData.datatype = "player";
+  userData.win = 0;
   corocoro.m_userData = userData;
   objs[socket.id] = corocoro;
   var position = corocoro.GetPosition();
@@ -230,8 +231,12 @@ function doAnim() {
     // ゴール判定
     var contact = goals["goal"].m_contactList;
     if(contact){
+      contact.other.m_userData.win += 1;
       for(var i in objs){
         objs[i].SetXForm(new b2d.b2Vec2(-10.0 + Math.random(), 10.0 + Math.random()), 0.0);
+        var ranking = {datatype:"ranking", id:objs[i].m_userData.id, win:objs[i].m_userData.win};
+        msgs[count] = ranking;
+        count++;
       }
     }
     
