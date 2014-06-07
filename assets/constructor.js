@@ -6,6 +6,7 @@
  * {
  *     target: ゲームを描画する
  *     textureURLs: [...],
+ *     backgroundURL: "背景画像UrL"
  *     gameInfoURL: "http://...",
  *     socketURL: ""
  * }
@@ -15,6 +16,7 @@ var Game = function Game(manifest) {
 
 	//URL設定
 	this.textureURLs = manifest.textureURLs || ["texture/field1.json", "texture/kabe.json", "texture/player.json"];
+	this.backgroundURL = manifest.backgroundURL || 'texture/background/background.jpg';
 	this.gameInfoURL = manifest.gameInfoURL || "game/gamedata.json";
 	this.socketURL = manifest.socketURL || "//";
 	var target = manifest.target || "body";
