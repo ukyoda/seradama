@@ -3,6 +3,11 @@ var debug = require('debug')('sera-dev2');
 var app = require('../app');
 
 var gamedata = require('../public/game/gamedata.json');
+var stages = [];
+stages[0] = require('../stage/stage1.json');
+stages[1] = require('../stage/stage2.json');
+stages[2] = require('../stage/stage3.json');
+
 
 var player_textures = require('../public/texture/player.json');
 var player_texture_names = [];
@@ -16,7 +21,6 @@ var objs = {};
 //var msgs = [];
 var goals = {};
 var kabes = {};
-var stage1 = require('../stage/stage1.json');
 var userCount = 0;
 
 app.set('port', process.env.PORT || 80);
@@ -171,8 +175,9 @@ io.sockets.on('connection', function(socket) {
 });
 
 function makeStage(){
-  for(var i in stage1){
-    var b2dobj = stage1[i];
+  var stage = stages[Math.floor(Math.random() * stages.length)];
+  for(var i in stage){
+    var b2dobj = stage[i];
     
     // ゴール配置
     if(b2dobj.goal){
@@ -219,6 +224,8 @@ var interval;
 function doAnim() {
   interval = setInterval(function() {
     world.Step(1.0/fps, iterations);
+    var count = 0;
+    var msgs = [];
     
     // ゴール判定
     var contact = goals["goal"].m_contactList;
@@ -228,8 +235,6 @@ function doAnim() {
       }
     }
     
-    var count = 0;
-    var msgs = [];
     for(var i in objs){
       var position = objs[i].GetPosition();
       var x = (position.x * 32) + (gamedata.world.width / 2.0);
