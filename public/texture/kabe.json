@@ -11,10 +11,22 @@
 				"h":249
 			},
 			"sourceSize":{"w":64, "h":249}
+		},
+		"kabe_002.png": {
+			"frame": {"x":0,"y":0,"w":249,"h":64},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x":0,
+				"y":0,
+				"w":249,
+				"h":64
+			},
+			"sourceSize":{"w":249, "h":64}
 		}
 	},
 	"meta": {
-		"image": "/field/kabe_001.png",
+		"image": "/field/kabe.png",
 		"format": "RGBA8888",
 		"size": {"w":256,"h":512},
 		"scale": "1"
