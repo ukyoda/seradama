@@ -1,8 +1,14 @@
 (function(namespace){
 var name = "srdm";
 
+//オーディオオブジェクト読み込み
+import "audio/";
+
 //コンストラクタ
 import "constructor";
+
+//オーディオファイル登録メソッド
+import "setAudio";
 
 //スタティックメソッド
 import "static/getAgent";

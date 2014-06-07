@@ -22,18 +22,21 @@ var Game = function Game(manifest) {
 	var target = manifest.target || "body";
 	var width = $(target).width();
 	var height = $(target).height();
+
+	//ビューアサイズを登録
 	this.viewerSize = {
 		width: width,
 		height: height
 	};
+	//ワールドサイズのデフォルト値
 	this.worldSize = {
 		width: width,
 		height: height
 	};
-	this.scale = {
-		x:Game.scale(),
-		y:Game.scale()
-	};
+
+	//オーディオファイルを登録
+	this.setAudio(".gameaudio");
+
 	//ターゲットのタグ
 	this.$el = $(manifest.target);
 	this.el = this.$el.get(0);

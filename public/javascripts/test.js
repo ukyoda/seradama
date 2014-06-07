@@ -23,6 +23,11 @@ $(function(){
 		game.onController.call(game, -1);
 	}, 200);
 
+	//画面サイズが変わったらリスケールする
+	$(window).on('resize',function(){
+		game.rescale.call(game);
+	});
+
 	game.start().then(function(){
 		console.log("animation");
 		game.animate();
@@ -30,6 +35,9 @@ $(function(){
 	}).then(function(){
 		console.log('socket');
 		return game.socketConnect();
+	}).done(function(){
+		//非同期で読み込むデータを全て読み込んだらプレイ
+		game.rescale.call(game);
 	});
 
 });

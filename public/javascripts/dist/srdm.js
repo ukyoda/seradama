@@ -1,6 +1,46 @@
 (function(namespace){
 var name = "srdm";
 
+//オーディオオブジェクト読み込み
+
+var GameAudio = function Audio(audioData){
+	this.deferred  = $.Deferred();
+	this.src = audioData;
+	var that = this;
+
+	//イベントをAjaxで管理
+	this.src.addEventListener('ended' , function(){
+		that.deferred.resolve(that);
+	});
+
+};
+
+GameAudio.fn = GameAudio.prototype;
+
+GameAudio.fn.play = function(){
+	this.src.play();
+	return this;
+};
+
+GameAudio.fn.stop = function(){
+	this.src.pause();
+	this.src.load();
+	return this;
+};
+
+GameAudio.fn.pause = function(){
+	this.src.pause();
+	return this;
+};
+
+GameAudio.fn.mute = function(){
+	if(this.src.muted) {
+		this.src.muted = false;
+	} else {
+		this.src.muted = true;
+	}
+};
+
 //コンストラクタ
 
 /**
@@ -26,18 +66,21 @@ var Game = function Game(manifest) {
 	var target = manifest.target || "body";
 	var width = $(target).width();
 	var height = $(target).height();
+
+	//ビューアサイズを登録
 	this.viewerSize = {
 		width: width,
 		height: height
 	};
+	//ワールドサイズのデフォルト値
 	this.worldSize = {
 		width: width,
 		height: height
 	};
-	this.scale = {
-		x:Game.scale(),
-		y:Game.scale()
-	};
+
+	//オーディオファイルを登録
+	this.setAudio(".gameaudio");
+
 	//ターゲットのタグ
 	this.$el = $(manifest.target);
 	this.el = this.$el.get(0);
@@ -81,6 +124,22 @@ var Game = function Game(manifest) {
 };
 //prototypeショートカット
 Game.fn = Game.prototype;
+
+//オーディオファイル登録メソッド
+
+Game.fn.setAudio = function(target){
+	var audio = {};
+	var that = this;
+
+	$(target).find(".audio-file").each(function(){
+		var val = $(this).get(0);
+		var key = $(val).data().key;
+		audio[key] = new GameAudio(val);
+	});
+
+	this.audio = audio;
+	return this;
+};
 
 //スタティックメソッド
 
@@ -354,7 +413,18 @@ Game.fn.updatePlayer = function(data){
 	sprite.prevRotation = sprite.rotation;
 	sprite.rotation = angle;
 
-
+	//あたり判定(自分のボールのみ)
+//	if(
+//		this.player &&
+//		this.player.id === id &&
+//		data.collision) {
+//		if(this.player.collision) {
+//			this.audio.atack.stop().play();
+//			this.player.collision = false;
+//		} else {
+//			this.player.collision = true;
+//		}
+//	}
 
 	//自ボールの場合，プロパティに参照を追加
 	if(datatype === "you") {
@@ -450,7 +520,7 @@ Game.fn.animate = function(){
 	var that = this;
 
 	//ウインドウサイズ取得
-	this.rescale();
+	//this.rescale();
 
 	this.renderer.render(this.stage);
 	window.requestAnimFrame(function(){

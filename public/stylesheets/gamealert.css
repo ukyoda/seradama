@@ -1,0 +1,54 @@
+
+.alert {
+	position: absolute;
+	bottom: 0;
+	background: rgba(255,255,255, 0.5);
+	color: #000;
+	font-size: 0.8em;
+	width: 100%;
+}
+
+.alert .content {
+	padding: 5px;
+}
+
+.alert .content ul.ranking {
+	list-style: none;
+	margin: 4px;
+	padding: 4px;
+}
+
+.alert .content ul.ranking li {
+	display: block;
+}
+
+.alert .content ul.ranking li .grid {
+	margin-left: 0.5em;
+	float: left;
+}
+.alert .content ul.ranking li .grid-right {
+	margin-right: 0.5em;
+	float: right;
+}
+
+.alert .content ul.ranking li .rank {
+	width: 2.5em;
+	height: 1em;
+	text-align: center;
+}
+
+
+.alert .content ul.ranking li .name {
+	margin-left:1em;
+}
+.alert .content ul.ranking li .name img {
+	width: 1.2em;
+	height: 1.2em;
+	vertical-align: middle;
+}
+
+.alert .content ul.ranking li:after {
+	content: '1';
+	visibility: hidden;
+	clear: both;
+}

@@ -39,7 +39,18 @@ Game.fn.updatePlayer = function(data){
 	sprite.prevRotation = sprite.rotation;
 	sprite.rotation = angle;
 
-
+	//あたり判定(自分のボールのみ)
+//	if(
+//		this.player &&
+//		this.player.id === id &&
+//		data.collision) {
+//		if(this.player.collision) {
+//			this.audio.atack.stop().play();
+//			this.player.collision = false;
+//		} else {
+//			this.player.collision = true;
+//		}
+//	}
 
 	//自ボールの場合，プロパティに参照を追加
 	if(datatype === "you") {
