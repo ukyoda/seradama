@@ -14,7 +14,11 @@
     "debug": "~0.7.4",
     "ejs": "~0.8.5",
     "socket.io": "~0.9.17",
-    "box2d": "*"
+    "box2d": "*",
+    "express-session": "~1.2.1",
+    "passport": "~0.2.0",
+    "passport-twitter": "~1.0.2",
+    "session": "~0.1.0"
   },
   "devDependencies": {
     "grunt": "~0.4.5",
