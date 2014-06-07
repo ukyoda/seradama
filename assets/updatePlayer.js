@@ -24,6 +24,7 @@ Game.fn.updatePlayer = function(data){
 		sprite = new PIXI.Sprite.fromFrame(textureId);
 		sprite.id = id;	//固有ID記憶
 		layer.addChild(sprite);
+		sprite.width=32;sprite.height=32;
 	}
 	//子スプライト削除
 	for(i = 0, length = sprite.children.length; i<length; i++) {
