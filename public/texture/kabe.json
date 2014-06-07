@@ -1,16 +1,16 @@
 {
 	"frames": {
 		"kabe_001.png": {
-			"frame": {"x":0,"y":0,"w":64,"h":249},
+			"frame": {"x":0,"y":0,"w":32,"h":249},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {
 				"x":0,
 				"y":0,
-				"w":64,
+				"w":32,
 				"h":249
 			},
-			"sourceSize":{"w":64, "h":249}
+			"sourceSize":{"w":32, "h":249}
 		},
 		"kabe_002.png": {
 			"frame": {"x":0,"y":0,"w":249,"h":64},
