@@ -34,8 +34,11 @@ var Game = function Game(manifest) {
 		height: height
 	};
 
+	//メッセージ表示のインスタンスを生成する
+	this.alert = new GameAlert();
+
 	//オーディオファイルを登録
-	this.setAudio(".gameaudio");
+	//this.setAudio(".gameaudio");
 
 	//ターゲットのタグ
 	this.$el = $(manifest.target);

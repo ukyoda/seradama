@@ -4,6 +4,9 @@ var name = "srdm";
 //オーディオオブジェクト読み込み
 import "audio/";
 
+//アラートメッセージ操作オブジェクト読み込み
+import "alert/";
+
 //コンストラクタ
 import "constructor";
 
@@ -42,12 +45,12 @@ import "updatePlayer";
 import "removeObject";
 import "updateObject";
 
-//フィールド関連
-import "createFieldChip";
-
 //アニメーション・描画
 import "rescale";
 import "animate";
+
+//ゲームクリア時の処理
+import "congratulation";
 
 //ゲームスタート
 import "start";

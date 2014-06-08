@@ -41,6 +41,127 @@ GameAudio.fn.mute = function(){
 	}
 };
 
+//アラートメッセージ操作オブジェクト読み込み
+
+
+var GameAlert = function GameAlert(){
+	this.deferred = $.Deferred();
+};
+
+GameAlert.fn = GameAlert.prototype;
+
+
+
+GameAlert.fn.createLayout = function() {
+	var $div = $('<div/>');
+	//コンテント追加
+	$('<div/>').addClass('content').appendTo($div);
+	return $div.addClass("alert");
+};
+
+GameAlert.fn.createGoalAlert = function(winner) {
+	var $layout = this.createLayout();
+	var $content = $layout.find('.content');
+	var $p = $('<div/>').appendTo($content);
+	var name = winner.name || 'Unknown';
+	$p.text("@"+name+" さんがクリアしました");
+	return $layout;
+};
+
+GameAlert.fn.createRankingALert = function(players){
+	var $layout = this.createLayout();
+	var $content = $layout.find('.content');
+
+	$('<div/>').text('★ランキング★').appendTo($content);
+
+	var $ul = $('<ul/>').addClass('ranking').appendTo($content);
+	//アイコンと名前を作成する関数
+	var createImgView = function(name, img){
+		var $div = $('<div/>');
+		$div.addClass('grid name');
+		$('<img/>').attr('src', img).appendTo($div);
+		$('<span>').text('@'+name).appendTo($div);
+		return $div;
+	};
+
+	$.each(players, function(index, data){
+		var $li = $('<li/>');
+		$('<div/>').addClass('grid rank').text(index+1).appendTo($li);
+		createImgView(data.name, data.img).appendTo($li);
+		$('<div/>').addClass('grid-right count').text(data.count).appendTo($li);
+		$ul.append($li);
+	});
+
+	return $layout;
+
+};
+
+GameAlert.fn.createYourRankALert = function(player, ranking){
+	var $layout = this.createLayout();
+	var $content = $layout.find('.content');
+
+	$('<div/>').text('★あなたの順位★').appendTo($content);
+
+	var $ul = $('<ul/>').addClass('ranking').appendTo($content);
+	//アイコンと名前を作成する関数
+	var createImgView = function(name, img){
+		var $div = $('<div/>');
+		$div.addClass('grid name');
+		$('<img/>').attr('src', img).appendTo($div);
+		$('<span>').text('@'+name).appendTo($div);
+		return $div;
+	};
+
+	$.each(players, function(index, data){
+		var $li = $('<li/>');
+		$('<div/>').addClass('grid rank').text(index+1).appendTo($li);
+		createImgView(data.name, data.img).appendTo($li);
+		$('<div/>').addClass('grid-right count').text(data.count).appendTo($li);
+		$ul.append($li);
+	});
+
+	return $layout;
+
+};
+
+
+GameAlert.fn.createMessageAlert = function(){
+	var $layout = this.createLayout();
+	var $content = $layout.find('.content');
+	var $p = $('<div/>').appendTo($content);
+	$p.text("1位目指して頑張ってください♪");
+	return $layout;
+};
+
+
+GameAlert.fn.display = function($content) {
+	$('body').append($content);
+
+	return $content;
+};
+
+GameAlert.fn.hidden = function(){
+	$('.alert').remove();
+};
+
+GameAlert.fn.animate = function($content){
+	var deferred = $.Deferred();
+	//表示されている情報をまずはいったん削除
+	this.hidden();
+	//アラート表示
+	this.display($content).css("display", "none");
+	//アニメーション設定
+	$content.slideToggle("slow",function(){
+		$content.delay(1000).slideToggle("slow", function(){
+			deferred.resolve();
+			$content.remove();
+		});
+	});
+
+	return deferred;
+
+};
+
 //コンストラクタ
 
 /**
@@ -78,8 +199,11 @@ var Game = function Game(manifest) {
 		height: height
 	};
 
+	//メッセージ表示のインスタンスを生成する
+	this.alert = new GameAlert();
+
 	//オーディオファイルを登録
-	this.setAudio(".gameaudio");
+	//this.setAudio(".gameaudio");
 
 	//ターゲットのタグ
 	this.$el = $(manifest.target);
@@ -480,12 +604,6 @@ Game.fn.updateObject = function(data){
 
 };
 
-//フィールド関連
-
-Game.fn.createFieldChip = function(name) {
-	return PIXI.Sprite.fromFrame(name);
-};
-
 //アニメーション・描画
 
 //全体をリスケール
@@ -527,6 +645,8 @@ Game.fn.animate = function(){
 		that.animate(that);
 	});
 };
+
+//ゲームクリア時の処理
 
 //ゲームスタート
 
