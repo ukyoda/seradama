@@ -243,7 +243,7 @@ function doAnim() {
           return b.win - a.win;
         }
       );
-      var xya = {datatype:"ranking", data:ranking};
+      var xya = {datatype:"ranking", data:ranking, win_id:contact.other.m_userData.id};
       msgs[count] = xya;
       count++;
 
