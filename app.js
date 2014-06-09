@@ -52,7 +52,7 @@ app.use(passport.session());
 passport.serializeUser(function(user, done){
   done(null, user);
 });
- 
+
 passport.deserializeUser(function(obj, done){
   done(null, obj);
 });
@@ -83,37 +83,43 @@ passport.use(new TwitterStrategy({
 
 // app.get('/login/twitter', routes.login_facebook);
 
+//トップ画面
 app.get('/',
   function(req, res){
     res.render('top', {  });
   }
 );
 
+//ゲームページ
 app.get('/gracoro',
   function(req, res){
     var imgURL = null;
     var userName = null;
-    if (req.query.utype == 1) {
-        // TODO Guestログイン時の挙動
-        userName = "guest";
-        imgURL = "";
-    } else if (req.query.utype == 2) {
-        // Twitter認証した場合
-        if(req.session.passport.user == undefined) {
-            // 認証なしできたくそ悪いやつ
-            res.redirect('/');
-        }
-        userName = req.session.passport.user.username;
-        imgURL = req.session.passport.user._json.profile_image_url; 
+    var gracoro = req.session.gracoro;
+
+    //セッションがないと出力しない
+    if(!gracoro || !gracoro.name || !gracoro.picture) {
+      res.redirect('/');
     } else {
-        // URL直叩きの悪いやつ
-        res.redirect('/');
+      //画像，名前セット
+      imgURL = gracoro.picture;
+      userName = gracoro.name;
+      // renderで値を引き継ぐ（これでええのか？）
+      res.render('index', { title: 'Express', img: imgURL, user: userName});
     }
-    
-    // renderで値を引き継ぐ（これでええのか？）
-    res.render('index', { title: 'Express', img: imgURL, user: userName});
+
   }
 );
+
+//認証なしログイン
+app.get('/guest', function(req, res){
+  //セッションに情報登録
+  req.session.gracoro = {
+    name: "Guest",
+    picture: "http://sciactive.com/pnotify/includes/github-icon.png"  //ゲスト用の画像
+  };
+  res.redirect('/gracoro');
+});
 
 //Twitter Authのroute
 app.get('/auth/twitter',
@@ -122,15 +128,20 @@ app.get('/auth/twitter',
 );
 
 //Twitter Authの完了時のRoute
-app.get('/auth/twitter/callback', 
+app.get('/auth/twitter/callback',
   passport.authenticate('twitter', { failureRedirect: '/login/twitter' }),
   function(req, res) {
-    res.redirect('/gracoro?utype=2');
+    req.session.gracoro = {
+      name: req.session.passport.user.username,
+      picture: req.session.passport.user._json.profile_image_url
+    };
+    res.redirect('/gracoro');
   }
 );
 
 // とりあえずログアウトも
 app.get('/logout/twitter', function(req, res){
+  delete req.session.gracoro;
   req.logout();
   res.redirect('/');
 });
