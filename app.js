@@ -37,7 +37,7 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
+// app.use('/', routes);
 app.use('/users', users);
 app.use('/field.json', api.field);
 
@@ -57,8 +57,8 @@ passport.deserializeUser(function(obj, done){
 });
 
 //ここからTwitter認証の記述
-var TWITTER_CONSUMER_KEY = "XXXXX";
-var TWITTER_CONSUMER_SECRET = "YYYY";
+var TWITTER_CONSUMER_KEY = "eYugGkad0oTFwf3xoS57L6qWE";
+var TWITTER_CONSUMER_SECRET = "dJPsLoSvulOdbzFHTyTXeJ7urcDhiWjbgO1ONzP0fa5zRr73Ap";
 // TwitterStrategyオブジェクト内に必要な情報を詰める。
 passport.use(new TwitterStrategy({
   consumerKey: TWITTER_CONSUMER_KEY,
@@ -81,16 +81,13 @@ passport.use(new TwitterStrategy({
 // };
 
 // app.get('/login/twitter', routes.login_facebook);
-
-// app.get('/', function(req, res){
-//     // console.log(req.session.passport.user.username);
-//     // console.log(req.session.passport.user._json.profile_image_url);
-//     // game 処理
-//     /* GET home page. */
-//     router.get('/', function(req, res) {
-//       res.render('index', { title: 'Express' });
-//     });
-// });
+app.get('/',
+  function(req, res){
+    console.log(req.session.passport.user.username);
+    console.log(req.session.passport.user._json.profile_image_url);
+    res.render('index', { title: 'Express' });
+  }
+);
 
 //Twitter Authのroute
 app.get('/auth/twitter',
