@@ -11,32 +11,23 @@ Game.fn.updatePlayer = function(data){
 	var layer = this.playerLayer, filterVal=[], sprite;
 	var i, length;
 	if(data.delflag) {
-		this.removePlayer(data.id);
+		this.removePlayer(id);
 		return null;
 	}
 
-	filterVal = layer.children.filter(function(val){
-		return (val.id === id);
-	});
-	if(filterVal.length) {
-		sprite = filterVal[0];
+	if(layer.hash[id]) {
+		sprite = layer.hash[id];
 	} else {
 		sprite = new PIXI.Sprite.fromFrame(textureId);
 		sprite.id = id;	//固有ID記憶
 		layer.addChild(sprite);
+		layer.hash[id] = sprite; //ハッシュに登録
 		sprite.width=32;sprite.height=32;
 	}
-	//子スプライト削除
-	for(i = 0, length = sprite.children.length; i<length; i++) {
-		sprite.removeChild(sprite.children[i]);
-	}
-
 
 	//スプライト情報を更新
-	sprite.prevPosition = sprite.position.clone();	//前の位置情報を記憶
 	sprite.position.set(position.x,position.y);
 	sprite.anchor.set(0.5,0.5);
-	sprite.prevRotation = sprite.rotation;
 	sprite.rotation = angle;
 
 	//あたり判定(自分のボールのみ)

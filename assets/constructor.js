@@ -56,6 +56,7 @@ var Game = function Game(manifest) {
 
 	this.playerLayer = new PIXI.DisplayObjectContainer();
 	this.playerLayer.position.set(0,0);
+	this.playerLayer.hash = {};
 
 	this.objectLayer = new PIXI.DisplayObjectContainer();
 	this.objectLayer.position.set(0,0);

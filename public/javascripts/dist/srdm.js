@@ -63,12 +63,12 @@ GameAlert.fn.createGoalAlert = function(winner) {
 	var $layout = this.createLayout();
 	var $content = $layout.find('.content');
 	var $p = $('<div/>').appendTo($content);
-	var name = winner.name || 'Unknown';
+	var name = winner.name || winner.id;
 	$p.text("@"+name+" さんがクリアしました");
 	return $layout;
 };
 
-GameAlert.fn.createRankingALert = function(players){
+GameAlert.fn.createRankingAlert = function(rankers){
 	var $layout = this.createLayout();
 	var $content = $layout.find('.content');
 
@@ -84,11 +84,15 @@ GameAlert.fn.createRankingALert = function(players){
 		return $div;
 	};
 
-	$.each(players, function(index, data){
+	$.each(rankers, function(index, data){
+		var rank = data.rank;
+		var count = data.data.win;
+		var name = data.sprite.name || data.sprite.id;
+		var img = data.sprite.img || "http://sciactive.com/pnotify/includes/github-icon.png";
 		var $li = $('<li/>');
-		$('<div/>').addClass('grid rank').text(index+1).appendTo($li);
-		createImgView(data.name, data.img).appendTo($li);
-		$('<div/>').addClass('grid-right count').text(data.count).appendTo($li);
+		$('<div/>').addClass('grid rank').text(rank).appendTo($li);
+		createImgView(name, img).appendTo($li);
+		$('<div/>').addClass('grid-right count').text(count).appendTo($li);
 		$ul.append($li);
 	});
 
@@ -96,9 +100,13 @@ GameAlert.fn.createRankingALert = function(players){
 
 };
 
-GameAlert.fn.createYourRankALert = function(player, ranking){
+GameAlert.fn.createYourRankAlert = function(rankData){
 	var $layout = this.createLayout();
 	var $content = $layout.find('.content');
+	var name = rankData.sprite.name || rankData.sprite.id;
+	var img = rankData.sprite.img || "http://sciactive.com/pnotify/includes/github-icon.png";
+	var rank = rankData.rank;
+	var count = rankData.data.win;
 
 	$('<div/>').text('★あなたの順位★').appendTo($content);
 
@@ -112,13 +120,11 @@ GameAlert.fn.createYourRankALert = function(player, ranking){
 		return $div;
 	};
 
-	$.each(players, function(index, data){
-		var $li = $('<li/>');
-		$('<div/>').addClass('grid rank').text(index+1).appendTo($li);
-		createImgView(data.name, data.img).appendTo($li);
-		$('<div/>').addClass('grid-right count').text(data.count).appendTo($li);
-		$ul.append($li);
-	});
+	var $li = $('<li/>');
+	$('<div/>').addClass('grid rank').text(rank).appendTo($li);
+	createImgView(name, img).appendTo($li);
+	$('<div/>').addClass('grid-right count').text(count).appendTo($li);
+	$ul.append($li);
 
 	return $layout;
 
@@ -221,6 +227,7 @@ var Game = function Game(manifest) {
 
 	this.playerLayer = new PIXI.DisplayObjectContainer();
 	this.playerLayer.position.set(0,0);
+	this.playerLayer.hash = {};
 
 	this.objectLayer = new PIXI.DisplayObjectContainer();
 	this.objectLayer.position.set(0,0);
@@ -434,6 +441,8 @@ Game.fn.onMessage = function(data) {
 		case "player": //プレイヤー情報
 			that.updatePlayer(val);
 			break;
+		case "ranking":
+			that.congratulation(val);
 		}
 	});
 
@@ -483,16 +492,16 @@ Game.fn.setDeviceMotion = function(gravity){
 //プレイヤー関連
 
 Game.fn.removePlayer = function(id) {
-	var filterSprite = this.playerLayer.children.filter(function(val){
-		return (val.id === id);
-	});
-	if(!filterSprite.length){
-		return false;
+	var sprite = this.playerLayer.hash[id];
+
+	if(!sprite) {
+		return this;
 	}
-	var sprite = filterSprite[0];
+
 	this.playerLayer.removeChild(sprite);
+	delete this.playerLayer.hash[id];
 	if(this.player === sprite) {
-		this.player = undefined;
+		delete this.player;
 	}
 	return this;
 };
@@ -509,32 +518,23 @@ Game.fn.updatePlayer = function(data){
 	var layer = this.playerLayer, filterVal=[], sprite;
 	var i, length;
 	if(data.delflag) {
-		this.removePlayer(data.id);
+		this.removePlayer(id);
 		return null;
 	}
 
-	filterVal = layer.children.filter(function(val){
-		return (val.id === id);
-	});
-	if(filterVal.length) {
-		sprite = filterVal[0];
+	if(layer.hash[id]) {
+		sprite = layer.hash[id];
 	} else {
 		sprite = new PIXI.Sprite.fromFrame(textureId);
 		sprite.id = id;	//固有ID記憶
 		layer.addChild(sprite);
+		layer.hash[id] = sprite; //ハッシュに登録
 		sprite.width=32;sprite.height=32;
 	}
-	//子スプライト削除
-	for(i = 0, length = sprite.children.length; i<length; i++) {
-		sprite.removeChild(sprite.children[i]);
-	}
-
 
 	//スプライト情報を更新
-	sprite.prevPosition = sprite.position.clone();	//前の位置情報を記憶
 	sprite.position.set(position.x,position.y);
 	sprite.anchor.set(0.5,0.5);
-	sprite.prevRotation = sprite.rotation;
 	sprite.rotation = angle;
 
 	//あたり判定(自分のボールのみ)
@@ -647,6 +647,55 @@ Game.fn.animate = function(){
 };
 
 //ゲームクリア時の処理
+
+Game.fn.congratulation = function(rankData){
+	var hash = this.playerLayer.hash;
+	var winner = hash[rankData.win_id];
+	var topRanker = [];
+	var myRankData = {};
+	var i, length, data;
+	var goalAlert, rankingAlert, myRankAlert, messageAlert;
+	var deferred = $.Deferred(), that = this;
+
+	for(i=0, length=rankData.data.length;i<length;i++) {
+		data=rankData.data[i];
+		if(topRanker.length < 3) {
+			topRanker.push({
+				rank: i+1,
+				data: data,
+				sprite: hash[data.id]
+			});
+		}
+		if(this.player.id === data.id) {
+			myRankData = {
+				rank: i+1,
+				data: data,
+				sprite: this.player
+			}
+		}
+		if(topRanker.length >= 3 && myRankData.rank) {
+			break;
+		}
+	}
+
+	goalAlert = this.alert.createGoalAlert(winner);
+	rankingAlert = this.alert.createRankingAlert(topRanker);
+	myRankAlert = this.alert.createYourRankAlert(myRankData);
+	messageAlert = this.alert.createMessageAlert();
+
+	deferred.then(function(){
+		return that.alert.animate(goalAlert);
+	}).then(function(){
+		return that.alert.animate(rankingAlert);
+	}).then(function(){
+		return that.alert.animate(myRankAlert);
+	}).then(function(){
+		return that.alert.animate(messageAlert);
+	});
+
+	deferred.resolve();
+
+};
 
 //ゲームスタート
 

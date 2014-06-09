@@ -1,15 +1,15 @@
 
 Game.fn.removePlayer = function(id) {
-	var filterSprite = this.playerLayer.children.filter(function(val){
-		return (val.id === id);
-	});
-	if(!filterSprite.length){
-		return false;
+	var sprite = this.playerLayer.hash[id];
+
+	if(!sprite) {
+		return this;
 	}
-	var sprite = filterSprite[0];
+
 	this.playerLayer.removeChild(sprite);
+	delete this.playerLayer.hash[id];
 	if(this.player === sprite) {
-		this.player = undefined;
+		delete this.player;
 	}
 	return this;
 };

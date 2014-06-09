@@ -1,5 +1,5 @@
 
-GameAlert.fn.createRankingALert = function(players){
+GameAlert.fn.createRankingAlert = function(rankers){
 	var $layout = this.createLayout();
 	var $content = $layout.find('.content');
 
@@ -15,11 +15,15 @@ GameAlert.fn.createRankingALert = function(players){
 		return $div;
 	};
 
-	$.each(players, function(index, data){
+	$.each(rankers, function(index, data){
+		var rank = data.rank;
+		var count = data.data.win;
+		var name = data.sprite.name || data.sprite.id;
+		var img = data.sprite.img || "http://sciactive.com/pnotify/includes/github-icon.png";
 		var $li = $('<li/>');
-		$('<div/>').addClass('grid rank').text(index+1).appendTo($li);
-		createImgView(data.name, data.img).appendTo($li);
-		$('<div/>').addClass('grid-right count').text(data.count).appendTo($li);
+		$('<div/>').addClass('grid rank').text(rank).appendTo($li);
+		createImgView(name, img).appendTo($li);
+		$('<div/>').addClass('grid-right count').text(count).appendTo($li);
 		$ul.append($li);
 	});
 

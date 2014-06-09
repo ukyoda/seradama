@@ -19,6 +19,8 @@ Game.fn.onMessage = function(data) {
 		case "player": //プレイヤー情報
 			that.updatePlayer(val);
 			break;
+		case "ranking":
+			that.congratulation(val);
 		}
 	});
 
