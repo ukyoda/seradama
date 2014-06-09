@@ -57,8 +57,8 @@ passport.deserializeUser(function(obj, done){
 });
 
 //ここからTwitter認証の記述
-var TWITTER_CONSUMER_KEY = "XXXXX";
-var TWITTER_CONSUMER_SECRET = "YYYY";
+var TWITTER_CONSUMER_KEY = "XXXXXX";
+var TWITTER_CONSUMER_SECRET = "YYYYYY";
 // TwitterStrategyオブジェクト内に必要な情報を詰める。
 passport.use(new TwitterStrategy({
   consumerKey: TWITTER_CONSUMER_KEY,
@@ -92,17 +92,23 @@ app.get('/gracoro',
   function(req, res){
     var imgURL = null;
     var userName = null;
-    if (req.session.passport.user != undefined) { // Twitter認証した場合
-        console.log(req.session.passport.user.username);
-        console.log(req.session.passport.user._json.profile_image_url);
-        userName = req.session.passport.user.username
-        imgURL = req.session.passport.user._json.profile_image_url 
-    } 
-    if (false) {
+    if (req.query.utype == 1) {
         // TODO Guestログイン時の挙動
-        imgURL = "";
         userName = "guest";
+        imgURL = "";
+    } else if (req.query.utype == 2) {
+        // Twitter認証した場合
+        if(req.session.passport.user == undefined) {
+            // 認証なしできたくそ悪いやつ
+            res.redirect('/');
+        }
+        userName = req.session.passport.user.username;
+        imgURL = req.session.passport.user._json.profile_image_url; 
+    } else {
+        // URL直叩きの悪いやつ
+        res.redirect('/');
     }
+    
     // renderで値を引き継ぐ（これでええのか？）
     res.render('index', { title: 'Express', img: imgURL, user: userName});
   }
@@ -118,7 +124,7 @@ app.get('/auth/twitter',
 app.get('/auth/twitter/callback', 
   passport.authenticate('twitter', { failureRedirect: '/login/twitter' }),
   function(req, res) {
-    res.redirect('/gracoro');
+    res.redirect('/gracoro?utype=2');
   }
 );
 
