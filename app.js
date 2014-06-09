@@ -57,7 +57,7 @@ passport.deserializeUser(function(obj, done){
 });
 
 //ここからTwitter認証の記述
-var TWITTER_CONSUMER_KEY = "XXXX";
+var TWITTER_CONSUMER_KEY = "XXXXX";
 var TWITTER_CONSUMER_SECRET = "YYYY";
 // TwitterStrategyオブジェクト内に必要な情報を詰める。
 passport.use(new TwitterStrategy({
@@ -83,6 +83,12 @@ passport.use(new TwitterStrategy({
 // app.get('/login/twitter', routes.login_facebook);
 
 app.get('/',
+  function(req, res){
+    res.render('top', {  });
+  }
+);
+
+app.get('/gracoro',
   function(req, res){
     var imgURL = null;
     var userName = null;
@@ -112,7 +118,7 @@ app.get('/auth/twitter',
 app.get('/auth/twitter/callback', 
   passport.authenticate('twitter', { failureRedirect: '/login/twitter' }),
   function(req, res) {
-    res.redirect('/');
+    res.redirect('/gracoro');
   }
 );
 
