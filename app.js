@@ -10,6 +10,7 @@ var users = require('./routes/users');
 var session = require('express-session');
 var passport = require('passport')
 var TwitterStrategy = require('passport-twitter').Strategy
+var TwitterSecret = require('./twitter_secret.json');
 
 var router = express.Router();
 
@@ -57,8 +58,8 @@ passport.deserializeUser(function(obj, done){
 });
 
 //ここからTwitter認証の記述
-var TWITTER_CONSUMER_KEY = "XXXXXX";
-var TWITTER_CONSUMER_SECRET = "YYYYYY";
+var TWITTER_CONSUMER_KEY = TwitterSecret.consumer_key;
+var TWITTER_CONSUMER_SECRET = TwitterSecret.consumer_secret;
 // TwitterStrategyオブジェクト内に必要な情報を詰める。
 passport.use(new TwitterStrategy({
   consumerKey: TWITTER_CONSUMER_KEY,
