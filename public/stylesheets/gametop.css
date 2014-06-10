@@ -1,0 +1,76 @@
+@charset "UTF-8";
+/*-------------------------------------
+CREDIT : GravityCoroCoro
+CREATE : 2014.06.04
+Var : 1.0
+-------------------------------------*/
+body .top-title {
+	padding-top: 30px;
+	font-size: 100px;
+	width: 100%;
+	text-align: center;
+}
+
+body .login {
+	width: 100%;
+	text-align: center;
+}
+
+body .top-index {
+	padding: 0;
+	margin: 0;
+	text-align: center;
+	list-style: none;
+}
+body .top-index li {
+	margin: 20px;
+}
+body .top-index .login {
+	color: #ffffff;
+	background: rgba(177, 192, 235, 0.37);
+	border-radius: 7px;
+	zoom: 1;
+	width: 200px;
+	padding: 6px;
+	display: inline-block;
+	text-decoration: none;
+}
+
+body .top-index .tutrial {
+	color: #ffffff;
+	background: rgba(240, 143, 143, 0.37);
+	border-radius: 7px;
+	zoom: 1;
+	width: 200px;
+	padding: 6px;
+	display: inline-block;
+	text-decoration: none;
+}
+
+body .login-page {
+	position: absolute;
+	left: 390px;
+	background: rgba(177, 192, 235, 0.37);
+	width: 500px;
+	height: 200px;
+}
+
+body .login-index {
+	padding: 0;
+	margin: 0;
+	text-align: center;
+	list-style: none;
+}
+body .login-index li {
+	margin: 10px;
+}
+body .login-index .login {
+	color: #ffffff;
+	background: rgba(253, 253, 253, 0.8);
+	border-radius: 7px;
+	zoom: 1;
+	width: 200px;
+	padding: 6px;
+	display: inline-block;
+	text-decoration: none;
+}

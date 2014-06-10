@@ -3,19 +3,31 @@
 	<head>
 			<meta charset="utf-8">
 			<meta name="viewport" content="width=device-width; initial-scale=1; maximum-scale=1.0; user-scalable=0;" >
-			<meta name="keywords" content="グラビティコロコロ,gravitycorocoro,グラコロ,gracoro,html5j,seradama,ボール" />
-			<meta name="description" content="グラビティコロコロは最大300人で対戦できる新感覚ボールコロコロゲームです。さあ一緒にグラコロを始めよう！" />
+			<meta name="keywords" content="ぐらころ,グラコロ,gracoro,html5j,ボール,ころころ" />
+			<meta name="description" content="ぐらころは最大300人で対戦できる新感覚ボールコロコロゲームです。さあ一緒にぐらころを始めよう！" />
 			<meta name="author" content="GravityCoroCoroTeam" />
 			<meta name="robots" content="index,follow,noydir,noodp" />
 
-			<title>グラビティコロコロ</title>
+			<title>ぐらころ</title>
 			<script src="/libs/jquery/dist/jquery.min.js"></script>
-			<link rel="stylesheet" href="/stylesheets/gamedisplay.css"></link>
+			<link rel="stylesheet" href="/stylesheets/gracoro.css"></link>
+			<link rel="stylesheet" href="/stylesheets/gametop.css"></link>
 	</head>
 	<body>
 		<div class="game-body">
-			<a class="" href="/auth/twitter">すごいauth認証</a>
-			<a class="" href="/guest">すごいゲストログイン</a>
+			<div class="top-title">ぐらころ～ほんとうはもっとかっこいい感じ～</div>
+			<div class="login-page">
+				<ul class="login-index">
+					<li><input type="text"></input></li>
+					<li><a class="login" href="/guest"><span>ログイン</span></a></li>
+					<li><a class="login" href="/auth/twitter"><span>Twitter</span></a></li>
+				</ul>
+			</div>
+			<ul class="top-index">
+				<li><a class="login" href="/auth/twitter"><span>すごいauth認証</span></a></li>
+				<li><a class="login" href="/guest"><span>すごいゲストログイン</span></a></li>
+				<li><a class="tutrial" href="/tutrial"><span>チュートリアル</span></a></li>
+			</ul>
 		</div>
 	</body>
 </html>
