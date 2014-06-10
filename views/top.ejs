@@ -8,7 +8,7 @@
 			<meta name="author" content="GravityCoroCoroTeam" />
 			<meta name="robots" content="index,follow,noydir,noodp" />
 
-			<title>ぐらころ</title>
+			<title>ぐらころ　新感覚ボールコロコロゲーム</title>
 			<script src="/libs/jquery/dist/jquery.min.js"></script>
 			<script src="/javascripts/top.js"></script>
 			<link rel="stylesheet" href="/stylesheets/gracoro.css"></link>
@@ -30,6 +30,30 @@
 				<li><a class="start" href="#"><span>はじめる</span></a></li>
 				<li><a class="tutrial" href="/tutrial"><span>チュートリアル</span></a></li>
 			</ul>
+			<div class="top-footer">
+				<a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="guracoro" data-dnt="true"><i class="fa fa-twitter"></i><span id="tweetCount"></span></a>
+				<iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe>
+			</div>
 		</div>
 	</body>
+	<script type="text/javascript">
+		var tweetCount = function(id, url) {
+		if (!id) {
+			return;
+		}
+		var pageURL = url ? url : location.url;
+		pageURL = encodeURI(pageURL);
+		url = 'http://urls.api.twitter.com/1/urls/count.json?url=' + pageURL;
+			$.ajax({
+				url: url,
+				dataType: 'jsonp',
+				success: function(json) {
+				var count;
+				count = json.count ? json.count : 0;
+				document.getElementById(id).innerHTML = count;
+				}
+			});
+		};
+		tweetCount('tweetCount', 'http://localhost');
+	</script>
 </html>

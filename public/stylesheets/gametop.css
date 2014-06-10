@@ -104,3 +104,34 @@ body .login-index .login i {
 	padding-right: 6px;
 }
 
+body .twitter-share-button {
+	text-decoration: none;
+	color: #ffffff;
+	background: rgba(177, 192, 235, 0.80);
+	border-radius: 7px;
+	padding: 5px 8px;
+	font-size: 12px;
+}
+body .twitter-share-button i {
+	padding-right: 5px;
+}
+body .top-footer {
+	text-align: center;
+	margin-bottom: 20px;
+}
+/*body .twitter-share-button #tweetCount {
+	background-color:#ccc;
+	border-radius:5px;
+	position:relative;
+}
+ 
+body .twitter-share-button #tweetCount:after {
+	border:10px solid transparent;
+	border-right-color:#ccc;
+	border-left-width:0;
+	left:-10px;
+	display:block;
+	top:30px;
+	position:absolute;
+	width:30px;
+}*/
