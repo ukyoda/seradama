@@ -5,9 +5,16 @@ var app = require('../app');
 var gamedata = require('../public/game/gamedata.json');
 var stages = [];
 stages[0] = require('../stage/stage1.json');
-stages[1] = require('../stage/stage2.json');
-stages[2] = require('../stage/stage3.json');
+//stages[1] = require('../stage/stage2.json');
+//stages[2] = require('../stage/stage3.json');
 
+var fs = require('fs');
+fs.readdir('./stage', function(err, files){
+  for(var i in files){
+  	var stage = require('../stage/' + files[i]);
+  	stages.push(stage);
+  }
+});
 
 var player_textures = require('../public/texture/player.json');
 var player_texture_names = [];
