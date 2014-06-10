@@ -8,6 +8,15 @@
 			<meta name="author" content="GravityCoroCoroTeam" />
 			<meta name="robots" content="index,follow,noydir,noodp" />
 
+			<meta property="og:title" content="ぐらころ　新感覚ボールコロコロゲーム" />
+			<meta property="og:type" content="site" />
+			<meta property="og:url" content="http://localhost" />
+			<meta property="og:site_name" content="ぐらころ　新感覚ボールコロコロゲーム" />
+			<meta property="og:description" content="ぐらころは最大300人で対戦できる新感覚ボールコロコロゲームです。さあ一緒にぐらころを始めよう！" />
+			<meta property="og:image" content="/texture/background/background.png" />
+			<meta property="fb:admins" content="XXXXX" />
+
+
 			<title>ぐらころ　新感覚ボールコロコロゲーム</title>
 			<script src="/libs/jquery/dist/jquery.min.js"></script>
 			<script src="/javascripts/top.js"></script>
@@ -32,7 +41,7 @@
 			</ul>
 			<div class="top-footer">
 				<a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="guracoro" data-dnt="true"><i class="fa fa-twitter"></i><span id="tweetCount"></span></a>
-				<iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe>
+				<a href="http://www.facebook.com/sharer.php" onclick="window.open(this.href, 'FBwindow', 'width=650, height=450, menubar=no, toolbar=no, scrollbars=yes'); return false;" class="facebook-share-button"><i class="fa fa-facebook"></i><span id="iineCount"></span></a>
 			</div>
 		</div>
 	</body>
@@ -54,6 +63,24 @@
 				}
 			});
 		};
+		var iineCount = function(id, url) {
+		if (!id) {
+			return;
+		}
+		var pageURL = url ? url : location.url;
+		pageURL = encodeURI(pageURL);
+		url = 'https://graph.facebook.com/' + pageURL;
+			$.ajax({
+				url: url,
+				dataType: 'jsonp',
+				success: function(json) {
+				var count;
+				count = json.likes ? json.likes : 0;
+				document.getElementById(id).innerHTML = count;
+				}
+			});
+		};
 		tweetCount('tweetCount', 'http://localhost');
+		iineCount('iineCount', 'localhost')
 	</script>
 </html>
