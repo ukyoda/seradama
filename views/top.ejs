@@ -10,22 +10,24 @@
 
 			<title>ぐらころ</title>
 			<script src="/libs/jquery/dist/jquery.min.js"></script>
+			<script src="/javascripts/top.js"></script>
 			<link rel="stylesheet" href="/stylesheets/gracoro.css"></link>
 			<link rel="stylesheet" href="/stylesheets/gametop.css"></link>
+			<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 	</head>
 	<body>
 		<div class="game-body">
 			<div class="top-title">ぐらころ～ほんとうはもっとかっこいい感じ～</div>
 			<div class="login-page">
+				<i class="fa fa-times"></i>
 				<ul class="login-index">
-					<li><input type="text"></input></li>
-					<li><a class="login" href="/guest"><span>ログイン</span></a></li>
-					<li><a class="login" href="/auth/twitter"><span>Twitter</span></a></li>
+					<li><input type="text" class="guestname" autocomplete="on" maxlength="10" placeholder="YOUR NAME" require></input></li>
+					<li><a class="login" href="/guest"><i class="fa fa-male"></i><span>ゲスト</span></a></li>
+					<li><a class="login" href="/auth/twitter"><i class="fa fa-twitter-square fa-1g"></i><span>Twitter</span></a></li>
 				</ul>
 			</div>
 			<ul class="top-index">
-				<li><a class="login" href="/auth/twitter"><span>すごいauth認証</span></a></li>
-				<li><a class="login" href="/guest"><span>すごいゲストログイン</span></a></li>
+				<li><a class="start" href="#"><span>はじめる</span></a></li>
 				<li><a class="tutrial" href="/tutrial"><span>チュートリアル</span></a></li>
 			</ul>
 		</div>
