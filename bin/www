@@ -112,7 +112,8 @@ io.sockets.on('connection', function(socket) {
   // ころころ追加
   userCount++;
   var corocoroDef = new b2d.b2BodyDef();
-  corocoroDef.position.Set(-5.0, 5.0);
+//  corocoroDef.position.Set(-5.0, 5.0);
+  corocoroDef.position.Set(-1 * (gamedata.world.width / 64.0) + 1.5, (gamedata.world.height / 64.0) - 1.5);
   var corocoro = world.CreateBody(corocoroDef);
   var corocoroShapeDef = new b2d.b2CircleDef();
   corocoroShapeDef.radius = 0.5;
@@ -248,7 +249,7 @@ function doAnim() {
       count++;
 
       for(var i in objs){
-        objs[i].SetXForm(new b2d.b2Vec2(-10.0 + Math.random(), 10.0 + Math.random()), 0.0);
+        objs[i].SetXForm(new b2d.b2Vec2(-1 * (gamedata.world.width / 64.0) + 1.5 + Math.random(), (gamedata.world.height / 64.0) - 2.5 + Math.random()), 0.0);
       }
     }
     
