@@ -565,7 +565,7 @@ Game.fn.removeObject = function(id) {
 		return (val.id === id);
 	});
 	if(!filterSprite.length){
-		return false;
+		return this;
 	}
 	var sprite = filterSprite[0];
 	this.objectLayer.removeChild(sprite);
@@ -573,6 +573,7 @@ Game.fn.removeObject = function(id) {
 };
 
 Game.fn.updateObject = function(data){
+
 	var id = data.id;
 	var position = {
 		x:window.parseFloat(data.x, 10),
@@ -584,6 +585,7 @@ Game.fn.updateObject = function(data){
 	var layer = this.objectLayer, filterVal=[], sprite;
 	if(data.delflag) {
 		this.removeObject(data.id);
+		return null;
 	}
 	filterVal = layer.children.filter(function(val){
 		return (val.id === id);

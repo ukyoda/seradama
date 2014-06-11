@@ -4,7 +4,7 @@ Game.fn.removeObject = function(id) {
 		return (val.id === id);
 	});
 	if(!filterSprite.length){
-		return false;
+		return this;
 	}
 	var sprite = filterSprite[0];
 	this.objectLayer.removeChild(sprite);
