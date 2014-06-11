@@ -105,14 +105,14 @@ body .login-index .login i {
 }
 
 body .tutrial-page {
+
 	display: none;
 	position: absolute;
-	width: 80%;
 	height: 80%;
-	left: 8%;
+	width: 88%;
 	top: 10%;
+	left: 6%;
 	background: rgba(235, 177, 177, 0.97);
-	padding: 0 30px;
 	border-radius: 7px;
 }
 
@@ -139,9 +139,7 @@ body .tutrial-index {
 body .tutrial-index li {
 	position: absolute;
 	top: 0;
-	margin: 32px 0;
 	height: 100%;
-	width: 150px;
 	cursor: pointer;
 	z-index: 5;
 }
@@ -151,24 +149,22 @@ body .tutrial-index a {
 	top: 50%;
 }
 body .tutrial-index .leftallow{
-	left: -10px;
+	left: 8%;
 }
 
 body .tutrial-index .leftallow i{
-	left: -10px;
 }
 
 body .tutrial-index .rightallow{
-	right: -10px;
+	right: 15%;
 }
 
 body .tutrial-index .rightallow i{
-	right: +10px;
 }
 
 body .tutrial-img {
 	display: block;
-	height: 100%;
+	width: 60%;
 	margin: auto;
 }
 
