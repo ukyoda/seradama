@@ -3,19 +3,98 @@
 	<head>
 			<meta charset="utf-8">
 			<meta name="viewport" content="width=device-width; initial-scale=1; maximum-scale=1.0; user-scalable=0;" >
-			<meta name="keywords" content="グラビティコロコロ,gravitycorocoro,グラコロ,gracoro,html5j,seradama,ボール" />
-			<meta name="description" content="グラビティコロコロは最大300人で対戦できる新感覚ボールコロコロゲームです。さあ一緒にグラコロを始めよう！" />
+			<meta name="keywords" content="ぐらころ,グラコロ,gracoro,html5j,ボール,ころころ" />
+			<meta name="description" content="ぐらころは最大300人で対戦できる新感覚ボールコロコロゲームです。さあ一緒にぐらころを始めよう！" />
 			<meta name="author" content="GravityCoroCoroTeam" />
 			<meta name="robots" content="index,follow,noydir,noodp" />
 
-			<title>グラビティコロコロ</title>
+			<meta property="og:title" content="ぐらころ　新感覚ボールコロコロゲーム" />
+			<meta property="og:type" content="site" />
+			<meta property="og:url" content="http://localhost" />
+			<meta property="og:site_name" content="ぐらころ　新感覚ボールコロコロゲーム" />
+			<meta property="og:description" content="ぐらころは最大300人で対戦できる新感覚ボールコロコロゲームです。さあ一緒にぐらころを始めよう！" />
+			<meta property="og:image" content="/texture/background/background.png" />
+			<meta property="fb:admins" content="XXXXX" />
+
+
+			<title>ぐらころ　新感覚ボールコロコロゲーム</title>
 			<script src="/libs/jquery/dist/jquery.min.js"></script>
-			<link rel="stylesheet" href="/stylesheets/gamedisplay.css"></link>
+			<script src="/javascripts/top.js"></script>
+			<link rel="stylesheet" href="/stylesheets/gracoro.css"></link>
+			<link rel="stylesheet" href="/stylesheets/gametop.css"></link>
+			<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 	</head>
 	<body>
 		<div class="game-body">
-			<a class="" href="/auth/twitter">すごいauth認証</a>
-			<a class="" href="/guest">すごいゲストログイン</a>
+			<div class="top-title">ぐらころ～ほんとうはもっとかっこいい感じ～</div>
+			<div class="login-page">
+				<i class="fa fa-times"></i>
+				<ul class="login-index">
+					<li><input type="text" class="guestname" autocomplete="on" maxlength="10" placeholder="YOUR NAME" require></input></li>
+					<li><a class="login" href="/guest"><i class="fa fa-male"></i><span>ゲスト</span></a></li>
+					<li><a class="login" href="/auth/twitter"><i class="fa fa-twitter-square fa-1g"></i><span>Twitter</span></a></li>
+				</ul>
+			</div>
+			<div class="tutrial-page">
+				<i class="fa fa-times"></i>
+				<div class="tutrial-inner">
+					<img src="/texture/background/background.png" class="tutrial-img">
+					<ul class="tutrial-index">
+						<li class="leftallow"><a><i class="fa fa-chevron-left fa-2x"></i></a></li>
+						<li class="rightallow"><a><i class="fa fa-chevron-right fa-2x"></i></a></li>
+					</ul>
+				</div>
+			</div>
+			<ul class="top-index">
+				<li><a class="start" href="#"><span>はじめる</span></a></li>
+				<li><a class="tutrial" href="/tutrial"><span>チュートリアル</span></a></li>
+			</ul>
+			<div class="top-footer">
+				<!-- <a href="http://twitter.com/intent/tweet?url=http://127.0.0.0&text=ぐらころ　新感覚ボールコロコロゲーム" onClick="window.open(encodeURI(decodeURI(this.href)),'tweetwindow','width=550, height=450, personalbar=0, toolbar=0, scrollbars=1, resizable=!'); return false;"><i class="fa fa-twitter"></i><span id="tweetCount"></span></a>
+				<a href="http://www.facebook.com/sharer.php?u=http://127.0.0.0" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),'facebook-share-dialog','width=626,height=436');return false;"><i class="fa fa-facebook"></i><span id="iineCount"></span></a> -->
+				<div id="fb-root"></div>
+				<a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="gracoro" data-dnt="true">ツイート</a>
+				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+				<span class="facebook-button"><iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe></span>
+			</div>
 		</div>
 	</body>
+	<!-- <script type="text/javascript">
+		var tweetCount = function(id, url) {
+		if (!id) {
+			return;
+		}
+		var pageURL = url ? url : location.url;
+		pageURL = encodeURI(pageURL);
+		url = 'http://urls.api.twitter.com/1/urls/count.json?url=' + pageURL;
+			$.ajax({
+				url: url,
+				dataType: 'jsonp',
+				success: function(json) {
+				var count;
+				count = json.count ? json.count : 0;
+				document.getElementById(id).innerHTML = count;
+				}
+			});
+		};
+		var iineCount = function(id, url) {
+		if (!id) {
+			return;
+		}
+		var pageURL = url ? url : location.url;
+		pageURL = encodeURI(pageURL);
+		url = 'https://graph.facebook.com/' + pageURL;
+			$.ajax({
+				url: url,
+				dataType: 'jsonp',
+				success: function(json) {
+				var count;
+				count = json.likes ? json.likes : 0;
+				document.getElementById(id).innerHTML = count;
+				}
+			});
+		};
+		tweetCount('tweetCount', 'http://localhost');
+		iineCount('iineCount', 'localhost')
+	</script> -->
 </html>

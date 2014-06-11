@@ -1,0 +1,196 @@
+@charset "UTF-8";
+/*-------------------------------------
+CREDIT : GravityCoroCoro
+CREATE : 2014.06.04
+Var : 1.0
+-------------------------------------*/
+body .top-title {
+	padding-top: 30px;
+	font-size: 20px;
+	width: 100%;
+	text-align: center;
+}
+
+body .login {
+	width: 100%;
+	text-align: center;
+}
+
+body .top-index {
+	padding: 0;
+	margin: 0;
+	text-align: center;
+	list-style: none;
+}
+body .top-index li {
+	margin: 20px;
+}
+body .top-index .start {
+	color: #ffffff;
+	background: rgba(177, 192, 235, 0.80);
+	border-radius: 7px;
+	zoom: 1;
+	width: 200px;
+	padding: 6px;
+	display: inline-block;
+	text-decoration: none;
+}
+
+body .top-index .tutrial {
+	color: #ffffff;
+	background: rgba(240, 143, 143, 0.80);
+	border-radius: 7px;
+	zoom: 1;
+	width: 200px;
+	padding: 6px;
+	display: inline-block;
+	text-decoration: none;
+}
+
+body .login-page {
+	display: none;
+	position: absolute;
+	left: 50%;
+	background: rgba(177, 192, 235, 0.97);
+	padding: 0 30px;
+	margin-left: -146px;
+	z-index: 10px;
+	height: 200px;
+	border-radius: 7px;
+}
+
+body .login-page .fa-times {
+	cursor: pointer;
+	position: absolute;
+	top: 8px;
+	right: 12px;
+	color: #ffffff;
+}
+
+body .login-index {
+	padding: 0;
+	padding-top: 25px;
+	margin: 0;
+	text-align: center;
+	list-style: none;
+}
+body .login-index li {
+	margin: 10px;
+}
+
+body .login-index .guestname {
+	width: 210px;
+	height: 34px;
+	border: #c2c2c2 1px solid;
+	color: #AD9D9D;
+	border-radius: 7px;
+	text-align: center;
+}
+
+body .login-index .login {
+	color: #ffffff;
+	background: rgba(253, 253, 253, 0.44);
+	border-radius: 7px;
+	zoom: 1;
+	width: 200px;
+	padding: 6px;
+	display: inline-block;
+	text-decoration: none;
+}
+
+body .login-index .login i {
+	padding-right: 6px;
+}
+
+body .tutrial-page {
+	display: none;
+	position: absolute;
+	height: 80%;
+	width: 88%;
+	top: 10%;
+	left: 6%;
+	background: rgba(235, 177, 177, 0.97);
+	border-radius: 7px;
+	z-index: 10px;
+}
+
+body .tutrial-page .fa-times {
+	cursor: pointer;
+	position: absolute;
+	top: 8px;
+	right: 12px;
+	color: #ffffff;
+}
+
+body .tutrial-page .tutrial-inner {
+	padding: 30px;
+}
+
+body .tutrial-index {
+	padding: 0;
+	padding-top: 25px;
+	color: #ffffff;
+	margin: 0;
+	text-align: center;
+	list-style: none;
+}
+body .tutrial-index li {
+	position: absolute;
+	top: 0;
+	height: 100%;
+	cursor: pointer;
+	z-index: 5;
+}
+body .tutrial-index a {
+	position: absolute;
+	vertical-align: middle;
+	top: 50%;
+}
+body .tutrial-index .leftallow{
+	left: 8%;
+}
+
+body .tutrial-index .leftallow i{
+}
+
+body .tutrial-index .rightallow{
+	right: 15%;
+}
+
+body .tutrial-index .rightallow i{
+}
+
+body .tutrial-img {
+	display: block;
+	width: 60%;
+	margin: auto;
+}
+
+body .top-footer {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+body .top-footer i {
+	padding-right: 5px;
+}
+
+body .top-footer a {
+	display: inline-block;
+	width: 50px;
+	background: rgba(198, 201, 207, 0.8);
+	text-decoration: none;
+	color: #ffffff;
+	border-radius: 7px;
+	padding: 5px 8px;
+	font-size: 12px;
+}
+body .facebook-button iframe {
+	width: 113px;
+}
+
+body .twitter-share-button {
+}
+
+body .facebook-share-button {
+}
