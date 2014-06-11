@@ -19,6 +19,14 @@
 				$('.tutrial-page').hide("slow");
 				return false;
 			});
+			$('.guest').click(function(e) {
+				if ($('.guestname').value == null) {
+					$('.guestname').css("background-color","#ffffff");
+					return false;
+				}
+				$('.login-index form').submit();
+				return false;
+			});
 		});
 	}
 }).init();

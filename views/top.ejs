@@ -30,9 +30,11 @@
 			<div class="login-page">
 				<i class="fa fa-times"></i>
 				<ul class="login-index">
-					<li><input type="text" class="guestname" autocomplete="on" maxlength="10" placeholder="YOUR NAME" require></input></li>
-					<li><a class="login" href="/guest"><i class="fa fa-male"></i><span>ゲスト</span></a></li>
-					<li><a class="login" href="/auth/twitter"><i class="fa fa-twitter-square fa-1g"></i><span>Twitter</span></a></li>
+					<form action="/guest" name="guestlogin" method="get">
+						<li><input type="text" name="username" class="guestname" autocomplete="on" maxlength="10" placeholder="YOUR NAME" required x-moz-errormessage="あなたの名前を入力してください。" ></input></li>
+						<li><a class="login guest" href="#"><i class="fa fa-male"></i><span>ゲストログイン</span></a></li>
+					</form>
+					<li><a class="login" href="/auth/twitter"><i class="fa fa-twitter-square fa-1g"></i><span>Twitterログイン</span></a></li>
 				</ul>
 			</div>
 			<div class="tutrial-page">
