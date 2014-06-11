@@ -40,8 +40,12 @@
 				<li><a class="tutrial" href="/tutrial"><span>チュートリアル</span></a></li>
 			</ul>
 			<div class="top-footer">
-				<a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="guracoro" data-dnt="true"><i class="fa fa-twitter"></i><span id="tweetCount"></span></a>
-				<a href="http://www.facebook.com/sharer.php" onclick="window.open(this.href, 'FBwindow', 'width=650, height=450, menubar=no, toolbar=no, scrollbars=yes'); return false;" class="facebook-share-button"><i class="fa fa-facebook"></i><span id="iineCount"></span></a>
+				<a href="http://twitter.com/intent/tweet?url=http://127.0.0.0&text=ぐらころ　新感覚ボールコロコロゲーム" onClick="window.open(encodeURI(decodeURI(this.href)),'tweetwindow','width=550, height=450, personalbar=0, toolbar=0, scrollbars=1, resizable=!'); return false;"><i class="fa fa-twitter"></i><span id="tweetCount"></span></a>
+				<a href="http://www.facebook.com/sharer.php?u=http://127.0.0.0" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),'facebook-share-dialog','width=626,height=436');return false;"><i class="fa fa-facebook"></i><span id="iineCount"></span></a>
+				<div id="fb-root"></div>
+				<a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-hashtags="gracoro" data-dnt="true">ツイート</a>
+				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+				<span class="facebook-button"><iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;width&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px;" allowTransparency="true"></iframe></span>
 			</div>
 		</div>
 	</body>

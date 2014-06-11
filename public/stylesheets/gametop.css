@@ -54,7 +54,7 @@ body .login-page {
 	display: none;
 	position: absolute;
 	left: 50%;
-	background: rgba(177, 192, 235, 0.9);
+	background: rgba(177, 192, 235, 0.97);
 	padding: 0 30px;
 	margin-left: -146px;
 	height: 200px;
@@ -123,6 +123,9 @@ body .top-footer a {
 	border-radius: 7px;
 	padding: 5px 8px;
 	font-size: 12px;
+}
+body .facebook-button iframe {
+	width: 113px;
 }
 
 body .twitter-share-button {
