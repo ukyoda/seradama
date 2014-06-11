@@ -173,6 +173,7 @@ io.sockets.on('connection', function(socket) {
 
 function makeStage(){
   var stage = stages[Math.floor(Math.random() * stages.length)];
+  kabes = [];
   for(var i in stage){
     var b2dobj = stage[i];
     
@@ -241,6 +242,41 @@ function doAnim() {
       var xya = {datatype:"ranking", data:ranking, win_id:contact.other.m_userData.id};
       msgs[count] = xya;
       count++;
+
+      // ステージ再作成 
+      for(var i in kabes){
+        xya = {x:0.0, y:0.0, angle:0.0, id:kabes[i].m_userData.id, texture:kabes[i].m_userData.texture, datatype:"object", delflag:1};
+        msgs[count] = xya;
+        count++;
+//        delete kabes[i];
+        world.DestroyBody(kabes[i]);
+      }
+      // ゴール再作成
+      for(var i in goals){
+        xya = {x:0.0, y:0.0, angle:0.0, id:goals[i].m_userData.id, texture:goals[i].m_userData.texture, datatype:"object", delflag:1};
+        msgs[count] = xya;
+        count++;
+        world.DestroyBody(goals[i]);
+      }
+      makeStage();
+      for(var i in kabes){
+        var position = kabes[i].GetPosition();
+        var x = (position.x * 32) + (gamedata.world.width / 2.0);
+        var y = (position.y * -32) + (gamedata.world.height / 2.0);
+        var angle = (kabes[i].GetAngle() * -1);
+        var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:kabes[i].m_userData.id, texture:kabes[i].m_userData.texture, datatype:"object"};
+        msgs[count] = xya;
+        count++;
+      }
+      for(var i in goals){
+        var position = goals[i].GetPosition();
+        var x = (position.x * 32) + (gamedata.world.width / 2.0);
+        var y = (position.y * -32) + (gamedata.world.height / 2.0);
+        var angle = (goals[i].GetAngle() * -1);
+        var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:goals[i].m_userData.id, texture:goals[i].m_userData.texture, datatype:"object"};
+        msgs[count] = xya;
+        count++;
+      }
 
       for(var i in objs){
         objs[i].SetXForm(new b2d.b2Vec2(-1 * (gamedata.world.width / 64.0) + 1.5 + Math.random(), (gamedata.world.height / 64.0) - 2.5 + Math.random()), 0.0);
