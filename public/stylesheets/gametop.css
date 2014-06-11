@@ -71,7 +71,7 @@ body .login-page .fa-times {
 
 body .login-index {
 	padding: 0;
-	padding-top: 18px;
+	padding-top: 25px;
 	margin: 0;
 	text-align: center;
 	list-style: none;
@@ -104,6 +104,73 @@ body .login-index .login i {
 	padding-right: 6px;
 }
 
+body .tutrial-page {
+	display: none;
+	position: absolute;
+	width: 80%;
+	height: 80%;
+	left: 8%;
+	top: 10%;
+	background: rgba(235, 177, 177, 0.97);
+	padding: 0 30px;
+	border-radius: 7px;
+}
+
+body .tutrial-page .fa-times {
+	cursor: pointer;
+	position: absolute;
+	top: 8px;
+	right: 12px;
+	color: #ffffff;
+}
+
+body .tutrial-page .tutrial-inner {
+	padding: 30px;
+}
+
+body .tutrial-index {
+	padding: 0;
+	padding-top: 25px;
+	color: #ffffff;
+	margin: 0;
+	text-align: center;
+	list-style: none;
+}
+body .tutrial-index li {
+	position: absolute;
+	top: 0;
+	margin: 32px 0;
+	height: 100%;
+	width: 150px;
+	cursor: pointer;
+	z-index: 5;
+}
+body .tutrial-index a {
+	position: absolute;
+	vertical-align: middle;
+	top: 50%;
+}
+body .tutrial-index .leftallow{
+	left: -10px;
+}
+
+body .tutrial-index .leftallow i{
+	left: -10px;
+}
+
+body .tutrial-index .rightallow{
+	right: -10px;
+}
+
+body .tutrial-index .rightallow i{
+	right: +10px;
+}
+
+body .tutrial-img {
+	display: block;
+	height: 100%;
+	margin: auto;
+}
 
 body .top-footer {
 	text-align: center;
