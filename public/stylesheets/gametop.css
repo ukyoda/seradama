@@ -4,6 +4,11 @@ CREDIT : GravityCoroCoro
 CREATE : 2014.06.04
 Var : 1.0
 -------------------------------------*/
+body .top-discriptor {
+	margin: 0 auto 0 auto;
+	padding-top: 138px;
+}
+
 body .top-title {
 	padding-top: 30px;
 	font-size: 20px;
@@ -22,9 +27,11 @@ body .top-index {
 	text-align: center;
 	list-style: none;
 }
+
 body .top-index li {
 	margin: 20px;
 }
+
 body .top-index .start {
 	color: #ffffff;
 	background: rgba(177, 192, 235, 0.80);
@@ -51,6 +58,7 @@ body .login-page {
 	display: none;
 	position: absolute;
 	left: 50%;
+	top: 40%;
 	background: rgba(177, 192, 235, 0.97);
 	padding: 0 30px;
 	margin-left: -146px;
@@ -105,10 +113,11 @@ body .login-index .login i {
 body .tutrial-page {
 	display: none;
 	position: absolute;
-	height: 80%;
-	width: 88%;
+	height: 600px;
+	width: 400px;
 	top: 10%;
-	left: 6%;
+	left: 50%;
+	margin-left: -200px;
 	background: rgba(235, 177, 177, 0.97);
 	border-radius: 7px;
 	z-index: 10px;
@@ -153,6 +162,7 @@ body .tutrial-index .leftallow{
 }
 
 body .tutrial-index .leftallow i{
+	margin-left: -28px;
 }
 
 body .tutrial-index .rightallow{
@@ -164,8 +174,8 @@ body .tutrial-index .rightallow i{
 
 body .tutrial-img {
 	display: block;
-	height: 100%;
-	margin: auto;
+	height: 538px;
+	width: 342px;
 }
 
 body .top-footer {
