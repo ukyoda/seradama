@@ -20,9 +20,9 @@
 				return false;
 			});
 			$('.guest').click(function(e) {
-				if ($('.guestname').value == null) {
-					$('.guestname').css("background-color","#ffffff");
-					return false;
+				if ($('.guestname').val() == "") {
+					$('.guestname').css("background-color","pink");
+					return true;
 				}
 				$('.login-index form').submit();
 				return false;
