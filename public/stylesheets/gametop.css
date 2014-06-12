@@ -137,9 +137,11 @@ body .tutrial-index {
 body .tutrial-index li {
 	position: absolute;
 	top: 0;
-	height: 100%;
+	height: 90%;
 	cursor: pointer;
 	z-index: 5;
+	width: 30%;
+	margin: 5% 0;
 }
 body .tutrial-index a {
 	position: absolute;
@@ -147,14 +149,14 @@ body .tutrial-index a {
 	top: 50%;
 }
 body .tutrial-index .leftallow{
-	left: 8%;
+	left: 0;
 }
 
 body .tutrial-index .leftallow i{
 }
 
 body .tutrial-index .rightallow{
-	right: 15%;
+	right: 0;
 }
 
 body .tutrial-index .rightallow i{
@@ -162,7 +164,7 @@ body .tutrial-index .rightallow i{
 
 body .tutrial-img {
 	display: block;
-	width: 60%;
+	height: 100%;
 	margin: auto;
 }
 
