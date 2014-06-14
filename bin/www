@@ -190,6 +190,13 @@ io.sockets.on('connection', function(socket) {
 
         // メッセージ送信
         socket.emit('message', {value: msgs});
+
+        // 全体に送信
+        var sendAll = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:corocoro.m_userData.id, texture:corocoro.m_userData.texture, datatype:corocoro.m_userData.datatype, name:corocoro.m_userData.name, picture:corocoro.m_userData.picture, userType:corocoro.m_userData.userType};
+        var msgsAll = [];
+        msgsAll.push(sendAll);
+        io.sockets.emit('message', {value: msgsAll});
+
       }
     }else if(data.gravity){
       if(obj){
