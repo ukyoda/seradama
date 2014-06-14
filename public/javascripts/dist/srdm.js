@@ -107,8 +107,6 @@ GameAlert.fn.createYourRankAlert = function(rankData, topCount){
 	var img = rankData.sprite.img || "http://127.0.0.1/images/favicon.ico";
 	var rank = rankData.rank;
 	var count = rankData.data.win;
-	console.log(topCount);
-	console.log(count);
 	var countTopDiff = count - topCount;
 
 	$('<div/>').text('★あなたの順位★').appendTo($content);
