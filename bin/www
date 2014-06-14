@@ -79,7 +79,7 @@ var world = new b2d.b2World(worldAABB, gravity, doSleep);
 // add start
 var socketIO = require('socket.io');
 var io = socketIO.listen(server);
-io.set("log level", 2);
+//io.set("log level", 2);
 
 var getPosition = function(data) {
 	rotation = event.rotation;
@@ -320,6 +320,16 @@ function doAnim() {
 
     var nowTime = new Date();
     var pastTime = nowTime - startTime;
+    var hour = Math.floor(pastTime/(60*60*1000));  // '時間'取得
+    pastTime = pastTime-(hour*60*60*1000); 
+    minutes = Math.floor(pastTime/(60*1000)); // '分'取得
+    pastTime = pastTime-(minutes*60*1000);  
+    second = Math.floor(pastTime/1000);  // '秒'取得
+    milli = pastTime%1000; // 'ミリ秒'取得
+    var sTime = ("00" + hour).slice(-2) + ":" + ("00" + minutes).slice(-2) + ":" + ("00" + second).slice(-2) + "." + ("000" + milli).slice(-3);
+    var xyaTime = {datatype:"time", time:sTime};
+    msgs[count] = xyaTime;
+    count++;
 
     io.sockets.emit('message', {value: msgs});
   }, 1000/fps);
