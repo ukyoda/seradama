@@ -39,9 +39,11 @@ $(function(){
 		//画像と名前を送信
 		var picture = $('#player-picture').val();
 		var name = $('#player-name').val();
+		var userType = $('#player-type').val();
 		game.emitInfo({
 			picture: picture,
-			name:name
+			name:name,
+			userType: userType
 		});
 		//非同期で読み込むデータを全て読み込んだらプレイ
 		game.rescale.call(game);

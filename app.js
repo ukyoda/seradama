@@ -95,6 +95,7 @@ app.get('/gracoro',
   function(req, res){
     var imgURL = null;
     var userName = null;
+    var userType = null;
     var gracoro = req.session.gracoro;
 
     //セッションがないと出力しない
@@ -104,8 +105,14 @@ app.get('/gracoro',
       //画像，名前セット
       imgURL = gracoro.picture;
       userName = gracoro.name;
+      userType = gracoro.userType || "guest";
       // renderで値を引き継ぐ（これでええのか？）
-      res.render('index', { title: 'Express', img: imgURL, user: userName});
+      res.render('index', {
+        title: 'Express',
+        img: imgURL,
+        user: userName,
+        type: userType
+      });
     }
 
   }
@@ -116,7 +123,8 @@ app.get('/guest', function(req, res){
   //セッションに情報登録
   req.session.gracoro = {
     name: req.query.username,
-    picture: "http://sciactive.com/pnotify/includes/github-icon.png"  //ゲスト用の画像
+    picture: "http://sciactive.com/pnotify/includes/github-icon.png",  //ゲスト用の画像
+    userType: "guest"
   };
   res.redirect('/gracoro');
 });
@@ -133,7 +141,8 @@ app.get('/auth/twitter/callback',
   function(req, res) {
     req.session.gracoro = {
       name: req.session.passport.user.username,
-      picture: req.session.passport.user._json.profile_image_url
+      picture: req.session.passport.user._json.profile_image_url,
+      userType: "twitter"
     };
     res.redirect('/gracoro');
   }
