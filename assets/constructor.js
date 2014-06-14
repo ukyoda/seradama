@@ -34,6 +34,9 @@ var Game = function Game(manifest) {
 		height: height
 	};
 
+	//時間表示
+	this.playTime = "";
+
 	//メッセージ表示のインスタンスを生成する
 	this.alert = new GameAlert();
 

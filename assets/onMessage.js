@@ -21,6 +21,10 @@ Game.fn.onMessage = function(data) {
 			break;
 		case "ranking":
 			that.congratulation(val);
+			break;
+		case "time":
+			that.playTime = val.time;
+			break;
 		}
 	});
 

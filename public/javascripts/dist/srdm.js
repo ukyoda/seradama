@@ -205,6 +205,9 @@ var Game = function Game(manifest) {
 		height: height
 	};
 
+	//時間表示
+	this.playTime = "";
+
 	//メッセージ表示のインスタンスを生成する
 	this.alert = new GameAlert();
 
@@ -443,6 +446,10 @@ Game.fn.onMessage = function(data) {
 			break;
 		case "ranking":
 			that.congratulation(val);
+			break;
+		case "time":
+			that.playTime = val.time;
+			break;
 		}
 	});
 
@@ -524,6 +531,7 @@ Game.fn.updatePlayer = function(data){
 	var angle = window.parseFloat(data.angle, 10);
 	var layer = this.playerLayer, filterVal=[], sprite;
 	var i, length;
+	var ballSize = 42;
 	if(data.delflag) {
 		this.removePlayer(id);
 		return null;
@@ -537,12 +545,12 @@ Game.fn.updatePlayer = function(data){
 		container = new PIXI.DisplayObjectContainer();
 		if(userType === "guest") {
 			sprite = new PIXI.Sprite.fromFrame(textureId);
-			sprite.width=32;sprite.height=32;
+			sprite.width=ballSize;sprite.height=ballSize;
 		} else {
 			try {
 				//スプライト作成
 				sprite = new PIXI.Sprite.fromImage(picture);
-				sprite.width=48;sprite.height=48;
+				sprite.width=ballSize;sprite.height=ballSize;
 
 				//マスク作成
 				mask = new PIXI.Graphics();
@@ -554,7 +562,7 @@ Game.fn.updatePlayer = function(data){
 				container.addChild(mask);
 			} catch (e){
 				sprite = new PIXI.Sprite.fromFrame(textureId);
-				sprite.width=32;sprite.height=32;
+				sprite.width=ballSize;sprite.height=ballSize;
 			}
 		}
 		//スプライトのアンカーの位置を修正
@@ -569,7 +577,7 @@ Game.fn.updatePlayer = function(data){
 		layer.addChild(container);
 		layer.hash[id] = container;
 		//スプライト、コンテナのサイズ調整
-		container.width=32;container.height=32;
+		container.width=ballSize;container.height=ballSize;
 		return container;
 	}());
 
