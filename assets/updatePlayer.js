@@ -19,13 +19,26 @@ Game.fn.updatePlayer = function(data){
 	}
 
 	sprite = (function(){
+		var img, canvas, ctx, texture;
 		if(layer.hash[id]) {
 			return layer.hash[id];
 		}
 		if(userType === "guest") {
 			sprite = new PIXI.Sprite.fromFrame(textureId);
 		} else {
-			sprite = new PIXI.Sprite.fromImage(picture);
+			sprite = new PIXI.Sprite.fromFrame(textureId);
+
+			canvas = document.createElement('canvas');
+			ctx = canvas.getContext('2d');
+			img = new Image();
+			img.src=picture;
+			img.onload = function(){
+				canvas.width = img.width;canvas.height = img.height;
+				ctx.drawImage(img, 0,0);
+				$('body').append(canvas);
+				texture = PIXI.Texture.fromCanvas(canvas);
+				sprite.setTexture(texture);
+			};
 		}
 		sprite.name = name;
 		sprite.id = id;

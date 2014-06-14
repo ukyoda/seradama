@@ -4,6 +4,8 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var proxy = require('proxy-middleware');
+var url = require('url');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -27,10 +29,12 @@ var app = express();
 //ゲーム管理変数をappに記憶させる(wwwからアクセスできるように)
 app.gameInfo = gameInfoData;
 
+//proxy設定
+app.use('/twiimg', proxy(url.parse('http://pbs.twimg.com/')));
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
 app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -139,9 +143,12 @@ app.get('/auth/twitter',
 app.get('/auth/twitter/callback',
   passport.authenticate('twitter', { failureRedirect: '/login/twitter' }),
   function(req, res) {
+    var profile_image_url = req.session.passport.user._json.profile_image_url;
+    var iconUrlParse = url.parse(profile_image_url);
+
     req.session.gracoro = {
       name: req.session.passport.user.username,
-      picture: req.session.passport.user._json.profile_image_url,
+      picture: '/twiimg'+iconUrlParse.path,
       userType: "twitter"
     };
     res.redirect('/gracoro');
