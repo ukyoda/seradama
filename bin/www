@@ -33,6 +33,9 @@ var server = app.listen(app.get('port'), function() {
   debug('Express server listening on port ' + server.address().port);
 });
 
+var startTime;
+var stopTime;
+
 // 世界
 var b2d = require("box2d");
 var worldAABB = new b2d.b2AABB();
@@ -109,32 +112,6 @@ io.sockets.on('connection', function(socket) {
     msgs[count] = xya;
     count++;
   }
-  // ころころ追加
-  userCount++;
-  var corocoroDef = new b2d.b2BodyDef();
-  corocoroDef.position.Set(-1 * (gamedata.world.width / 64.0) + 1.5, (gamedata.world.height / 64.0) - 1.5);
-  var corocoro = world.CreateBody(corocoroDef);
-  var corocoroShapeDef = new b2d.b2CircleDef();
-  corocoroShapeDef.radius = 0.5;
-  corocoroShapeDef.density = 1.0;
-  corocoroShapeDef.friction = 0.5;
-  corocoroShapeDef.restitution = 0.7;
-  corocoro.CreateShape(corocoroShapeDef);
-  corocoro.SetMassFromShapes();
-  var userData = {};
-  userData.id = "ball_" + userCount;
-  userData.texture = player_texture_names[Math.floor(Math.random() * p_t_n_count)];
-  userData.datatype = "player";
-  userData.win = 0;
-  corocoro.m_userData = userData;
-  objs[socket.id] = corocoro;
-  var position = corocoro.GetPosition();
-  var x = (position.x * 32) + (gamedata.world.width / 2.0);
-  var y = (position.y * -32) + (gamedata.world.height / 2.0);
-  var angle = (corocoro.GetAngle() * -1);
-  var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:corocoro.m_userData.id, texture:corocoro.m_userData.texture, datatype:"you"};
-  msgs[count] = xya;
-  count++;
 
   // メッセージ送信
   socket.emit('message', {value: msgs});
@@ -147,13 +124,50 @@ io.sockets.on('connection', function(socket) {
     }else{
       //
     }
-    if(data.gravity.x == 0 || data.gravity.y == 0){
-      data.gravity.x = (Math.random() * 20.0) - 10.0;
-      data.gravity.y = (Math.random() * 20.0) - 10.0;
+    console.log(data);
+    if(data.name){
+      if(data.picture){
+        // ころころ追加
+        var count = 0;
+        var msgs = [];
+        userCount++;
+        var corocoroDef = new b2d.b2BodyDef();
+        corocoroDef.position.Set(-1 * (gamedata.world.width / 64.0) + 1.5, (gamedata.world.height / 64.0) - 1.5);
+        var corocoro = world.CreateBody(corocoroDef);
+        var corocoroShapeDef = new b2d.b2CircleDef();
+        corocoroShapeDef.radius = 0.5;
+        corocoroShapeDef.density = 1.0;
+        corocoroShapeDef.friction = 0.5;
+        corocoroShapeDef.restitution = 0.7;
+        corocoro.CreateShape(corocoroShapeDef);
+        corocoro.SetMassFromShapes();
+        var userData = {};
+        userData.id = "ball_" + userCount;
+        userData.texture = player_texture_names[Math.floor(Math.random() * p_t_n_count)];
+        userData.datatype = "player";
+        userData.win = 0;
+        corocoro.m_userData = userData;
+        objs[socket.id] = corocoro;
+        var position = corocoro.GetPosition();
+        var x = (position.x * 32) + (gamedata.world.width / 2.0);
+        var y = (position.y * -32) + (gamedata.world.height / 2.0);
+        var angle = (corocoro.GetAngle() * -1);
+        var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:corocoro.m_userData.id, texture:corocoro.m_userData.texture, datatype:"you", name:corocoro.m_userData.name, picture:corocoro.m_userData.picture};
+        msgs[count] = xya;
+        count++;
+
+        // メッセージ送信
+        socket.emit('message', {value: msgs});
+      }
+    }else if(data.gravity){
+      if(data.gravity.x == 0 || data.gravity.y == 0){
+        data.gravity.x = (Math.random() * 20.0) - 10.0;
+        data.gravity.y = (Math.random() * 20.0) - 10.0;
+      }
+      var ax = (data.gravity.x / Math.sqrt((Math.pow(data.gravity.x, 2) + Math.pow(data.gravity.y, 2)))) * (10.0 + 5.0);
+      var ay = (data.gravity.y / Math.sqrt((Math.pow(data.gravity.x, 2) + Math.pow(data.gravity.y, 2)))) * (10.0 + 5.0);
+      obj.ApplyForce(new b2d.b2Vec2(ax, ay), obj.GetPosition());
     }
-    var ax = (data.gravity.x / Math.sqrt((Math.pow(data.gravity.x, 2) + Math.pow(data.gravity.y, 2)))) * (10.0 + 5.0);
-    var ay = (data.gravity.y / Math.sqrt((Math.pow(data.gravity.x, 2) + Math.pow(data.gravity.y, 2)))) * (10.0 + 5.0);
-    obj.ApplyForce(new b2d.b2Vec2(ax, ay), obj.GetPosition());
   });
 
   // クライアントが切断したときの処理
@@ -212,6 +226,7 @@ function makeStage(){
       kabes[b2dobj.id] = kabe;
     }
   }
+  startTime = new Date();
 }
 makeStage();
 
