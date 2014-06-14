@@ -2,3 +2,4 @@ node_modules
 bower_components
 /dist
 twitter_secret.json
+best_time.json
