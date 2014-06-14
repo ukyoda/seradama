@@ -68,7 +68,7 @@ var TWITTER_CONSUMER_SECRET = TwitterSecret.consumer_secret;
 passport.use(new TwitterStrategy({
   consumerKey: TWITTER_CONSUMER_KEY,
   consumerSecret: TWITTER_CONSUMER_SECRET,
-  callbackURL: ""
+  callbackURL: "/auth/twitter/callback"
   },
   function(token, tokenSecret, profile, done) {
     passport.session.accessToken = token;
@@ -127,7 +127,7 @@ app.get('/guest', function(req, res){
   //セッションに情報登録
   req.session.gracoro = {
     name: req.query.username,
-    picture: "http://127.0.0.1/images/favicon.ico",  //ゲスト用の画像
+    picture: "/images/favicon.ico",  //ゲスト用の画像
     userType: "guest"
   };
   res.redirect('/gracoro');
