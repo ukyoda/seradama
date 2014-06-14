@@ -1,5 +1,5 @@
 [
-	{"datatype":"initPoint", "x":-8.0, "y":10.0},
+	{"datatype":"initPoint", "x":-8.0, "y":7.0},
 	{"datatype":"kabe", "x":-10.6, "y":12.0 , "w":1.0, "h":4.0, "angle":0.0  ,"id":"kabe_990", "texture":"kabe_999.png"},
 	{"datatype":"kabe", "x":-10.6, "y":4.0  , "w":1.0, "h":4.0, "angle":0.0  ,"id":"kabe_991", "texture":"kabe_999.png"},
 	{"datatype":"kabe", "x":-10.6, "y":-4.0 , "w":1.0, "h":4.0, "angle":0.0  ,"id":"kabe_992", "texture":"kabe_999.png"},
