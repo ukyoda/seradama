@@ -32,12 +32,12 @@ Game.fn.updatePlayer = function(data){
 			try {
 				//スプライト作成
 				sprite = new PIXI.Sprite.fromImage(picture);
-				sprite.width=ballSize;sprite.height=ballSize;
+				//sprite.width=ballSize;sprite.height=ballSize;
 
 				//マスク作成
 				mask = new PIXI.Graphics();
 				mask.beginFill();
-				mask.drawCircle(0,0,16);
+				mask.drawCircle(0,0,ballSize/2);
 				mask.color = 0x000000;
 				mask.endFill();
 				sprite.mask = mask;
