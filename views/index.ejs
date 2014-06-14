@@ -1,24 +1,33 @@
 <!doctype html>
 <html>
 	<head>
-			<meta charset="utf-8">
-			<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0" >
-			<link rel="shortcut icon" href="/images/favicon.ico">
-			<meta name="description" content="GravityCoroCoroはHTML5j Japan Cupのために作成された最大30人で対戦できる新感覚ボールコロコロゲームです。ちょっとした隙間時間をグラころで埋めちゃおう！" />
-			<meta name="author" content="GravityCoroCoroTeam" />
-			<meta name="robots" content="noindex,follow,noydir,noodp" />
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0" >
+		<link rel="shortcut icon" href="/images/favicon.ico">
+		<meta name="description" content="GravityCoroCoroはHTML5j Japan Cupのために作成された最大30人で対戦できる新感覚ボールコロコロゲームです。ちょっとした隙間時間をグラころで埋めちゃおう！" />
+		<meta name="author" content="GravityCoroCoroTeam" />
+		<meta name="robots" content="noindex,follow,noydir,noodp" />
 
-			<title>GravityCoroCoro 新感覚ボールコロコロゲーム</title>
-			<script src="/socket.io/socket.io.js"></script>
-			<script src="/libs/jquery/dist/jquery.min.js"></script>
-			<script src="/libs/pixi/bin/pixi.js"></script>
+		<title>GravityCoroCoro 新感覚ボールコロコロゲーム</title>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="/libs/jquery/dist/jquery.min.js"></script>
+		<script src="/libs/pixi/bin/pixi.js"></script>
 
-			<script src="/javascripts/dist/srdm.js"></script>
-			<script src="/javascripts/test.js"></script>
-			<link rel="stylesheet" href="/stylesheets/gracoro.css"></link>
-			<link rel="stylesheet" href="/stylesheets/gamedisplay.css"></link>
-			<link rel="stylesheet" href="/stylesheets/gameaudio.css"></link>
-			<link rel="stylesheet" href="/stylesheets/gamealert.css" ></link>
+		<script src="/javascripts/dist/srdm.js"></script>
+		<script src="/javascripts/test.js"></script>
+		<link rel="stylesheet" href="/stylesheets/gracoro.css"></link>
+		<link rel="stylesheet" href="/stylesheets/gamedisplay.css"></link>
+		<link rel="stylesheet" href="/stylesheets/gameaudio.css"></link>
+		<link rel="stylesheet" href="/stylesheets/gamealert.css" ></link>
+		<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+		ga('create', 'UA-51933657-1', 'gracoro.com');
+		ga('send', 'pageview');
+		</script>
 	</head>
 	<body>
 		<div class="game-body">
