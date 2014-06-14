@@ -88,7 +88,7 @@ GameAlert.fn.createRankingAlert = function(rankers){
 		var rank = data.rank;
 		var count = data.data.win;
 		var name = data.sprite.name || data.sprite.id;
-		var img = data.sprite.img || "http://sciactive.com/pnotify/includes/github-icon.png";
+		var img = data.sprite.img || "http://127.0.0.1/images/favicon.ico";
 		var $li = $('<li/>');
 		$('<div/>').addClass('grid rank').text(rank).appendTo($li);
 		createImgView(name, img).appendTo($li);
@@ -104,7 +104,7 @@ GameAlert.fn.createYourRankAlert = function(rankData){
 	var $layout = this.createLayout();
 	var $content = $layout.find('.content');
 	var name = rankData.sprite.name || rankData.sprite.id;
-	var img = rankData.sprite.img || "http://sciactive.com/pnotify/includes/github-icon.png";
+	var img = rankData.sprite.img || "http://127.0.0.1/images/favicon.ico";
 	var rank = rankData.rank;
 	var count = rankData.data.win;
 
@@ -537,21 +537,24 @@ Game.fn.updatePlayer = function(data){
 		container = new PIXI.DisplayObjectContainer();
 		if(userType === "guest") {
 			sprite = new PIXI.Sprite.fromFrame(textureId);
+			sprite.width=32;sprite.height=32;
 		} else {
 			try {
 				//スプライト作成
 				sprite = new PIXI.Sprite.fromImage(picture);
+				sprite.width=48;sprite.height=48;
+
 				//マスク作成
 				mask = new PIXI.Graphics();
 				mask.beginFill();
-				mask.drawCircle(0,0,15);
+				mask.drawCircle(0,0,16);
 				mask.color = 0x000000;
 				mask.endFill();
 				sprite.mask = mask;
 				container.addChild(mask);
 			} catch (e){
-				window.console.log(e);
 				sprite = new PIXI.Sprite.fromFrame(textureId);
+				sprite.width=32;sprite.height=32;
 			}
 		}
 		//スプライトのアンカーの位置を修正
@@ -561,11 +564,11 @@ Game.fn.updatePlayer = function(data){
 		//付加情報をコンテナにつける
 		container.name = name;
 		container.id = id;
+		container.img = picture;
 		//レイヤーにコンテナ登録
 		layer.addChild(container);
 		layer.hash[id] = container;
 		//スプライト、コンテナのサイズ調整
-		sprite.width=32;sprite.height=32;
 		container.width=32;container.height=32;
 		return container;
 	}());

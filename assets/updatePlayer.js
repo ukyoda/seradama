@@ -26,21 +26,24 @@ Game.fn.updatePlayer = function(data){
 		container = new PIXI.DisplayObjectContainer();
 		if(userType === "guest") {
 			sprite = new PIXI.Sprite.fromFrame(textureId);
+			sprite.width=32;sprite.height=32;
 		} else {
 			try {
 				//スプライト作成
 				sprite = new PIXI.Sprite.fromImage(picture);
+				sprite.width=48;sprite.height=48;
+
 				//マスク作成
 				mask = new PIXI.Graphics();
 				mask.beginFill();
-				mask.drawCircle(0,0,15);
+				mask.drawCircle(0,0,16);
 				mask.color = 0x000000;
 				mask.endFill();
 				sprite.mask = mask;
 				container.addChild(mask);
 			} catch (e){
-				window.console.log(e);
 				sprite = new PIXI.Sprite.fromFrame(textureId);
+				sprite.width=32;sprite.height=32;
 			}
 		}
 		//スプライトのアンカーの位置を修正
@@ -50,11 +53,11 @@ Game.fn.updatePlayer = function(data){
 		//付加情報をコンテナにつける
 		container.name = name;
 		container.id = id;
+		container.img = picture;
 		//レイヤーにコンテナ登録
 		layer.addChild(container);
 		layer.hash[id] = container;
 		//スプライト、コンテナのサイズ調整
-		sprite.width=32;sprite.height=32;
 		container.width=32;container.height=32;
 		return container;
 	}());

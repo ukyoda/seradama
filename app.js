@@ -127,7 +127,7 @@ app.get('/guest', function(req, res){
   //セッションに情報登録
   req.session.gracoro = {
     name: req.query.username,
-    picture: "http://sciactive.com/pnotify/includes/github-icon.png",  //ゲスト用の画像
+    picture: "http://127.0.0.1/images/favicon.ico",  //ゲスト用の画像
     userType: "guest"
   };
   res.redirect('/gracoro');

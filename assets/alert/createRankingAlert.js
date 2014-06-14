@@ -19,7 +19,7 @@ GameAlert.fn.createRankingAlert = function(rankers){
 		var rank = data.rank;
 		var count = data.data.win;
 		var name = data.sprite.name || data.sprite.id;
-		var img = data.sprite.img || "http://sciactive.com/pnotify/includes/github-icon.png";
+		var img = data.sprite.img || "http://127.0.0.1/images/favicon.ico";
 		var $li = $('<li/>');
 		$('<div/>').addClass('grid rank').text(rank).appendTo($li);
 		createImgView(name, img).appendTo($li);

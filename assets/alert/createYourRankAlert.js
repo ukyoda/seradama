@@ -3,7 +3,7 @@ GameAlert.fn.createYourRankAlert = function(rankData){
 	var $layout = this.createLayout();
 	var $content = $layout.find('.content');
 	var name = rankData.sprite.name || rankData.sprite.id;
-	var img = rankData.sprite.img || "http://sciactive.com/pnotify/includes/github-icon.png";
+	var img = rankData.sprite.img || "http://127.0.0.1/images/favicon.ico";
 	var rank = rankData.rank;
 	var count = rankData.data.win;
 
