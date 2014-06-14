@@ -203,7 +203,7 @@ function makeStage(){
     var pastTime = nowTime - startTime;
     var bestTimes = require('../best_time.json');
     if(bestTimes[stageName]){
-      var bestTime = bestTime[stageName].time;
+      var bestTime = bestTimes[stageName].time;
       if(Integer.parseInt(bestTime) < Integer.parseInt(pastTime)){
         bestTimes[stageName] = {time:pastTime};
         fs.writeFile('./best_time.json', JSON.stringify(bestTimes));
