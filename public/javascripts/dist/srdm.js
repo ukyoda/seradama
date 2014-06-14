@@ -530,38 +530,48 @@ Game.fn.updatePlayer = function(data){
 	}
 
 	sprite = (function(){
-		var img, canvas, ctx, texture;
+		var sprite, mask, container;
 		if(layer.hash[id]) {
 			return layer.hash[id];
 		}
+		container = new PIXI.DisplayObjectContainer();
 		if(userType === "guest") {
 			sprite = new PIXI.Sprite.fromFrame(textureId);
 		} else {
-			sprite = new PIXI.Sprite.fromFrame(textureId);
-
-			canvas = document.createElement('canvas');
-			ctx = canvas.getContext('2d');
-			img = new Image();
-			img.src=picture;
-			img.onload = function(){
-				canvas.width = img.width;canvas.height = img.height;
-				ctx.drawImage(img, 0,0);
-				$('body').append(canvas);
-				texture = PIXI.Texture.fromCanvas(canvas);
-				sprite.setTexture(texture);
-			};
+			try {
+				//スプライト作成
+				sprite = new PIXI.Sprite.fromImage(picture);
+				//マスク作成
+				mask = new PIXI.Graphics();
+				mask.beginFill();
+				mask.drawCircle(0,0,15);
+				mask.color = 0x000000;
+				mask.endFill();
+				sprite.mask = mask;
+				container.addChild(mask);
+			} catch (e){
+				window.console.log(e);
+				sprite = new PIXI.Sprite.fromFrame(textureId);
+			}
 		}
-		sprite.name = name;
-		sprite.id = id;
-		layer.addChild(sprite);
-		layer.hash[id] = sprite;
+		//スプライトのアンカーの位置を修正
+		sprite.anchor.set(0.5,0.5);
+		//スプライトをコンテナに登録
+		container.addChild(sprite);
+		//付加情報をコンテナにつける
+		container.name = name;
+		container.id = id;
+		//レイヤーにコンテナ登録
+		layer.addChild(container);
+		layer.hash[id] = container;
+		//スプライト、コンテナのサイズ調整
 		sprite.width=32;sprite.height=32;
-		return sprite;
+		container.width=32;container.height=32;
+		return container;
 	}());
 
 	//スプライト情報を更新
 	sprite.position.set(position.x,position.y);
-	sprite.anchor.set(0.5,0.5);
 	sprite.rotation = angle;
 
 	//自ボールの場合，プロパティに参照を追加
