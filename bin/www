@@ -258,7 +258,13 @@ function doAnim() {
     var msgs = [];
     
     // ゴール判定
-    var contact = goals["goal"].m_contactList;
+//    var contact = goals["goal"].m_contactList;
+    for(var i in goals){
+      contact = goals[i].m_contactList;
+      if(contact){
+        break;
+      }
+    }
     if(contact){
       contact.other.m_userData.win += 1;
       var ranking = new Array();
