@@ -159,6 +159,11 @@ io.sockets.on('connection', function(socket) {
         socket.emit('message', {value: msgs});
       }
     }else if(data.gravity){
+      if(obj){
+        //
+      }else{
+        return;
+      }
       if(data.gravity.x == 0 || data.gravity.y == 0){
         data.gravity.x = (Math.random() * 20.0) - 10.0;
         data.gravity.y = (Math.random() * 20.0) - 10.0;
