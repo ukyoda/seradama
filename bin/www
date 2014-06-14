@@ -123,7 +123,6 @@ io.sockets.on('connection', function(socket) {
     }else{
       //
     }
-    console.log(data);
     if(data.name){
       if(data.picture){
         // ころころ追加
@@ -145,13 +144,16 @@ io.sockets.on('connection', function(socket) {
         userData.texture = player_texture_names[Math.floor(Math.random() * p_t_n_count)];
         userData.datatype = "player";
         userData.win = 0;
+        userData.name = data.name;
+        userData.picture = data.picture;
+        userData.userType = data.userType;
         corocoro.m_userData = userData;
         objs[socket.id] = corocoro;
         var position = corocoro.GetPosition();
         var x = (position.x * 32) + (gamedata.world.width / 2.0);
         var y = (position.y * -32) + (gamedata.world.height / 2.0);
         var angle = (corocoro.GetAngle() * -1);
-        var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:corocoro.m_userData.id, texture:corocoro.m_userData.texture, datatype:"you", name:corocoro.m_userData.name, picture:corocoro.m_userData.picture};
+        var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:corocoro.m_userData.id, texture:corocoro.m_userData.texture, datatype:"you", name:corocoro.m_userData.name, picture:corocoro.m_userData.picture, userType:corocoro.m_userData.userType};
         msgs[count] = xya;
         count++;
 
@@ -308,7 +310,7 @@ function doAnim() {
       var x = (position.x * 32) + (gamedata.world.width / 2.0);
       var y = (position.y * -32) + (gamedata.world.height / 2.0);
       var angle = (objs[i].GetAngle() * -1);
-      var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:objs[i].m_userData.id, texture:objs[i].m_userData.texture, datatype:"player", name:objs[i].m_userData.name, picture:objs[i].m_userData.texture.picture};
+      var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:objs[i].m_userData.id, texture:objs[i].m_userData.texture, datatype:"player", name:objs[i].m_userData.name, picture:objs[i].m_userData.picture, userType:objs[i].m_userData.userType};
       if(objs[i].m_contactList){
         xya.collision = 1;
       }
