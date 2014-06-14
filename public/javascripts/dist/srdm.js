@@ -469,6 +469,10 @@ Game.fn.emit = function(data) {
 	this._socket.emit('message', data);
 };
 
+Game.fn.emitInfo = function(data) {
+	this._socket.emit('message', data);
+};
+
 //コントローラ
 /**
  * コントローラで実行する処理

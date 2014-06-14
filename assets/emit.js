@@ -14,3 +14,7 @@ Game.fn.emit = function(data) {
 	data.id = myId;
 	this._socket.emit('message', data);
 };
+
+Game.fn.emitInfo = function(data) {
+	this._socket.emit('message', data);
+};

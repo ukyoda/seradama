@@ -39,7 +39,7 @@ $(function(){
 		//画像と名前を送信
 		var picture = $('#player-picture').val();
 		var name = $('#player-name').val();
-		game.emit({
+		game.emitInfo({
 			picture: picture,
 			name:name
 		});
