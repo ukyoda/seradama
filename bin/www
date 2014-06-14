@@ -79,7 +79,7 @@ var world = new b2d.b2World(worldAABB, gravity, doSleep);
 // add start
 var socketIO = require('socket.io');
 var io = socketIO.listen(server);
-//io.set("log level", 2);
+io.set("log level", 2);
 
 var getPosition = function(data) {
 	rotation = event.rotation;
