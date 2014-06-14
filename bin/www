@@ -121,6 +121,26 @@ io.sockets.on('connection', function(socket) {
     msgs[count] = xya;
     count++;
   }
+  // ユーザデータ送信(画像付き)   
+  for(var i in objs){
+    var position = objs[i].GetPosition();
+    var x = (position.x * 32) + (gamedata.world.width / 2.0);
+    var y = (position.y * -32) + (gamedata.world.height / 2.0);
+    var angle = (objs[i].GetAngle() * -1);
+    var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:objs[i].m_userData.id, texture:objs[i].m_userData.texture, datatype:"player", name:objs[i].m_userData.name, picture:objs[i].m_userData.picture, userType:objs[i].m_userData.userType};
+    if(objs[i].m_contactList){
+      xya.collision = 1;
+    }
+    msgs[count] = xya;
+    count++;
+  }
+  // ベストタイム
+  var bestTimes = require('../best_time.json');
+  if(bestTimes[stageName]){
+    var sendData = {datatype:"bestTime", time:getFormattedTime(bestTimes[stageName].time), userName:bestTimes[stageName].userName, userType:bestTimes[stageName].userType};
+    msgs[count] = sendData;
+    count++;
+  }
 
   // メッセージ送信
   socket.emit('message', {value: msgs});
@@ -181,8 +201,8 @@ io.sockets.on('connection', function(socket) {
         data.gravity.x = (Math.random() * 20.0) - 10.0;
         data.gravity.y = (Math.random() * 20.0) - 10.0;
       }
-      var ax = (data.gravity.x / Math.sqrt((Math.pow(data.gravity.x, 2) + Math.pow(data.gravity.y, 2)))) * (20.0);
-      var ay = (data.gravity.y / Math.sqrt((Math.pow(data.gravity.x, 2) + Math.pow(data.gravity.y, 2)))) * (20.0);
+      var ax = (data.gravity.x / Math.sqrt((Math.pow(data.gravity.x, 2) + Math.pow(data.gravity.y, 2)))) * (25.0);
+      var ay = (data.gravity.y / Math.sqrt((Math.pow(data.gravity.x, 2) + Math.pow(data.gravity.y, 2)))) * (25.0);
       obj.ApplyForce(new b2d.b2Vec2(ax, ay), obj.GetPosition());
     }
   });
@@ -203,22 +223,6 @@ io.sockets.on('connection', function(socket) {
 });
 
 function makeStage(){
-  if(startTime > 0){
-    var nowTime = new Date();
-    var pastTime = nowTime - startTime;
-    var bestTimes = require('../best_time.json');
-    if(bestTimes[stageName]){
-      var bestTime = bestTimes[stageName].time;
-      if(parseInt(bestTime) > parseInt(pastTime)){
-        bestTimes[stageName] = {time:pastTime};
-        fs.writeFile('./best_time.json', JSON.stringify(bestTimes));
-      }
-    }else{
-      bestTimes[stageName] = {time:pastTime};
-      fs.writeFile('./best_time.json', JSON.stringify(bestTimes));
-    }
-  }
-
   var stage = stages[Math.floor(Math.random() * stages.length)];
   kabes = [];
   goals = [];
@@ -291,6 +295,24 @@ function doAnim() {
       }
     }
     if(contact){
+
+      // ベストタイム系処理
+      if(startTime > 0){
+        var nowTime = new Date();
+        var pastTime = nowTime - startTime;
+        var bestTimes = require('../best_time.json');
+        if(bestTimes[stageName]){
+          var bestTime = bestTimes[stageName].time;
+          if(parseInt(bestTime) > parseInt(pastTime)){
+            bestTimes[stageName] = {time:pastTime, userName:contact.other.m_userData.name, userType:contact.other.m_userData.userType};
+            fs.writeFile('./best_time.json', JSON.stringify(bestTimes));
+          }
+        }else{
+          bestTimes[stageName] = {time:pastTime, userName:contact.other.m_userData.name, userType:contact.other.m_userData.userType};
+          fs.writeFile('./best_time.json', JSON.stringify(bestTimes));
+        }
+      }
+
       contact.other.m_userData.win += 1;
       var ranking = new Array();
       for(var i in objs){
@@ -340,7 +362,13 @@ function doAnim() {
         msgs[count] = xya;
         count++;
       }
-
+      // ベストタイム
+      var bestTimes = require('../best_time.json');
+      if(bestTimes[stageName]){
+        var sendData = {datatype:"bestTime", time:getFormattedTime(bestTimes[stageName].time), userName:bestTimes[stageName].userName, userType:bestTimes[stageName].userType};
+        msgs[count] = sendData;
+        count++;
+      }
     }
     
     for(var i in objs){
@@ -348,7 +376,8 @@ function doAnim() {
       var x = (position.x * 32) + (gamedata.world.width / 2.0);
       var y = (position.y * -32) + (gamedata.world.height / 2.0);
       var angle = (objs[i].GetAngle() * -1);
-      var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:objs[i].m_userData.id, texture:objs[i].m_userData.texture, datatype:"player", name:objs[i].m_userData.name, picture:objs[i].m_userData.picture, userType:objs[i].m_userData.userType};
+//      var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:objs[i].m_userData.id, texture:objs[i].m_userData.texture, datatype:"player", name:objs[i].m_userData.name, picture:objs[i].m_userData.picture, userType:objs[i].m_userData.userType};
+      var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:objs[i].m_userData.id, texture:objs[i].m_userData.texture, datatype:"player", name:objs[i].m_userData.name, userType:objs[i].m_userData.userType};
       if(objs[i].m_contactList){
         xya.collision = 1;
       }
@@ -358,13 +387,7 @@ function doAnim() {
 
     var nowTime = new Date();
     var pastTime = nowTime - startTime;
-    var hour = Math.floor(pastTime/(60*60*1000));  // '時間'取得
-    pastTime = pastTime-(hour*60*60*1000); 
-    minutes = Math.floor(pastTime/(60*1000)); // '分'取得
-    pastTime = pastTime-(minutes*60*1000);  
-    second = Math.floor(pastTime/1000);  // '秒'取得
-    milli = pastTime%1000; // 'ミリ秒'取得
-    var sTime = ("00" + hour).slice(-2) + ":" + ("00" + minutes).slice(-2) + ":" + ("00" + second).slice(-2) + "." + ("000" + milli).slice(-3);
+    var sTime = getFormattedTime(pastTime);
     var xyaTime = {datatype:"time", time:sTime};
     msgs[count] = xyaTime;
     count++;
@@ -373,5 +396,16 @@ function doAnim() {
   }, 1000/fps);
 }
 doAnim();
+
+function getFormattedTime(milli){
+  var hour = Math.floor(milli/(60*60*1000));  // '時間'取得
+  milli = milli-(hour*60*60*1000); 
+  var minutes = Math.floor(milli/(60*1000)); // '分'取得
+  milli = milli-(minutes*60*1000);  
+  var second = Math.floor(milli/1000);  // '秒'取得
+  milli = milli%1000; // 'ミリ秒'取得
+  var sTime = ("00" + hour).slice(-2) + ":" + ("00" + minutes).slice(-2) + ":" + ("00" + second).slice(-2) + "." + ("000" + milli).slice(-3);
+  return sTime;
+}
 
 // add end
