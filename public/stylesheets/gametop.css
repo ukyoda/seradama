@@ -114,11 +114,11 @@ body .login-index .login i {
 body .tutrial-page {
 	display: none;
 	position: absolute;
-	height: 600px;
-	width: 400px;
+	height: 400px;
+	width: 300px;
 	top: 10%;
 	left: 50%;
-	margin-left: -200px;
+	margin-left: -150px;
 	background: rgba(235, 177, 177, 0.97);
 	border-radius: 7px;
 	z-index: 10px;
@@ -175,8 +175,8 @@ body .tutrial-index .rightallow i{
 
 body .tutrial-img {
 	display: block;
-	height: 538px;
-	width: 342px;
+	height: 324px;
+	width: 243px;
 }
 
 body .top-footer {
