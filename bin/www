@@ -134,7 +134,7 @@ io.sockets.on('connection', function(socket) {
         userCount++;
         var corocoroDef = new b2d.b2BodyDef();
 //        corocoroDef.position.Set(-1 * (gamedata.world.width / 64.0) + 1.5, (gamedata.world.height / 64.0) - 1.5);
-        corocoroDef.position.Set(initPoint.x, initPoint.y);
+        corocoroDef.position.Set(initPoint.x + Math.random() -0.5, initPoint.y + Math.random() -0.5);
         var corocoro = world.CreateBody(corocoroDef);
         var corocoroShapeDef = new b2d.b2CircleDef();
         corocoroShapeDef.radius = 0.5;
@@ -238,7 +238,7 @@ function makeStage(){
       initPoint.x = b2dobj.x;
       initPoint.y = b2dobj.y;
       for(var i in objs){
-        objs[i].SetXForm(new b2d.b2Vec2(b2dobj.x, b2dobj.y, 0.0));
+        objs[i].SetXForm(new b2d.b2Vec2(b2dobj.x + Math.random() -0.5, b2dobj.y + Math.random() -0.5, 0.0));
       }
     }
   }
