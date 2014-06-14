@@ -232,7 +232,7 @@ function makeStage(){
       kabes[b2dobj.id] = kabe;
     }else if(b2dobj.datatype == "initPoint"){
       for(var i in objs){
-        objs[i].SetXForm(new b2d.b2Vec2(b2dobj.x, b2dobj.y, 0.0);
+        objs[i].SetXForm(new b2d.b2Vec2(b2dobj.x, b2dobj.y, 0.0));
       }
     }
   }
