@@ -1,6 +1,8 @@
+var webpage = require('webpage');
+var system = require('system');
 
-
-module.exports = function(page) {
+module.exports = function() {
+	var page = webpage.create();
 	//偽装関連
 	var userAgent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_1_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B206 Safari/7534.48.3';
 	page.customHeaders = {
@@ -55,6 +57,8 @@ module.exports = function(page) {
 		}
 		//phantomShutdown();
 	});
+
+	return page;
 
 };
 

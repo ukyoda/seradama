@@ -36,6 +36,13 @@ $(function(){
 		console.log('socket');
 		return game.socketConnect();
 	}).done(function(){
+		//画像と名前を送信
+		var picture = $('#player-picture').val();
+		var name = $('#player-name').val();
+		game.emit({
+			picture: picture,
+			name:name
+		});
 		//非同期で読み込むデータを全て読み込んだらプレイ
 		game.rescale.call(game);
 	});
