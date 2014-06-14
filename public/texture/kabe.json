@@ -48,6 +48,18 @@
 			},
 			"sourceSize":{"w":32, "h":32}
 		},
+		"kabe_005.png": {
+			"frame": {"x":0,"y":0,"w":128,"h":128},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x":0,
+				"y":0,
+				"w":128,
+				"h":128
+			},
+			"sourceSize":{"w":128, "h":128}
+		},
 		"kabe_999.png": {
 			"frame": {"x":0,"y":0,"w":64,"h":256},
 			"rotated": false,
