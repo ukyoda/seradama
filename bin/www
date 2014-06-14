@@ -34,6 +34,9 @@ var server = app.listen(app.get('port'), function() {
 });
 
 var startTime;
+var initPoint = {};
+initPoint.x = 0.0;
+initPoint.y = 0.0;
 
 // 世界
 var b2d = require("box2d");
@@ -130,7 +133,8 @@ io.sockets.on('connection', function(socket) {
         var msgs = [];
         userCount++;
         var corocoroDef = new b2d.b2BodyDef();
-        corocoroDef.position.Set(-1 * (gamedata.world.width / 64.0) + 1.5, (gamedata.world.height / 64.0) - 1.5);
+//        corocoroDef.position.Set(-1 * (gamedata.world.width / 64.0) + 1.5, (gamedata.world.height / 64.0) - 1.5);
+        corocoroDef.position.Set(initPoint.x + Math.random() -0.5, initPoint.y + Math.random() -0.5);
         var corocoro = world.CreateBody(corocoroDef);
         var corocoroShapeDef = new b2d.b2CircleDef();
         corocoroShapeDef.radius = 0.5;
@@ -199,7 +203,7 @@ function makeStage(){
     var b2dobj = stage[i];
     
     // ゴール配置
-    if(b2dobj.goal){
+    if(b2dobj.datatype == "goal"){
       var goalDef = new b2d.b2BodyDef();
       goalDef.position.Set(b2dobj.x, b2dobj.y);
       goalDef.angle = b2dobj.angle;
@@ -214,7 +218,7 @@ function makeStage(){
       goal.m_userData = userData;
 
       goals[b2dobj.id] = goal;
-    }else{
+    }else if(b2dobj.datatype == "kabe"){
       // 障害物追加
       var kabeDef = new b2d.b2BodyDef();
       kabeDef.position.Set(b2dobj.x, b2dobj.y);
@@ -230,6 +234,12 @@ function makeStage(){
       kabe.m_userData = userData;
 
       kabes[b2dobj.id] = kabe;
+    }else if(b2dobj.datatype == "initPoint"){
+      initPoint.x = b2dobj.x;
+      initPoint.y = b2dobj.y;
+      for(var i in objs){
+        objs[i].SetXForm(new b2d.b2Vec2(b2dobj.x + Math.random() -0.5, b2dobj.y + Math.random() -0.5), 0.0);
+      }
     }
   }
   startTime = new Date();
@@ -248,7 +258,13 @@ function doAnim() {
     var msgs = [];
     
     // ゴール判定
-    var contact = goals["goal"].m_contactList;
+//    var contact = goals["goal"].m_contactList;
+    for(var i in goals){
+      contact = goals[i].m_contactList;
+      if(contact){
+        break;
+      }
+    }
     if(contact){
       contact.other.m_userData.win += 1;
       var ranking = new Array();
@@ -300,9 +316,6 @@ function doAnim() {
         count++;
       }
 
-      for(var i in objs){
-        objs[i].SetXForm(new b2d.b2Vec2(-1 * (gamedata.world.width / 64.0) + 1.5 + Math.random(), (gamedata.world.height / 64.0) - 2.5 + Math.random()), 0.0);
-      }
     }
     
     for(var i in objs){
@@ -320,6 +333,16 @@ function doAnim() {
 
     var nowTime = new Date();
     var pastTime = nowTime - startTime;
+    var hour = Math.floor(pastTime/(60*60*1000));  // '時間'取得
+    pastTime = pastTime-(hour*60*60*1000); 
+    minutes = Math.floor(pastTime/(60*1000)); // '分'取得
+    pastTime = pastTime-(minutes*60*1000);  
+    second = Math.floor(pastTime/1000);  // '秒'取得
+    milli = pastTime%1000; // 'ミリ秒'取得
+    var sTime = ("00" + hour).slice(-2) + ":" + ("00" + minutes).slice(-2) + ":" + ("00" + second).slice(-2) + "." + ("000" + milli).slice(-3);
+    var xyaTime = {datatype:"time", time:sTime};
+    msgs[count] = xyaTime;
+    count++;
 
     io.sockets.emit('message', {value: msgs});
   }, 1000/fps);
