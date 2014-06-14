@@ -33,10 +33,12 @@ var server = app.listen(app.get('port'), function() {
   debug('Express server listening on port ' + server.address().port);
 });
 
-var startTime;
+var startTime = 0;
 var initPoint = {};
 initPoint.x = 0.0;
 initPoint.y = 0.0;
+
+var stageName = "";
 
 // 世界
 var b2d = require("box2d");
@@ -196,6 +198,22 @@ io.sockets.on('connection', function(socket) {
 });
 
 function makeStage(){
+  if(startTime > 0){
+    var nowTime = new Date();
+    var pastTime = nowTime - startTime;
+    var bestTimes = require('../best_time.json');
+    if(bestTimes[stageName]){
+      var bestTime = bestTimes[stageName].time;
+      if(parseInt(bestTime) > parseInt(pastTime)){
+        bestTimes[stageName] = {time:pastTime};
+        fs.writeFile('./best_time.json', JSON.stringify(bestTimes));
+      }
+    }else{
+      bestTimes[stageName] = {time:pastTime};
+      fs.writeFile('./best_time.json', JSON.stringify(bestTimes));
+    }
+  }
+
   var stage = stages[Math.floor(Math.random() * stages.length)];
   kabes = [];
   goals = [];
@@ -240,6 +258,8 @@ function makeStage(){
       for(var i in objs){
         objs[i].SetXForm(new b2d.b2Vec2(b2dobj.x + Math.random() -0.5, b2dobj.y + Math.random() -0.5), 0.0);
       }
+    }else if(b2dobj.datatype == "stageName"){
+      stageName = b2dobj.name;
     }
   }
   startTime = new Date();
