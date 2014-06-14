@@ -18,5 +18,5 @@
 	{"datatype":"kabe", "x":-9.8, "y":1.0, "w":2.0, "h":2.0,      "angle":0.75 ,"id":"kabe_001", "texture":"kabe_005.png"},
 	{"datatype":"kabe", "x": 1.5, "y":4.5, "w":0.5, "h":3.890625, "angle":2.30 ,"id":"kabe_002", "texture":"kabe_001.png"},
 	{"datatype":"kabe", "x": 5.5, "y":3.5, "w":0.5, "h":0.5, "angle":0.75,"id":"kabe_003", "texture":"kabe_004.png"},
-	{"datatype":"goal", "x": 2.0, "y":0.5, "w":0.5, "h":0.5, "angle":0.0 , "id":"goal", "texture":"goal.png", "goal":1}
+	{"datatype":"goal", "x": 2.0, "y":0.7, "w":0.5, "h":0.5, "angle":0.0 , "id":"goal", "texture":"goal.png", "goal":1}
 ]
