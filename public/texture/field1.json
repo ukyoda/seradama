@@ -1,29 +1,5 @@
 {
 	"frames": {
-		"chip_0.png": {
-		"frame": {"x":0,"y":164,"w":32,"h":32},
-			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {
-				"x":0,
-				"y":164,
-				"w":32,
-				"h":32
-			},
-			"sourceSize":{"w":32, "h":32}
-		},
-		"chip_1.png": {
-			"frame": {"x":0,"y":82,"w":32,"h":32},
-			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {
-				"x":0,
-				"y":82,
-				"w":32,
-				"h":32
-			},
-			"sourceSize":{"w":32, "h":32}
-		},
 		"goal.png": {
 			"frame": {"x":0,"y":0,"w":32,"h":32},
 			"rotated": false,
@@ -38,9 +14,9 @@
 		}
 	},
 	"meta": {
-		"image": "field/field.png",
+		"image": "field/goal.png",
 		"format": "RGBA8888",
-		"size": {"w":256,"h":512},
+		"size": {"w":32,"h":32},
 		"scale": "1"
 	}
 }
