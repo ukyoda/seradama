@@ -14,6 +14,11 @@ fs.readdir('./stage', function(err, files){
   }
 });
 
+var path = require("path");
+if(!path.existsSync("best_time.json")){
+  fs.writeFile('./best_time.json', JSON.stringify({}));
+}
+
 var player_textures = require('../public/texture/player.json');
 var player_texture_names = [];
 var p_t_n_count = 0;
