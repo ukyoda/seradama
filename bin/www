@@ -140,6 +140,10 @@ io.sockets.on('connection', function(socket) {
     var sendData = {datatype:"bestTime", time:getFormattedTime(bestTimes[stageName].time), userName:bestTimes[stageName].userName, userType:bestTimes[stageName].userType};
     msgs[count] = sendData;
     count++;
+  }else{
+    var sendData = {datatype:"bestTime", time:"99:99:99.999"};
+    msgs[count] = sendData;
+    count++;
   }
 
   // メッセージ送信
@@ -373,6 +377,10 @@ function doAnim() {
       var bestTimes = require('../best_time.json');
       if(bestTimes[stageName]){
         var sendData = {datatype:"bestTime", time:getFormattedTime(bestTimes[stageName].time), userName:bestTimes[stageName].userName, userType:bestTimes[stageName].userType};
+        msgs[count] = sendData;
+        count++;
+      }else{
+        var sendData = {datatype:"bestTime", time:"99:99:99.999"};
         msgs[count] = sendData;
         count++;
       }
