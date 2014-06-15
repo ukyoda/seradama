@@ -17,6 +17,7 @@
 		<script src="/javascripts/test.js"></script>
 		<link rel="stylesheet" href="/stylesheets/gracoro.css"></link>
 		<link rel="stylesheet" href="/stylesheets/gamedisplay.css"></link>
+		<link rel="stylesheet" href="/stylesheets/navigation.css"></link>
 		<link rel="stylesheet" href="/stylesheets/gameaudio.css"></link>
 		<link rel="stylesheet" href="/stylesheets/gamealert.css" ></link>
 		<script>
@@ -30,9 +31,23 @@
 		</script>
 	</head>
 	<body>
-		<div class="game-body">
+		<header class="game-header" id="game-header">
+			<div class="content">
+				<div class="float">
+					<div class="pull-left" id="current-time">
+						<span class="timescore-label">たいむ</span>
+						<span class="timescore"></span>
+					</div>
+					<div class="pull-right" id="best-time">
+						<span class="timescore-label">べすと</span>
+						<span class="timescore"></span>
+					</div>
+				</div>
+			</div>
+		</header>
+		<section class="game-body">
 			<div class="game-display" id="game-display"></div>
-		</div>
+		</section>
 		<input type="hidden" value="<%= img %>" id="player-picture"/>
 		<input type="hidden" value="<%= user %>" id="player-name"/>
 		<input type="hidden" value="<%= type %>" id="player-type"/>

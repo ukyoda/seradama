@@ -100,14 +100,13 @@ GameAlert.fn.createRankingAlert = function(rankers){
 
 };
 
-GameAlert.fn.createYourRankAlert = function(rankData, topCount){
+GameAlert.fn.createYourRankAlert = function(rankData){
 	var $layout = this.createLayout();
 	var $content = $layout.find('.content');
 	var name = rankData.sprite.name || rankData.sprite.id;
 	var img = rankData.sprite.img || "http://127.0.0.1/images/favicon.ico";
 	var rank = rankData.rank;
 	var count = rankData.data.win;
-	var countTopDiff = count - topCount;
 
 	$('<div/>').text('★あなたの順位★').appendTo($content);
 
@@ -124,7 +123,7 @@ GameAlert.fn.createYourRankAlert = function(rankData, topCount){
 	var $li = $('<li/>');
 	$('<div/>').addClass('grid rank').text(rank).appendTo($li);
 	createImgView(name, img).appendTo($li);
-	$('<div/>').addClass('grid-right count').text(count +" (" + countTopDiff + ")").appendTo($li);
+	$('<div/>').addClass('grid-right count').text(count).appendTo($li);
 	$ul.append($li);
 
 	return $layout;
@@ -207,7 +206,10 @@ var Game = function Game(manifest) {
 	};
 
 	//時間表示
-	this.playTime = "";
+	this.timeInfo = {
+		current: "",
+		best: ""
+	};
 
 	//メッセージ表示のインスタンスを生成する
 	this.alert = new GameAlert();
@@ -449,7 +451,10 @@ Game.fn.onMessage = function(data) {
 			that.congratulation(val);
 			break;
 		case "time":
-			that.playTime = val.time;
+			that.timeInfo.current = val.time;
+			break;
+		case "bestTime":
+			that.timeInfo.best = val.time;
 			break;
 		}
 	});
@@ -678,6 +683,8 @@ Game.fn.animate = function(){
 
 	//ウインドウサイズ取得
 	//this.rescale();
+	$('#current-time .timescore').text(this.timeInfo.current);
+	$('#best-time .timescore').text(this.timeInfo.best);
 
 	this.renderer.render(this.stage);
 	window.requestAnimFrame(function(){
@@ -719,7 +726,7 @@ Game.fn.congratulation = function(rankData){
 
 	goalAlert = this.alert.createGoalAlert(winner);
 	rankingAlert = this.alert.createRankingAlert(topRanker);
-	myRankAlert = this.alert.createYourRankAlert(myRankData, topRanker[0].data.win);
+	myRankAlert = this.alert.createYourRankAlert(myRankData);
 	messageAlert = this.alert.createMessageAlert();
 
 	deferred.then(function(){
