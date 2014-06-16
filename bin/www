@@ -14,8 +14,8 @@ fs.readdir('./stage', function(err, files){
   }
 });
 
-var path = require("path");
-if(!path.existsSync("best_time.json")){
+//var path = require("path");
+if(!fs.existsSync("best_time.json")){
   fs.writeFile('./best_time.json', JSON.stringify({}));
 }
 
