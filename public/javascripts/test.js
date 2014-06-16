@@ -1,5 +1,22 @@
 
 $(function(){
+
+	//ウインドウサイズ最適化
+	var gameDisplayRescale = function(){
+		var $header = $('#game-header');
+		var $display = $('#game-display');
+		var $window = $(window);
+		var displayPadding = 15;	//game-displayのpadding
+		var padding = $header.height() + displayPadding;	//html的なpadding
+		var height = $window.height() - padding - displayPadding;	//padding算出
+		//サイズ調整
+		$display.height(height).css({
+			"padding-top":padding,
+			"padding-bottom": displayPadding
+		});
+	};
+	gameDisplayRescale();
+
 	var Game = srdm.Game;
 	if(!Game.checkDeviceMotion()) {
 		window.alert('このゲームは加速度センサを使用します。\nご利用の端末では動作させる事が出来ません');
@@ -25,6 +42,7 @@ $(function(){
 
 	//画面サイズが変わったらリスケールする
 	$(window).on('resize',function(){
+		gameDisplayRescale();
 		game.rescale.call(game);
 	});
 

@@ -35,7 +35,10 @@ var Game = function Game(manifest) {
 	};
 
 	//時間表示
-	this.playTime = "";
+	this.timeInfo = {
+		current: "",
+		best: ""
+	};
 
 	//メッセージ表示のインスタンスを生成する
 	this.alert = new GameAlert();

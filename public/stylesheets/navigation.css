@@ -1,0 +1,28 @@
+.game-header {
+	position: fixed;
+	width: 100%;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.game-header .content {
+	background: #000;
+	color: #fff;
+	padding: 10px;
+	font-size: 1.0rem;
+	font-size: 10px;
+}
+
+
+.float:after {
+	clear: both;
+	content: ".";
+	visibility: hidden;
+}
+
+.float .pull-left {
+	float: left;
+}
+
+.float .pull-right {
+	float: right
+}

@@ -23,7 +23,10 @@ Game.fn.onMessage = function(data) {
 			that.congratulation(val);
 			break;
 		case "time":
-			that.playTime = val.time;
+			that.timeInfo.current = val.time;
+			break;
+		case "bestTime":
+			that.timeInfo.best = val.time;
 			break;
 		}
 	});

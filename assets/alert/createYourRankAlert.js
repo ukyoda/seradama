@@ -1,11 +1,12 @@
 
-GameAlert.fn.createYourRankAlert = function(rankData){
+GameAlert.fn.createYourRankAlert = function(rankData, topCount){
 	var $layout = this.createLayout();
 	var $content = $layout.find('.content');
 	var name = rankData.sprite.name || rankData.sprite.id;
 	var img = rankData.sprite.img || "http://127.0.0.1/images/favicon.ico";
 	var rank = rankData.rank;
 	var count = rankData.data.win;
+	var countTopDiff = count - topCount;
 
 	$('<div/>').text('★あなたの順位★').appendTo($content);
 
@@ -22,7 +23,7 @@ GameAlert.fn.createYourRankAlert = function(rankData){
 	var $li = $('<li/>');
 	$('<div/>').addClass('grid rank').text(rank).appendTo($li);
 	createImgView(name, img).appendTo($li);
-	$('<div/>').addClass('grid-right count').text(count).appendTo($li);
+	$('<div/>').addClass('grid-right count').text(count +" (" + countTopDiff + ")").appendTo($li);
 	$ul.append($li);
 
 	return $layout;

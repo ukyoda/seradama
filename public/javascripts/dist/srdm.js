@@ -207,7 +207,10 @@ var Game = function Game(manifest) {
 	};
 
 	//時間表示
-	this.playTime = "";
+	this.timeInfo = {
+		current: "",
+		best: ""
+	};
 
 	//メッセージ表示のインスタンスを生成する
 	this.alert = new GameAlert();
@@ -449,7 +452,10 @@ Game.fn.onMessage = function(data) {
 			that.congratulation(val);
 			break;
 		case "time":
-			that.playTime = val.time;
+			that.timeInfo.current = val.time;
+			break;
+		case "bestTime":
+			that.timeInfo.best = val.time;
 			break;
 		}
 	});
@@ -678,6 +684,8 @@ Game.fn.animate = function(){
 
 	//ウインドウサイズ取得
 	//this.rescale();
+	$('#current-time .timescore').text(this.timeInfo.current);
+	$('#best-time .timescore').text(this.timeInfo.best);
 
 	this.renderer.render(this.stage);
 	window.requestAnimFrame(function(){
@@ -710,7 +718,7 @@ Game.fn.congratulation = function(rankData){
 				rank: i+1,
 				data: data,
 				sprite: this.player
-			}
+			};
 		}
 		if(topRanker.length >= 3 && myRankData.rank) {
 			break;

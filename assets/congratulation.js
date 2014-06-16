@@ -22,7 +22,7 @@ Game.fn.congratulation = function(rankData){
 				rank: i+1,
 				data: data,
 				sprite: this.player
-			}
+			};
 		}
 		if(topRanker.length >= 3 && myRankData.rank) {
 			break;
@@ -31,7 +31,7 @@ Game.fn.congratulation = function(rankData){
 
 	goalAlert = this.alert.createGoalAlert(winner);
 	rankingAlert = this.alert.createRankingAlert(topRanker);
-	myRankAlert = this.alert.createYourRankAlert(myRankData);
+	myRankAlert = this.alert.createYourRankAlert(myRankData, topRanker[0].data.win);
 	messageAlert = this.alert.createMessageAlert();
 
 	deferred.then(function(){
