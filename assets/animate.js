@@ -5,7 +5,17 @@ Game.fn.animate = function(){
 	//ウインドウサイズ取得
 	//this.rescale();
 	$('#current-time .timescore').text(this.timeInfo.current);
-	$('#best-time .timescore').text(this.timeInfo.best);
+	if(this.timeInfo.nowDisplay) {
+		$('#best-time .timescore').text(this.timeInfo.best);
+	} else {
+		$('#best-time .timescore').text(this.timeInfo.bestPlayer);
+	}
+	if(this.timeInfo.fps > 180) {
+		this.timeInfo.nowDisplay = !this.timeInfo.nowDisplay;
+		this.timeInfo.fps = 0;
+	} else {
+		this.timeInfo.fps++;
+	}
 
 	this.renderer.render(this.stage);
 	window.requestAnimFrame(function(){

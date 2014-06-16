@@ -27,6 +27,7 @@ Game.fn.onMessage = function(data) {
 			break;
 		case "bestTime":
 			that.timeInfo.best = val.time;
+			that.timeInfo.bestPlayer = val.userName || "-";
 			break;
 		}
 	});

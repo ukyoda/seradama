@@ -12,6 +12,13 @@
 	font-size: 10px;
 }
 
+.game-header .content .timescore-label {
+	width: 30px;
+}
+.game-header .content .timescore {
+	width: 65px;
+	margin-left: 5px;
+}
 
 .float:after {
 	clear: both;

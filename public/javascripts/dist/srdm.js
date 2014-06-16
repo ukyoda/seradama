@@ -209,7 +209,10 @@ var Game = function Game(manifest) {
 	//時間表示
 	this.timeInfo = {
 		current: "",
-		best: ""
+		best: "",
+		bestPlayer: "",
+		fps: 0,
+		nowDisplay:0
 	};
 
 	//メッセージ表示のインスタンスを生成する
@@ -456,6 +459,7 @@ Game.fn.onMessage = function(data) {
 			break;
 		case "bestTime":
 			that.timeInfo.best = val.time;
+			that.timeInfo.bestPlayer = val.userName || "-";
 			break;
 		}
 	});
@@ -685,7 +689,17 @@ Game.fn.animate = function(){
 	//ウインドウサイズ取得
 	//this.rescale();
 	$('#current-time .timescore').text(this.timeInfo.current);
-	$('#best-time .timescore').text(this.timeInfo.best);
+	if(this.timeInfo.nowDisplay) {
+		$('#best-time .timescore').text(this.timeInfo.best);
+	} else {
+		$('#best-time .timescore').text(this.timeInfo.bestPlayer);
+	}
+	if(this.timeInfo.fps > 180) {
+		this.timeInfo.nowDisplay = !this.timeInfo.nowDisplay;
+		this.timeInfo.fps = 0;
+	} else {
+		this.timeInfo.fps++;
+	}
 
 	this.renderer.render(this.stage);
 	window.requestAnimFrame(function(){
