@@ -1,0 +1,58 @@
+{
+	"frames": {
+		"goal1.png": {
+			"frame": {"x":0,"y":0,"w":32,"h":32},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x":0,
+				"y":0,
+				"w":32,
+				"h":32
+			},
+			"sourceSize":{"w":32, "h":32}
+		},
+		"goal2.png": {
+			"frame": {"x":0,"y":82px,"w":32,"h":32},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x":0,
+				"y":0,
+				"w":32,
+				"h":32
+			},
+			"sourceSize":{"w":32, "h":32}
+		},
+		"goal3.png": {
+			"frame": {"x":0,"y":164px,"w":32,"h":32},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x":0,
+				"y":0,
+				"w":32,
+				"h":32
+			},
+			"sourceSize":{"w":32, "h":32}
+		},
+		"goal4.png": {
+			"frame": {"x":0,"y":246px,"w":32,"h":32},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x":0,
+				"y":0,
+				"w":32,
+				"h":32
+			},
+			"sourceSize":{"w":32, "h":32}
+		}
+	},
+	"meta": {
+		"image": "field/goal_move.png",
+		"format": "RGBA8888",
+		"size": {"w":32,"h":32},
+		"scale": "1"
+	}
+}
