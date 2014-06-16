@@ -39,6 +39,7 @@ var server = app.listen(app.get('port'), function() {
 });
 
 var startTime = 0;
+var maxTime = 60000;
 var initPoint = {};
 initPoint.x = 0.0;
 initPoint.y = 0.0;
@@ -296,6 +297,14 @@ function doAnim() {
     world.Step(1.0/fps, iterations);
     var count = 0;
     var msgs = [];
+
+    // タイムアウト判定
+    if((new Date() - startTime) > maxTime){
+      startTime = new Date();
+      for(var i in objs){
+        objs[i].SetXForm(new b2d.b2Vec2(initPoint.x + Math.random() -0.5, initPoint.y + Math.random() -0.5), 0.0);
+      }
+    } 
     
     // ゴール判定
 //    var contact = goals["goal"].m_contactList;
@@ -306,7 +315,6 @@ function doAnim() {
       }
     }
     if(contact){
-
       // ベストタイム系処理
       if(startTime > 0){
         var nowTime = new Date();
