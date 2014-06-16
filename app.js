@@ -155,6 +155,11 @@ app.get('/auth/twitter/callback',
   }
 );
 
+// Twitter認証でキャンセルした場合
+app.get('/login/twitter', function(req, res){
+  res.redirect('/');
+});
+
 // とりあえずログアウトも
 app.get('/logout/twitter', function(req, res){
   delete req.session.gracoro;
