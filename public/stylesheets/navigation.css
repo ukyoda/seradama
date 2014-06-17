@@ -12,8 +12,9 @@
 	font-size: 10px;
 }
 
-.game-header .content .timescore-label {
-	width: 35px;
+.game-header .content .fa {
+	float: left;
+	line-height: 13px;
 }
 .game-header .content .timescore {
 	width: 65px;
