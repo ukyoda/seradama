@@ -29,3 +29,15 @@ body .game-body .game-display canvas {
 a {
 	color: #00B7FF;
 }
+
+body .game-body .game-controller {
+	display: none;
+	position: fixed;
+	bottom: 10px;
+	left: 10px;
+	background: #888;
+	opacity: 0.8;
+	width: 100px;
+	height: 100px;
+	z-index: 1000;
+}

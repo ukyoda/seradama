@@ -23,6 +23,7 @@ import "static/scale";
 import "loadTexture";
 import "onCompleteTexture";
 
+
 //ゲームデータロード
 import "loadGameData";
 import "onCompleteGameData";
@@ -36,6 +37,11 @@ import "emit";
 //コントローラ
 import "onController";
 import "setDeviceMotion";
+import "setController";
+//タッチコントローラ
+import "touchcontroller/";
+//加速度コントローラ
+import "gravitycontroller/";
 
 //プレイヤー関連
 import "removePlayer";

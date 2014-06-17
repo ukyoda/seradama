@@ -80,9 +80,7 @@ var Game = function Game(manifest) {
 	this.stage.addChild(this.menuLayer);
 
 	//コントローラ関連の情報を記憶する為のオブジェクト (プライベート)
-	this._controller = {
-		gravity:{x: 0, y:0}
-	};
+	this._controller = null;
 
 	//Socket.ioを記憶しておく為のメンバ
 	this._socket = null;

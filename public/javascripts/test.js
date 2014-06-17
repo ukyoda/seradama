@@ -18,10 +18,7 @@ $(function(){
 	gameDisplayRescale();
 
 	var Game = srdm.Game;
-	if(!Game.checkDeviceMotion()) {
-		window.alert('このゲームは加速度センサを使用します。\nご利用の端末では動作させる事が出来ません');
-		return;
-	}
+
 	var game = new Game({
 		target: "#game-display"
 	});
@@ -30,10 +27,29 @@ $(function(){
 
 
 	var gravityDirection = Game.getGravityDirection();
-	$(window).on('devicemotion', function(e) {
-		var x = event.accelerationIncludingGravity.x || 0;
-		var y = event.accelerationIncludingGravity.y || 0;
-		game.setDeviceMotion({x: x * gravityDirection, y: y * gravityDirection});
+	//即時関数とDeferredを用いてコントローラを決定する
+	(function(){
+		var deferred = $.Deferred();
+		if(!Game.checkDeviceMotion()) {
+			deferred.reject();
+			return deferred;
+		}
+		$(window).one('devicemotion',function(){
+			if(event.accelerationIncludingGravity.x === null) {
+				deferred.reject();
+			} else {
+				deferred.resolve();
+			}
+		});
+		return deferred;
+	}()).done(function(){
+		//加速度が利用可能なら重力コントローラを使う
+		game.setController('gravity', gravityDirection);
+	}).fail(function(){
+		window.alert('ご利用の端末では加速度を利用する事が出来ません。画面左下のタッチコントローラを使って操作してください');
+		//加速度が利用できないならタッチコントローラを使う
+		$('#game-controller').css('display','block');
+		game.setController('touch', "#game-controller");
 	});
 
 	window.setInterval(function(){

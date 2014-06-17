@@ -2,9 +2,10 @@
  * コントローラで実行する処理
  */
 Game.fn.onController = function(){
-	//if(!this.player) {return ;}
-	var gravity = this._controller.gravity;
+	if(!this._controller) {
+		return;
+	}
 	this.emit({
-		gravity: gravity
+		gravity: this._controller.val
 	});
 };
