@@ -7,14 +7,13 @@
 .game-header .content {
 	background: #000;
 	color: #fff;
-	padding: 10px;
+	padding: 5px 10px;
 	font-size: 1.0rem;
 	font-size: 10px;
 }
 
 .game-header .content .fa {
 	float: left;
-	line-height: 11px;
 }
 .game-header .content .timescore {
 	width: 65px;
