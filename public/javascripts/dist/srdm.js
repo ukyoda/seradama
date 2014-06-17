@@ -469,7 +469,6 @@ Game.fn.onMessage = function(data) {
 Game.fn.onDisconnected = function(){
 
 };
-
 /**
  * データ更新
  */
