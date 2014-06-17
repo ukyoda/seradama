@@ -14,6 +14,7 @@
 
 .game-header .content .fa {
 	float: left;
+	line-height: 12px;
 }
 .game-header .content .timescore {
 	width: 65px;
