@@ -1,6 +1,6 @@
 
 import "constructor";
-
+import "setRankimg";
 import "createLayout";
 import "createGoalAlert";
 import "createRankingAlert";

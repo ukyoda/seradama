@@ -21,7 +21,7 @@ GameAlert.fn.createRankingAlert = function(rankers){
 		var name = data.sprite.name || data.sprite.id;
 		var img = data.sprite.img || "http://127.0.0.1/images/favicon.ico";
 		var $li = $('<li/>');
-		$('<div/>').addClass('grid rank').text(rank).appendTo($li);
+		$('<div/>').addClass('grid rank').addClass(GameAlert.fn.setRankimg(rank)).text(rank).appendTo($li);
 		createImgView(name, img).appendTo($li);
 		$('<div/>').addClass('grid-right count').text(count).appendTo($li);
 		$ul.append($li);

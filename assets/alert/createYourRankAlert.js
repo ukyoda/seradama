@@ -21,7 +21,7 @@ GameAlert.fn.createYourRankAlert = function(rankData, topCount){
 	};
 
 	var $li = $('<li/>');
-	$('<div/>').addClass('grid rank').text(rank).appendTo($li);
+	$('<div/>').addClass('grid rank').addClass(this.setRankimg(rank)).text(rank).appendTo($li);
 	createImgView(name, img).appendTo($li);
 	$('<div/>').addClass('grid-right count').text(count +" (" + countTopDiff + ")").appendTo($li);
 	$ul.append($li);

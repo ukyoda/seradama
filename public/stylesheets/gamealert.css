@@ -33,25 +33,25 @@
 
 .alert .content ul.ranking li .rank {
 	width: 2.5em;
-	/*height: 1em;*/
+	height: 1em;
 	text-align: center;
 }
 
 .alert .content ul.ranking li .gold {
 	background: url(/texture/icons/gold.png) no-repeat top left;
-	background-position: center -5px;
+	background-position: center;
 	background-size: contain ;
 }
 
 .alert .content ul.ranking li .silver {
 	background: url(/texture/icons/silver.png) no-repeat top left;
-	background-position: center -5px;
+	background-position: center;
 	background-size: contain ;
 }
 
 .alert .content ul.ranking li .blonze {
 	background: url(/texture/icons/blonze.png) no-repeat top left;
-	background-position: center -5px;
+	background-position: center;
 	background-size: contain ;
 }
 
