@@ -755,19 +755,19 @@ Game.fn.updatePlayer = function(data){
 				mask = new PIXI.Graphics();
 				mask.beginFill();
 				mask.drawCircle(0,0,ballSize/2);
-				mask.color = 0x000000;
+				mask.color = 0xffffff;
 				mask.endFill();
 				sprite.mask = mask;
+				container.addChild(sprite);
 				container.addChild(mask);
 			} catch (e){
 				sprite = new PIXI.Sprite.fromFrame(textureId);
 				sprite.width=ballSize;sprite.height=ballSize;
+				container.addChild(sprite);
 			}
 		}
 		//スプライトのアンカーの位置を修正
 		sprite.anchor.set(0.5,0.5);
-		//スプライトをコンテナに登録
-		container.addChild(sprite);
 		//付加情報をコンテナにつける
 		container.name = name;
 		container.id = id;
