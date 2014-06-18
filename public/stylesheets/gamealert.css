@@ -33,13 +33,27 @@
 
 .alert .content ul.ranking li .rank {
 	width: 2.5em;
-	height: 1em;
+	/*height: 1em;*/
 	text-align: center;
-	background: url(/texture/icons/rankingicons.png) no-repeat top left;
-	background-position: 0 0;
-	background-size: cover ;
 }
 
+.alert .content ul.ranking li .gold {
+	background: url(/texture/icons/gold.png) no-repeat top left;
+	background-position: center -5px;
+	background-size: contain ;
+}
+
+.alert .content ul.ranking li .silver {
+	background: url(/texture/icons/silver.png) no-repeat top left;
+	background-position: center -5px;
+	background-size: contain ;
+}
+
+.alert .content ul.ranking li .blonze {
+	background: url(/texture/icons/blonze.png) no-repeat top left;
+	background-position: center -5px;
+	background-size: contain ;
+}
 
 .alert .content ul.ranking li .name {
 	margin-left:1em;
@@ -48,6 +62,7 @@
 	width: 1.2em;
 	height: 1.2em;
 	vertical-align: middle;
+	border-radius: 30px;
 }
 
 .alert .content ul.ranking li:after {
