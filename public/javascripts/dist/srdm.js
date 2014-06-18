@@ -640,7 +640,7 @@ TouchController.fn.setEvent = function(){
 			that.onTouchEnd.apply(that, arguments);
 		});
 	});
-	this.$canvas.on('mousemove', $.proxy(this.onTouch,this));
+	$(window).on('mousemove', $.proxy(this.onTouch,this));
 };
 
 TouchController.fn.clear=function(){
@@ -745,6 +745,8 @@ Game.fn.updatePlayer = function(data){
 		if(userType === "guest") {
 			sprite = new PIXI.Sprite.fromFrame(textureId);
 			sprite.width=ballSize;sprite.height=ballSize;
+			sprite.position.set(0,0);
+			container.addChild(sprite);
 		} else {
 			try {
 				//スプライト作成
@@ -753,6 +755,7 @@ Game.fn.updatePlayer = function(data){
 
 				//マスク作成
 				mask = new PIXI.Graphics();
+				mask.position.set(0,0);
 				mask.beginFill();
 				mask.drawCircle(0,0,ballSize/2);
 				mask.color = 0xffffff;
@@ -763,6 +766,7 @@ Game.fn.updatePlayer = function(data){
 			} catch (e){
 				sprite = new PIXI.Sprite.fromFrame(textureId);
 				sprite.width=ballSize;sprite.height=ballSize;
+				sprite.position.set(0,0);
 				container.addChild(sprite);
 			}
 		}

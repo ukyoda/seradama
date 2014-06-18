@@ -14,5 +14,5 @@ TouchController.fn.setEvent = function(){
 			that.onTouchEnd.apply(that, arguments);
 		});
 	});
-	this.$canvas.on('mousemove', $.proxy(this.onTouch,this));
+	$(window).on('mousemove', $.proxy(this.onTouch,this));
 };
