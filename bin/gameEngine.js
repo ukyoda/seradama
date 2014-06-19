@@ -5,12 +5,11 @@ var gamedata = require('../public/game/gamedata.json');
 var engine = {};
 
 // 世界
-engine.createWorld = function (){
+engine.createWorld = function (x, y, doSleep){
   var worldAABB = new b2d.b2AABB();
   worldAABB.lowerBound.Set(-100.0, -100.0);
   worldAABB.upperBound.Set(100.0, 100.0);
-  var gravity = new b2d.b2Vec2(0.0, 0.0);
-  var doSleep = true;
+  var gravity = new b2d.b2Vec2(x, y);
   var world = new b2d.b2World(worldAABB, gravity, doSleep);
   return world;
 }
@@ -40,7 +39,25 @@ engine.createNewDynamicObjCircle = function(obj, world, datatype){
 
 // Box2Dオブジェクト(箱)作成
 engine.createNewDynamicObjBox = function(obj, world, datatype){
-  
+  var body = new b2d.b2BodyDef();
+  body.position.Set(obj.x, obj.y);
+  body.angle = obj.angle;
+  var b2dObj = world.CreateBody(body);
+  var shape = new b2d.b2PolygonDef();
+  shape.SetAsBox(obj.w, obj.h);
+  shape.density = 1.0;
+  shape.friction = 0.5;
+  shape.restitution = 0.7;
+  b2dObj.CreateShape(shape);
+  b2dObj.SetMassFromShapes();
+
+  var userData = {};
+  userData.id = obj.id;
+  userData.texture = obj.texture;
+  userData.datatype = datatype;
+  b2dObj.m_userData = userData;
+
+  return b2dObj;
 }
 
 // ころころ追加
@@ -79,5 +96,20 @@ engine.applyUserGravity = function(obj, x, y){
   var ay = (y / Math.sqrt((Math.pow(x, 2) + Math.pow(y, 2)))) * (25.0);
   obj.ApplyForce(new b2d.b2Vec2(ax, ay), obj.GetPosition());
 }
+
+// プレイヤー位置設定
+engine.setPlayerPositionWithRandom = function(obj, x, y){
+  obj.SetXForm(new b2d.b2Vec2(x + Math.random() - 0.5, y + Math.random() - 0.5), 0.0);
+};
+
+// あれをいい感じにする
+engine.collapseMessage = function(obj){
+  x = (Math.random() * 2.0) - 1.0;
+  y = (Math.random() * 20.0);
+  var center = obj.GetPosition();
+  x2 = center.x + (Math.random() * 1.0) - 0.5;
+  y2 = center.y + (Math.random() * 1.0) - 0.5;
+  obj.ApplyForce(new b2d.b2Vec2(x, y), new b2d.b2Vec2(x2, y2));
+};
 
 module.exports = engine;

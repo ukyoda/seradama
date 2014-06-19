@@ -25,4 +25,10 @@ tools.getFormattedTime = function(time){
   return sTime;
 } 
 
+// 経過時間
+tools.getPastTime = function(startTime){
+  var pastTime = new Date() - startTime;
+  return pastTime;
+} 
+
 module.exports = tools;

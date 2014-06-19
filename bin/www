@@ -4,9 +4,10 @@ var app = require('../app');
 var engine = require('./gameEngine');
 var net = require('./gameInterface');
 
-var gamedata = require('../public/game/gamedata.json');
 var stages = [];
 stages[0] = require('../stage/stage1.json');
+
+var message = require('../message/time_up.json');
 
 var fs = require('fs');
 fs.readdir('./stage', function(err, files){
@@ -16,7 +17,6 @@ fs.readdir('./stage', function(err, files){
   }
 });
 
-//var path = require("path");
 if(!fs.existsSync("best_time.json")){
   fs.writeFile('./best_time.json', JSON.stringify({}));
 }
@@ -32,6 +32,7 @@ for(var i in player_textures.frames){
 var objs = {};
 var goals = {};
 var kabes = {};
+var message_dot = {};
 var userCount = 0;
 
 app.set('port', process.env.PORT || 80);
@@ -41,7 +42,7 @@ var server = app.listen(app.get('port'), function() {
 });
 
 var startTime = 0;
-var maxTime = 60000;
+var maxTime = 30000;
 var initPoint = {};
 initPoint.x = 0.0;
 initPoint.y = 0.0;
@@ -49,8 +50,10 @@ initPoint.y = 0.0;
 var stageName = "";
 
 // 世界
-var b2d = require("box2d");
-var world = engine.createWorld();
+var world = engine.createWorld(0.0, 0.0, true);
+
+// 平行世界
+var funnyWorld = engine.createWorld(0.0, -10.0, true);
 
 // add start
 var socketIO = require('socket.io');
@@ -90,6 +93,11 @@ io.sockets.on('connection', function(socket) {
     var sendData = {datatype:"bestTime", time:"99:99:99.999"};
     msgs.push(sendData);
   }
+  // メッセージデータ送信
+  for(var i in message_dot){
+    var sendData = net.makeSendData(message_dot[i], 'object');
+    msgs.push(sendData);
+  }
 
   // メッセージ送信
   socket.emit('message', {value: msgs});
@@ -118,7 +126,7 @@ io.sockets.on('connection', function(socket) {
         io.sockets.emit('message', {value: msgsAll});
 
         // ボールを初期位置へ 
-        corocoro.SetXForm(new b2d.b2Vec2(initPoint.x + Math.random() -0.5, initPoint.y + Math.random() -0.5), 0.0);
+        engine.setPlayerPositionWithRandom(corocoro, initPoint.x, initPoint.y);
 
       }
     }else if(data.gravity){
@@ -150,8 +158,8 @@ io.sockets.on('connection', function(socket) {
 function makeStage(){
   var stage = stages[Math.floor(Math.random() * stages.length)];
   // メモリリーク起きる？
-  kabes = [];
-  goals = [];
+  kabes = {};
+  goals = {};
 
   for(var i in stage){
     var stageObj = stage[i];
@@ -179,7 +187,7 @@ function makeStage(){
 
     // ボールを初期位置へ
     for(var i in objs){
-      objs[i].SetXForm(new b2d.b2Vec2(initPoint.x + Math.random() -0.5, initPoint.y + Math.random() -0.5), 0.0);
+      engine.setPlayerPositionWithRandom(objs[i], initPoint.x, initPoint.y);
     }
 
   }
@@ -195,14 +203,31 @@ var interval;
 function mainLoop() {
   interval = setInterval(function() {
     world.Step(1.0/fps, iterations);
+    funnyWorld.Step(1.0/fps, iterations);
     var msgs = [];
+    var sendData = {};
 
     // タイムアウト判定
     if((new Date() - startTime) > maxTime){
       startTime = new Date();
+
+      // メッセージ
+      for(var i in message_dot){
+        // オブジェクト削除
+        sendData = net.makeSendDeleteData(message_dot[i], 'object');
+        msgs.push(sendData);
+        funnyWorld.DestroyBody(message_dot[i]);
+        delete message_dot[i];
+      }
+      for(var i in message){
+        var messageObj = message[i];
+        message_dot[messageObj.id] = engine.createNewDynamicObjBox(messageObj, funnyWorld, 'object');
+        engine.collapseMessage(message_dot[messageObj.id]);
+      }
+
+      // ボール位置を初期位置へ  
       for(var i in objs){
-        // ボール位置を初期位置へ  
-        objs[i].SetXForm(new b2d.b2Vec2(initPoint.x + Math.random() -0.5, initPoint.y + Math.random() -0.5), 0.0);
+        engine.setPlayerPositionWithRandom(objs[i], initPoint.x, initPoint.y);
       }
     } 
     
@@ -243,7 +268,7 @@ function mainLoop() {
           return b.win - a.win;
         }
       );
-      var sendData = {datatype:"ranking", data:ranking, win_id:contact.other.m_userData.id};
+      sendData = {datatype:"ranking", data:ranking, win_id:contact.other.m_userData.id};
       msgs.push(sendData);
 
       // ステージ削除
@@ -287,6 +312,12 @@ function mainLoop() {
       sendData = net.makeSendData(objs[i], 'player');
       msgs.push(sendData);
     }
+
+    // メッセージ位置update
+    for(var i in message_dot){
+      sendData = net.makeSendData(message_dot[i], 'object');
+      msgs.push(sendData);
+    }  
 
     // 経過時間表示するやつ
     var nowTime = new Date();
