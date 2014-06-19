@@ -78,13 +78,13 @@ io.sockets.on('connection', function(socket) {
   }
   // ユーザデータ送信(画像付き)   
   for(var i in objs){
-    var sendData = net.makeSendData(objs[i], 'player');
+    var sendData = net.makeSendData(objs[i], 'player', objs[i].m_userData.picture);
     msgs.push(sendData);
   }
   // ベストタイム
   var bestTimes = require('../best_time.json');
   if(bestTimes[stageName]){
-    var sendData = {datatype:"bestTime", time:getFormattedTime(bestTimes[stageName].time), userName:bestTimes[stageName].userName, userType:bestTimes[stageName].userType};
+    var sendData = net.makeSendData(bestTimes[stageName], 'bestTime');
     msgs.push(sendData);
   }else{
     var sendData = {datatype:"bestTime", time:"99:99:99.999"};
@@ -97,54 +97,28 @@ io.sockets.on('connection', function(socket) {
   // メッセージを受けたときの処理
   socket.on('message', function(data) {
     var obj = objs[socket.id];
-    if(obj){
-      //
-    }else{
-      //
-    }
     if(data.name){
       if(data.picture){
         // ころころ追加
-        var count = 0;
         var msgs = [];
         userCount++;
-        var corocoroDef = new b2d.b2BodyDef();
-//        corocoroDef.position.Set(-1 * (gamedata.world.width / 64.0) + 1.5, (gamedata.world.height / 64.0) - 1.5);
-        corocoroDef.position.Set(initPoint.x + Math.random() -0.5, initPoint.y + Math.random() -0.5);
-        var corocoro = world.CreateBody(corocoroDef);
-        var corocoroShapeDef = new b2d.b2CircleDef();
-        corocoroShapeDef.radius = 0.65625;
-        corocoroShapeDef.density = 1.0;
-        corocoroShapeDef.friction = 0.5;
-        corocoroShapeDef.restitution = 0.7;
-        corocoro.CreateShape(corocoroShapeDef);
-        corocoro.SetMassFromShapes();
-        var userData = {};
-        userData.id = "ball_" + userCount;
-        userData.texture = player_texture_names[Math.floor(Math.random() * p_t_n_count)];
-        userData.datatype = "player";
-        userData.win = 0;
-        userData.name = data.name;
-        userData.picture = data.picture;
-        userData.userType = data.userType;
-        corocoro.m_userData = userData;
+        data.id = "ball_" + userCount;
+        data.texture = player_texture_names[Math.floor(Math.random() * p_t_n_count)];
+        var corocoro = engine.createNewCorocoro(data, world, 'player');
         objs[socket.id] = corocoro;
-        var position = corocoro.GetPosition();
-        var x = (position.x * 32) + (gamedata.world.width / 2.0);
-        var y = (position.y * -32) + (gamedata.world.height / 2.0);
-        var angle = (corocoro.GetAngle() * -1);
-        var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:corocoro.m_userData.id, texture:corocoro.m_userData.texture, datatype:"you", name:corocoro.m_userData.name, picture:corocoro.m_userData.picture, userType:corocoro.m_userData.userType};
-        msgs[count] = xya;
-        count++;
-
+        var sendData = net.makeSendData(corocoro, 'you', data.picture);
+        msgs.push(sendData);
         // メッセージ送信
         socket.emit('message', {value: msgs});
 
         // 全体に送信
-        var sendAll = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:corocoro.m_userData.id, texture:corocoro.m_userData.texture, datatype:corocoro.m_userData.datatype, name:corocoro.m_userData.name, picture:corocoro.m_userData.picture, userType:corocoro.m_userData.userType};
+        var sendAll = net.makeSendData(corocoro, 'player', data.picture);
         var msgsAll = [];
         msgsAll.push(sendAll);
         io.sockets.emit('message', {value: msgsAll});
+
+        // ボールを初期位置へ 
+        corocoro.SetXForm(new b2d.b2Vec2(initPoint.x + Math.random() -0.5, initPoint.y + Math.random() -0.5), 0.0);
 
       }
     }else if(data.gravity){
@@ -153,13 +127,8 @@ io.sockets.on('connection', function(socket) {
       }else{
         return;
       }
-      if(data.gravity.x == 0 || data.gravity.y == 0){
-        data.gravity.x = (Math.random() * 20.0) - 10.0;
-        data.gravity.y = (Math.random() * 20.0) - 10.0;
-      }
-      var ax = (data.gravity.x / Math.sqrt((Math.pow(data.gravity.x, 2) + Math.pow(data.gravity.y, 2)))) * (25.0);
-      var ay = (data.gravity.y / Math.sqrt((Math.pow(data.gravity.x, 2) + Math.pow(data.gravity.y, 2)))) * (25.0);
-      obj.ApplyForce(new b2d.b2Vec2(ax, ay), obj.GetPosition());
+      // ボールにユーザーのGravityを反映 
+      engine.applyUserGravity(obj, data.gravity.x, data.gravity.y);
     }
   });
 
@@ -168,9 +137,9 @@ io.sockets.on('connection', function(socket) {
     console.log("disconnect:" + socket.id);
     delObj = objs[socket.id];
     if(delObj){
-      var xya = {x:-100.0, y:-100.0, angle:0.0, id:objs[socket.id].m_userData.id, delflag:1, datatype:"player"};
+      var sendData = net.makeSendDeleteData(delObj, 'player');
       var msgs = [];
-      msgs[0] = xya;
+      msgs.push(sendData);
       delete objs[socket.id];
       io.sockets.emit('message', {value: msgs});
       world.DestroyBody(delObj);
@@ -180,52 +149,39 @@ io.sockets.on('connection', function(socket) {
 
 function makeStage(){
   var stage = stages[Math.floor(Math.random() * stages.length)];
+  // メモリリーク起きる？
   kabes = [];
   goals = [];
+
   for(var i in stage){
-    var b2dobj = stage[i];
-    
-    // ゴール配置
-    if(b2dobj.datatype == "goal"){
-      var goalDef = new b2d.b2BodyDef();
-      goalDef.position.Set(b2dobj.x, b2dobj.y);
-      goalDef.angle = b2dobj.angle;
-      var goal = world.CreateBody(goalDef);
-      var goalShapeDef = new b2d.b2PolygonDef();
-      goalShapeDef.SetAsBox(b2dobj.w, b2dobj.h);
-      goal.CreateShape(goalShapeDef);
+    var stageObj = stage[i];
 
-      var userData = {};
-      userData.id = b2dobj.id;
-      userData.texture = b2dobj.texture;
-      goal.m_userData = userData;
-
-      goals[b2dobj.id] = goal;
-    }else if(b2dobj.datatype == "kabe"){
-      // 障害物追加
-      var kabeDef = new b2d.b2BodyDef();
-      kabeDef.position.Set(b2dobj.x, b2dobj.y);
-      kabeDef.angle = b2dobj.angle;
-      var kabe = world.CreateBody(kabeDef);
-      var kabeShapeDef = new b2d.b2PolygonDef();
-      kabeShapeDef.SetAsBox(b2dobj.w, b2dobj.h);
-      kabe.CreateShape(kabeShapeDef);
-
-      var userData = {};
-      userData.id = b2dobj.id;
-      userData.texture = b2dobj.texture;
-      kabe.m_userData = userData;
-
-      kabes[b2dobj.id] = kabe;
-    }else if(b2dobj.datatype == "initPoint"){
-      initPoint.x = b2dobj.x;
-      initPoint.y = b2dobj.y;
-      for(var i in objs){
-        objs[i].SetXForm(new b2d.b2Vec2(b2dobj.x + Math.random() -0.5, b2dobj.y + Math.random() -0.5), 0.0);
-      }
-    }else if(b2dobj.datatype == "stageName"){
-      stageName = b2dobj.name;
+    switch(stageObj.datatype){
+      case 'goal':
+        // ゴール配置
+        goals[stageObj.id] = engine.createStaticObj(stageObj, world, stageObj.datatype);
+        break;
+      case 'kabe':
+        // 障害物追加
+        kabes[stageObj.id] = engine.createStaticObj(stageObj, world, stageObj.datatype);
+        break;
+      case 'initPoint':
+        // ボール初期位置設定
+        initPoint = {x:stageObj.x, y:stageObj.y};
+        break;
+      case 'stageName':
+        // すてーじねーむ
+        stageName = stageObj.name;
+        break;
+      default:
+        break;
     }
+
+    // ボールを初期位置へ
+    for(var i in objs){
+      objs[i].SetXForm(new b2d.b2Vec2(initPoint.x + Math.random() -0.5, initPoint.y + Math.random() -0.5), 0.0);
+    }
+
   }
   startTime = new Date();
 }
@@ -236,22 +192,21 @@ var iterations = 10;
 var fps = 15;
 var interval;
 
-function doAnim() {
+function mainLoop() {
   interval = setInterval(function() {
     world.Step(1.0/fps, iterations);
-    var count = 0;
     var msgs = [];
 
     // タイムアウト判定
     if((new Date() - startTime) > maxTime){
       startTime = new Date();
       for(var i in objs){
+        // ボール位置を初期位置へ  
         objs[i].SetXForm(new b2d.b2Vec2(initPoint.x + Math.random() -0.5, initPoint.y + Math.random() -0.5), 0.0);
       }
     } 
     
     // ゴール判定
-//    var contact = goals["goal"].m_contactList;
     for(var i in goals){
       contact = goals[i].m_contactList;
       if(contact){
@@ -276,6 +231,7 @@ function doAnim() {
         }
       }
 
+      // ランキング処理
       contact.other.m_userData.win += 1;
       var ranking = new Array();
       for(var i in objs){
@@ -287,92 +243,61 @@ function doAnim() {
           return b.win - a.win;
         }
       );
-      var xya = {datatype:"ranking", data:ranking, win_id:contact.other.m_userData.id};
-      msgs[count] = xya;
-      count++;
+      var sendData = {datatype:"ranking", data:ranking, win_id:contact.other.m_userData.id};
+      msgs.push(sendData);
 
-      // ステージ再作成 
+      // ステージ削除
       for(var i in kabes){
-        xya = {x:0.0, y:0.0, angle:0.0, id:kabes[i].m_userData.id, texture:kabes[i].m_userData.texture, datatype:"object", delflag:1};
-        msgs[count] = xya;
-        count++;
-//        delete kabes[i];
+        sendData = net.makeSendDeleteData(kabes[i], 'object');
+        msgs.push(sendData);
         world.DestroyBody(kabes[i]);
       }
-      // ゴール再作成
+      // ゴール削除
       for(var i in goals){
-        xya = {x:0.0, y:0.0, angle:0.0, id:goals[i].m_userData.id, texture:goals[i].m_userData.texture, datatype:"object", delflag:1};
-        msgs[count] = xya;
-        count++;
+        sendData = net.makeSendDeleteData(goals[i], 'object');
+        msgs.push(sendData);
         world.DestroyBody(goals[i]);
       }
+      // ステージ再作成
       makeStage();
       for(var i in kabes){
-        var position = kabes[i].GetPosition();
-        var x = (position.x * 32) + (gamedata.world.width / 2.0);
-        var y = (position.y * -32) + (gamedata.world.height / 2.0);
-        var angle = (kabes[i].GetAngle() * -1);
-        var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:kabes[i].m_userData.id, texture:kabes[i].m_userData.texture, datatype:"object"};
-        msgs[count] = xya;
-        count++;
+        // 障害物送信データ作成
+        sendData = net.makeSendData(kabes[i], 'object');
+        msgs.push(sendData);
       }
       for(var i in goals){
-        var position = goals[i].GetPosition();
-        var x = (position.x * 32) + (gamedata.world.width / 2.0);
-        var y = (position.y * -32) + (gamedata.world.height / 2.0);
-        var angle = (goals[i].GetAngle() * -1);
-        var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:goals[i].m_userData.id, texture:goals[i].m_userData.texture, datatype:"object"};
-        msgs[count] = xya;
-        count++;
+        // ゴール送信データ作成
+        sendData = net.makeSendData(goals[i], 'object');
+        msgs.push(sendData);
       }
       // ベストタイム
       var bestTimes = require('../best_time.json');
       if(bestTimes[stageName]){
-        var sendData = {datatype:"bestTime", time:getFormattedTime(bestTimes[stageName].time), stageName:stageName, userName:bestTimes[stageName].userName, userType:bestTimes[stageName].userType};
-        msgs[count] = sendData;
-        count++;
+        sendData = net.makeSendData(bestTimes[stageName], 'bestTime');
+        sendData.stageName = stageName;
+        msgs.push(sendData);
       }else{
-        var sendData = {datatype:"bestTime", time:"99:99:99.999", stageName:stageName};
-        msgs[count] = sendData;
-        count++;
+        sendData = {datatype:"bestTime", time:"99:99:99.999", stageName:stageName};
+        msgs.push(sendData);
       }
     }
     
+    // ボール位置update
     for(var i in objs){
-      var position = objs[i].GetPosition();
-      var x = (position.x * 32) + (gamedata.world.width / 2.0);
-      var y = (position.y * -32) + (gamedata.world.height / 2.0);
-      var angle = (objs[i].GetAngle() * -1);
-//      var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:objs[i].m_userData.id, texture:objs[i].m_userData.texture, datatype:"player", name:objs[i].m_userData.name, picture:objs[i].m_userData.picture, userType:objs[i].m_userData.userType};
-      var xya = {x:x.toFixed(3), y:y.toFixed(3), angle:angle.toFixed(3), id:objs[i].m_userData.id, texture:objs[i].m_userData.texture, datatype:"player", name:objs[i].m_userData.name, userType:objs[i].m_userData.userType};
-      if(objs[i].m_contactList){
-        xya.collision = 1;
-      }
-      msgs[count] = xya;
-      count++;
+      sendData = net.makeSendData(objs[i], 'player');
+      msgs.push(sendData);
     }
 
+    // 経過時間表示するやつ
     var nowTime = new Date();
     var pastTime = nowTime - startTime;
-    var sTime = getFormattedTime(pastTime);
-    var xyaTime = {datatype:"time", time:sTime};
-    msgs[count] = xyaTime;
-    count++;
+    sendData = net.makeSendData({time:pastTime, datatype:'time'}, 'time');
+    msgs.push(sendData);
 
+    // まとめて送信
     io.sockets.emit('message', {value: msgs});
   }, 1000/fps);
 }
-doAnim();
-
-function getFormattedTime(milli){
-  var hour = Math.floor(milli/(60*60*1000));  // '時間'取得
-  milli = milli-(hour*60*60*1000); 
-  var minutes = Math.floor(milli/(60*1000)); // '分'取得
-  milli = milli-(minutes*60*1000);  
-  var second = Math.floor(milli/1000);  // '秒'取得
-  milli = milli%1000; // 'ミリ秒'取得
-  var sTime = ("00" + hour).slice(-2) + ":" + ("00" + minutes).slice(-2) + ":" + ("00" + second).slice(-2) + "." + ("000" + milli).slice(-3);
-  return sTime;
-}
+mainLoop();
 
 // add end
