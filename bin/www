@@ -3,6 +3,7 @@ var debug = require('debug')('sera-dev2');
 var app = require('../app');
 var engine = require('./gameEngine');
 var net = require('./gameInterface');
+var tools = require('./tools');
 
 var stages = [];
 stages[0] = require('../stage/stage1.json');
@@ -229,7 +230,18 @@ function mainLoop() {
       for(var i in objs){
         engine.setPlayerPositionWithRandom(objs[i], initPoint.x, initPoint.y);
       }
-    } 
+    }
+
+    // 3秒でメッセージ削除
+    if(tools.getPastTime(startTime) > 3000){
+      for(var i in message_dot){
+        // オブジェクト削除
+        sendData = net.makeSendDeleteData(message_dot[i], 'object');
+        msgs.push(sendData);
+        funnyWorld.DestroyBody(message_dot[i]);
+        delete message_dot[i];
+      }
+    }  
     
     // ゴール判定
     for(var i in goals){
