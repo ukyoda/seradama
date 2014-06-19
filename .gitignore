@@ -4,3 +4,4 @@ bower_components
 twitter_secret.json
 best_time.json
 log
+.DS_Store

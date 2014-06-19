@@ -33,11 +33,15 @@ a {
 body .game-body .game-controller {
 	display: none;
 	position: fixed;
-	bottom: 10px;
-	left: 10px;
+	bottom: 30px;
+	left: 50%;
+	right: 50%;
+	margin-left: -50px;
 	background: #888;
-	opacity: 0.8;
+	opacity: 0.7;
 	width: 100px;
 	height: 100px;
-	z-index: 1000;
+}
+body.game-body .game-controller canvas {
+	z-index; 1000;
 }
