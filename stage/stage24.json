@@ -21,7 +21,7 @@
 	{"datatype":"kabe", "x":-4.5, "y": -2.0, "w":2.0, "h":2.0, "angle":0.75 ,"id":"kabe_004", "texture":"kabe_005.png"},
 	{"datatype":"kabe", "x": 4.5, "y": -2.0, "w":2.0, "h":2.0, "angle":0.75 ,"id":"kabe_005", "texture":"kabe_005.png"},
 	{"datatype":"kabe", "x": 0.0, "y": -7.0, "w":2.0, "h":2.0, "angle":0.75 ,"id":"kabe_006", "texture":"kabe_005.png"},
-	{"datatype":"kabe", "x":-6.5, "y":-10.0, "w":2.0, "h":2.0, "angle":0.0 ,"id":"kabe_007", "texture":"kabe_004.png"},
-	{"datatype":"kabe", "x": 6.5, "y":-10.0, "w":2.0, "h":2.0, "angle":0.0 ,"id":"kabe_008", "texture":"kabe_004.png"},
+	{"datatype":"kabe", "x":-6.5, "y":-10.0, "w":0.5, "h":0.5, "angle":0.0 ,"id":"kabe_007", "texture":"kabe_004.png"},
+	{"datatype":"kabe", "x": 6.5, "y":-10.0, "w":0.5, "h":0.5, "angle":0.0 ,"id":"kabe_008", "texture":"kabe_004.png"},
 	{"datatype":"goal", "x": 0.0, "y":-13.0, "w":0.5, "h":0.5, "angle":0.0 , "id":"goal", "texture":"goal.png", "goal":1}
 ]
