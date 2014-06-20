@@ -6,7 +6,7 @@ var net = require('./gameInterface');
 var tools = require('./tools');
 
 var stages = [];
-stages[0] = require('../stage/stage1.json');
+stages[0] = require('../stage/stage0.json');
 
 var message = require('../message/time_up.json');
 
@@ -195,6 +195,20 @@ function makeStage(){
   startTime = new Date();
 }
 makeStage();
+
+function makeFunnyStage(){
+  var stage = stages[0];
+  for(var i in stage){
+    switch(stage[i].datatype){
+      case 'kabe':
+        engine.createStaticObj(stage[i], funnyWorld, stage[i].datatype);
+        break;
+      default:
+        break;
+    }
+  }
+}
+makeFunnyStage();
 
 // 精度
 var iterations = 10;
