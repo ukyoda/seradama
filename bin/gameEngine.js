@@ -4,6 +4,14 @@ var gamedata = require('../public/game/gamedata.json');
 
 var engine = {};
 
+// 精度
+var iterations = 10;
+var fps = 15;
+var interval;
+
+// コールバック関数
+var functions = [];  
+
 // 世界
 engine.createWorld = function (x, y, doSleep){
   var worldAABB = new b2d.b2AABB();
@@ -12,39 +20,39 @@ engine.createWorld = function (x, y, doSleep){
   var gravity = new b2d.b2Vec2(x, y);
   var world = new b2d.b2World(worldAABB, gravity, doSleep);
   return world;
-}
+};
 
 // Box2Dオブジェクト(障害物)作成
-engine.createStaticObj = function(obj, world, datatype){
+engine.createStaticObj = function(json, world, datatype){
   var body = new b2d.b2BodyDef();
-  body.position.Set(obj.x, obj.y);
-  body.angle = obj.angle;
+  body.position.Set(json.x, json.y);
+  body.angle = json.angle;
   var b2dObj = world.CreateBody(body);
   var shape = new b2d.b2PolygonDef();
-  shape.SetAsBox(obj.w, obj.h);
+  shape.SetAsBox(json.w, json.h);
   b2dObj.CreateShape(shape);
 
   var userData = {};
-  userData.id = obj.id;
-  userData.texture = obj.texture;
+  userData.id = json.id;
+  userData.texture = json.texture;
   b2dObj.m_userData = userData;
 
   return b2dObj;
-}
+};
 
 // Box2Dオブジェクト(丸)作成
-engine.createNewDynamicObjCircle = function(obj, world, datatype){
+engine.createNewDynamicObjCircle = function(json, world, datatype){
   
-}
+};
 
 // Box2Dオブジェクト(箱)作成
-engine.createNewDynamicObjBox = function(obj, world, datatype){
+engine.createNewDynamicObjBox = function(json, world, datatype){
   var body = new b2d.b2BodyDef();
-  body.position.Set(obj.x, obj.y);
-  body.angle = obj.angle;
+  body.position.Set(json.x, json.y);
+  body.angle = json.angle;
   var b2dObj = world.CreateBody(body);
   var shape = new b2d.b2PolygonDef();
-  shape.SetAsBox(obj.w, obj.h);
+  shape.SetAsBox(json.w, json.h);
   shape.density = 1.0;
   shape.friction = 0.5;
   shape.restitution = 0.7;
@@ -52,16 +60,16 @@ engine.createNewDynamicObjBox = function(obj, world, datatype){
   b2dObj.SetMassFromShapes();
 
   var userData = {};
-  userData.id = obj.id;
-  userData.texture = obj.texture;
+  userData.id = json.id;
+  userData.texture = json.texture;
   userData.datatype = datatype;
   b2dObj.m_userData = userData;
 
   return b2dObj;
-}
+};
 
 // ころころ追加
-engine.createNewCorocoro = function(obj, world, datatype){
+engine.createNewCorocoro = function(json, world, datatype){
   var corocoroDef = new b2d.b2BodyDef();
   corocoroDef.position.Set(-90.0, -90.0);
   var corocoro = world.CreateBody(corocoroDef);
@@ -74,17 +82,17 @@ engine.createNewCorocoro = function(obj, world, datatype){
   corocoro.SetMassFromShapes();
 
   var userData = {};
-  userData.id = obj.id;
-  userData.texture = obj.texture;
+  userData.id = json.id;
+  userData.texture = json.texture;
   userData.datatype = datatype;
   userData.win = 0;
-  userData.name = obj.name;
-  userData.picture = obj.picture;
-  userData.userType = obj.userType;
+  userData.name = json.name;
+  userData.picture = json.picture;
+  userData.userType = json.userType;
   corocoro.m_userData = userData;
 
   return corocoro;
-}
+};
 
 // gravity反映
 engine.applyUserGravity = function(obj, x, y){
@@ -95,7 +103,7 @@ engine.applyUserGravity = function(obj, x, y){
   var ax = (x / Math.sqrt((Math.pow(x, 2) + Math.pow(y, 2)))) * (25.0);
   var ay = (y / Math.sqrt((Math.pow(x, 2) + Math.pow(y, 2)))) * (25.0);
   obj.ApplyForce(new b2d.b2Vec2(ax, ay), obj.GetPosition());
-}
+};
 
 // プレイヤー位置設定
 engine.setPlayerPositionWithRandom = function(obj, x, y){
@@ -104,7 +112,7 @@ engine.setPlayerPositionWithRandom = function(obj, x, y){
 
 // あれをいい感じにする
 engine.collapseMessage = function(obj){
-  x = (Math.random() * 2.0) - 1.0;
+  x = (Math.random() * 20.0) - 10.0;
   y = (Math.random() * 20.0);
   var center = obj.GetPosition();
   x2 = center.x + (Math.random() * 1.0) - 0.5;

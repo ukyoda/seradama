@@ -43,7 +43,7 @@ var server = app.listen(app.get('port'), function() {
 });
 
 var startTime = 0;
-var maxTime = 30000;
+var maxTime = 180000;
 var initPoint = {};
 initPoint.x = 0.0;
 initPoint.y = 0.0;
@@ -54,7 +54,8 @@ var stageName = "";
 var world = engine.createWorld(0.0, 0.0, true);
 
 // 平行世界
-var funnyWorld = engine.createWorld(0.0, -10.0, true);
+var funnyWorld = engine.createWorld(0.0, -20.0, true);
+var funnyWorldIsAlive = false;
 
 // add start
 var socketIO = require('socket.io');
@@ -158,6 +159,7 @@ io.sockets.on('connection', function(socket) {
 
 function makeStage(){
   var stage = stages[Math.floor(Math.random() * stages.length)];
+  nowStage = stage;
   // メモリリーク起きる？
   kabes = {};
   goals = {};
@@ -196,19 +198,32 @@ function makeStage(){
 }
 makeStage();
 
-function makeFunnyStage(){
-  var stage = stages[0];
+// メッセージ表示するときは外枠つくる
+function makeFunnyStage(stage, objType){
+  var createObj = {};
+  var funnyStage = stage.concat();
+  switch(objType){
+    case 'static':
+      createObj = engine.createStaticObj;
+      break;
+    case 'dynamic':
+      createObj = engine.createNewDynamicObjBox;
+      break;
+    default:
+      break;
+  }
+
   for(var i in stage){
-    switch(stage[i].datatype){
+    funnyStage[i].id = "funny_" + funnyStage[i].id;
+    switch(funnyStage[i].datatype){
       case 'kabe':
-        engine.createStaticObj(stage[i], funnyWorld, stage[i].datatype);
-        break;
+        createObj(funnyStage[i], funnyWorld, funnyStage[i].datatype);
+        break;        
       default:
         break;
     }
   }
 }
-makeFunnyStage();
 
 // 精度
 var iterations = 10;
@@ -218,7 +233,7 @@ var interval;
 function mainLoop() {
   interval = setInterval(function() {
     world.Step(1.0/fps, iterations);
-    funnyWorld.Step(1.0/fps, iterations);
+    if(funnyWorldIsAlive) funnyWorld.Step(1.0/fps, iterations);
     var msgs = [];
     var sendData = {};
 
@@ -227,6 +242,8 @@ function mainLoop() {
       startTime = new Date();
 
       // メッセージ
+      funnyWorldIsAlive = true;
+      makeFunnyStage(stages[0], 'static');
       for(var i in message_dot){
         // オブジェクト削除
         sendData = net.makeSendDeleteData(message_dot[i], 'object');
@@ -237,7 +254,7 @@ function mainLoop() {
       for(var i in message){
         var messageObj = message[i];
         message_dot[messageObj.id] = engine.createNewDynamicObjBox(messageObj, funnyWorld, 'object');
-        engine.collapseMessage(message_dot[messageObj.id]);
+//        engine.collapseMessage(message_dot[messageObj.id]);
       }
 
       // ボール位置を初期位置へ  
@@ -255,6 +272,10 @@ function mainLoop() {
         funnyWorld.DestroyBody(message_dot[i]);
         delete message_dot[i];
       }
+      for(var funnyObj = funnyWorld.m_bodyList; funnyObj; funnyObj = funnyObj.m_next){
+        funnyWorld.DestroyBody(funnyObj);
+      }
+      funnyWorldIsAlive = false;
     }  
     
     // ゴール判定
