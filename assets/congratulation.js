@@ -24,9 +24,11 @@ Game.fn.congratulation = function(rankData){
 				sprite: this.player
 			};
 		}
-		if(topRanker.length >= 3 && myRankData.rank) {
-			break;
-		}
+		//王冠情報更新
+		hash[data.id].updateCrown(i+1);
+		//if(topRanker.length >= 3 && myRankData.rank) {
+		//	break;
+		//}
 	}
 
 	goalAlert = this.alert.createGoalAlert(winner);
