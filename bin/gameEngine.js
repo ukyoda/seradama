@@ -112,8 +112,8 @@ engine.setPlayerPositionWithRandom = function(obj, x, y){
 
 // あれをいい感じにする
 engine.collapseObjects = function(obj){
-  var x = (Math.random() * 2000.0) - 1000.0;
-  var y = (Math.random() * 2000.0) - 1000.0;
+  var x = ((Math.random() * 500.0) - 250.0) * (obj.m_mass);
+  var y = ((Math.random() * 500.0) - 250.0) * (obj.m_mass);
   var center = obj.GetPosition();
   var x2 = center.x + (Math.random() * 1.0) - 0.5;
   var y2 = center.y + (Math.random() * 1.0) - 0.5;
