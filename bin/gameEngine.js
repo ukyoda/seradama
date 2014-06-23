@@ -96,7 +96,7 @@ engine.createNewCorocoro = function(json, world, datatype){
 
 // gravity反映
 engine.applyUserGravity = function(obj, x, y){
-  if(x == 0 || y == 0){
+  if(x === 0 || y === 0){
     x = (Math.random() * 20.0) - 10.0;
     y = (Math.random() * 20.0) - 10.0;
   }
@@ -111,12 +111,12 @@ engine.setPlayerPositionWithRandom = function(obj, x, y){
 };
 
 // あれをいい感じにする
-engine.collapseMessage = function(obj){
-  x = (Math.random() * 20.0) - 10.0;
-  y = (Math.random() * 20.0);
+engine.collapseObjects = function(obj){
+  var x = (Math.random() * 2000.0) - 1000.0;
+  var y = (Math.random() * 2000.0) - 1000.0;
   var center = obj.GetPosition();
-  x2 = center.x + (Math.random() * 1.0) - 0.5;
-  y2 = center.y + (Math.random() * 1.0) - 0.5;
+  var x2 = center.x + (Math.random() * 1.0) - 0.5;
+  var y2 = center.y + (Math.random() * 1.0) - 0.5;
   obj.ApplyForce(new b2d.b2Vec2(x, y), new b2d.b2Vec2(x2, y2));
 };
 
