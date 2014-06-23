@@ -216,7 +216,7 @@ function getNextStage(){
 // メッセージ表示するときの枠
 function makeMessageFrame(stage){
 //  var stageCopy = stage.concat();
-  for(var i in stageCopy){
+  for(var i in stage){
 //    stageCopy[i].id = 'funny_' + stageCopy[i].id;
     switch(stage[i].datatype){
       case 'kabe':
