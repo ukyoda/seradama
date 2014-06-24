@@ -11,8 +11,12 @@ Game.fn.socketConnect = function(socketURL) {
 		deferred.resolve();
 	});
 
-	this._socket.on('message', function(data){
-		that.onMessage.call(that, data);
+	this._socket.on('message', function(){
+		that.onMessage.apply(that, arguments);
+	});
+
+	this._socket.on('disconnect', function(){
+		that.onDisconnected.apply(that, arguments);
 	});
 
 	return deferred;

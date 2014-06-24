@@ -548,8 +548,12 @@ Game.fn.socketConnect = function(socketURL) {
 		deferred.resolve();
 	});
 
-	this._socket.on('message', function(data){
-		that.onMessage.call(that, data);
+	this._socket.on('message', function(){
+		that.onMessage.apply(that, arguments);
+	});
+
+	this._socket.on('disconnect', function(){
+		that.onDisconnected.apply(that, arguments);
 	});
 
 	return deferred;
@@ -560,6 +564,7 @@ Game.fn.socketConnect = function(socketURL) {
  */
 
 Game.fn.onMessage = function(data) {
+	if(!data){return;}
 	var that = this;
 	data.value.forEach(function(val, index){
 		var datatype = val.datatype || 'object';
@@ -593,7 +598,8 @@ Game.fn.onMessage = function(data) {
 
 
 Game.fn.onDisconnected = function(){
-
+	window.alert("セッションが切れました。ログアウトします");
+	window.location.href="/logout/twitter";
 };
 /**
  * データ更新
