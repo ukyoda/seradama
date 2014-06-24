@@ -22,7 +22,7 @@ engine.createWorld = function (x, y, doSleep){
   return world;
 };
 
-// Box2Dオブジェクト(障害物)作成
+// Box2Dオブジェクト(障害物箱)作成
 engine.createStaticObj = function(json, world, datatype){
   var body = new b2d.b2BodyDef();
   body.position.Set(json.x, json.y);
@@ -40,9 +40,44 @@ engine.createStaticObj = function(json, world, datatype){
   return b2dObj;
 };
 
+// Box2Dオブジェクト(障害物丸)作成
+engine.createStaticObjCircle = function(json, world, datatype){
+  var body = new b2d.b2BodyDef();
+  body.position.Set(json.x, json.y);
+  body.angle = json.angle;
+  var b2dObj = world.CreateBody(body);
+  var shape = new b2d.b2CircleDef();
+  shape.radius = json.h;
+  b2dObj.CreateShape(shape);
+
+  var userData = {};
+  userData.id = json.id;
+  userData.texture = json.texture;
+  b2dObj.m_userData = userData;
+
+  return b2dObj;
+};
+
 // Box2Dオブジェクト(丸)作成
 engine.createNewDynamicObjCircle = function(json, world, datatype){
-  
+  var body = new b2d.b2BodyDef();
+  body.position.Set(json.x, json.y);
+  body.angle = json.angle;
+  var b2dObj = world.CreateBody(body);
+  var shape = new b2d.b2CircleDef();
+  shape.radius = json.h;
+  shape.density = 1.0;
+  shape.friction = 0.5;
+  shape.restitution = 0.7;
+  b2dObj.CreateShape(shape);
+  b2dObj.SetMassFromShapes();
+
+  var userData = {};
+  userData.id = json.id;
+  userData.texture = json.texture;
+  b2dObj.m_userData = userData;
+
+  return b2dObj;
 };
 
 // Box2Dオブジェクト(箱)作成

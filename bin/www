@@ -182,6 +182,10 @@ function makeStage(stage){
         // 障害物追加
         kabes[stageObj.id] = engine.createStaticObj(stageObj, world, stageObj.datatype);
         break;
+      case 'maru':
+        // 丸い障害物追加
+        kabes[stageObj.id] = engine.createStaticObjCircle(stageObj, world, stageObj.datatype);
+        break;
       case 'initPoint':
         // ボール初期位置設定
         initPoint = {x:stageObj.x, y:stageObj.y};
@@ -250,6 +254,9 @@ function makeFunnyStage(stage, objType){
     switch(stage[i].datatype){
       case 'kabe':
         funnyKabes[stage[i].id] = createObj(stage[i], funnyWorld, stage[i].datatype);
+        break;
+      case 'maru':
+        funnyKabes[stage[i].id] = engine.createNewDynamicObjCircle(stage[i], funnyWorld, stage[i].datatype);
         break;
       case 'goal':
         funnyGoals[stage[i].id] = createObj(stage[i], funnyWorld, stage[i].datatype);
