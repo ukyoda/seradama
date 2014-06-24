@@ -435,7 +435,7 @@ function mainLoop() {
     var nowTime = new Date();
     var pastTime = nowTime - startTime;
     sendData = net.makeSendData({time:pastTime, datatype:'time'}, 'time');
-    msgs.push(sendData);
+    if(!newStageFlag) msgs.push(sendData);
 
     // まとめて送信
     io.sockets.emit('message', {value: msgs});

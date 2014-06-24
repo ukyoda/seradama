@@ -108,6 +108,7 @@ engine.applyUserGravity = function(obj, x, y){
 // プレイヤー位置設定
 engine.setPlayerPositionWithRandom = function(obj, x, y){
   obj.SetXForm(new b2d.b2Vec2(x + Math.random() - 0.5, y + Math.random() - 0.5), 0.0);
+  obj.SetLinearVelocity(new b2d.b2Vec2(0.0, 0,0));
 };
 
 // あれをいい感じにする
