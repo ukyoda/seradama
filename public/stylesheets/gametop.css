@@ -10,6 +10,7 @@ body .top-discriptor {
 }
 
 body .top-title {
+	color: rgb(70, 64, 64);
 	padding-top: 30px;
 	font-size: 159%;
 	font-weight: bold;
@@ -146,8 +147,8 @@ body .tutrial-index {
 }
 body .tutrial-index li {
 	position: absolute;
-	top: 0;
-	height: 90%;
+	top: 12px;
+	height: 82%;
 	cursor: pointer;
 	z-index: 5;
 	width: 30%;
@@ -167,7 +168,7 @@ body .tutrial-index .leftallow i{
 }
 
 body .tutrial-index .rightallow{
-	right: 0;
+	right: -4px;
 }
 
 body .tutrial-index .rightallow i{
@@ -176,7 +177,11 @@ body .tutrial-index .rightallow i{
 body .tutrial-img {
 	display: block;
 	height: 324px;
-	width: 243px;
+}
+
+body #tutorial-msg {
+	padding-top: 5px;
+	text-align: center;
 }
 
 body .top-footer {
