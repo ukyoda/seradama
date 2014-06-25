@@ -40,7 +40,6 @@ GameAudio.fn.mute = function(){
 		this.src.muted = true;
 	}
 };
-
 //アラートメッセージ操作オブジェクト読み込み
 
 
@@ -177,6 +176,123 @@ GameAlert.fn.animate = function($content){
 
 	return deferred;
 
+};
+//プレイヤーオブジェクト
+
+
+/**
+ * プレイヤーオブジェクト（DisplayObjectContainerを継承する）
+ * @return {[type]} [description]
+ */
+var Player = (function(){
+	var key;
+	var Parent = PIXI.DisplayObjectContainer;
+
+	//コンストラクタ
+	var Player = function(data){
+		this._Parent = Parent;
+		//コンストラクタ継承
+		Parent.apply(this);
+
+		this.ballSize = 42;
+		this.name = data.name;
+		this.id = data.id;
+		this.img = data.picture;
+
+		this.data = {
+			mask: null,
+			sprite: null,
+			crown: null
+		};
+		//スプライト作成
+		this._createSprite(data);
+	};
+
+
+	Player.fn = Player.prototype;
+	//DisplayObjectContainerのプロトタイプを継承
+	for(key in Parent.prototype) {
+		Player.fn[key] = Parent.prototype[key];
+	}
+
+	return Player;
+
+}());
+
+Player.fn._createTwitter = function(data){
+	var sprite, mask;
+	try {
+		sprite = new PIXI.Sprite.fromImage(data.picture);
+		mask = this._createMask();
+		sprite.mask = mask;
+		this.addChild(sprite);
+		this.addChild(mask);
+		this.data.mask = mask;
+		this.data.sprite = sprite;
+		sprite.anchor.set(0.5, 0.5);
+	} catch(e) {
+		this._createGuest(data);
+	}
+};
+
+Player.fn._createGuest = function(data){
+	var sprite = new PIXI.Sprite.fromFrame(data.texture);
+	sprite.width = this.ballSize;
+	sprite.height = this.ballSize;
+	sprite.position.set(0,0);
+	sprite.anchor.set(0.5, 0.5);
+	this.addChild(sprite);
+	this.data.sprite = sprite;
+
+};
+
+Player.fn._createMask = function(data){
+	var mask = new PIXI.Graphics();
+	mask.position.set(0,0);
+	mask.beginFill();
+	mask.drawCircle(0,0,this.ballSize/2);
+	mask.color = 0xffffff;
+	mask.endFill();
+	return mask;
+};
+Player.fn._createSprite = function(data){
+	switch(data.userType) {
+	case 'guest':
+		this._createGuest(data);
+		break;
+	default:
+		this._createTwitter(data);
+		break;
+	}
+};
+
+Player.fn.setCrown = function(texture){
+	var crown = new PIXI.Sprite.fromImage(texture);
+	crown.position.set(0, -this.ballSize);
+	crown.anchor.set(0.5, 0.5);
+	this.data.crown = crown;
+	this.addChild(crown);
+};
+
+Player.fn.removeCrown = function(){
+	var crown = this.data.crown;
+	if(crown) {
+		this.removeCrown(crown);
+		this.data.crown = undefined;
+	}
+};
+
+Player.fn.updateCrown = function(rank){
+	rank = window.parseInt(rank, 10);
+	if(rank === 1) {
+		this.setCrown('/texture/icons/gold.png');
+	} else if(rank === 2) {
+		this.setCrown('/texture/icons/silver.png');
+	} else if(rank === 3) {
+		this.setCrown('/texture/icons/blonze.png');
+	} else {
+		this.removeCrown();
+	}
 };
 
 //コンストラクタ
@@ -432,8 +548,12 @@ Game.fn.socketConnect = function(socketURL) {
 		deferred.resolve();
 	});
 
-	this._socket.on('message', function(data){
-		that.onMessage.call(that, data);
+	this._socket.on('message', function(){
+		that.onMessage.apply(that, arguments);
+	});
+
+	this._socket.on('disconnect', function(){
+		that.onDisconnected.apply(that, arguments);
 	});
 
 	return deferred;
@@ -444,6 +564,7 @@ Game.fn.socketConnect = function(socketURL) {
  */
 
 Game.fn.onMessage = function(data) {
+	if(!data){return;}
 	var that = this;
 	data.value.forEach(function(val, index){
 		var datatype = val.datatype || 'object';
@@ -477,7 +598,8 @@ Game.fn.onMessage = function(data) {
 
 
 Game.fn.onDisconnected = function(){
-
+	window.alert("セッションが切れました。ログアウトします");
+	window.location.href="/logout/twitter";
 };
 /**
  * データ更新
@@ -727,82 +849,33 @@ Game.fn.removePlayer = function(id) {
 };
 
 Game.fn.updatePlayer = function(data){
-	var id = data.id;
-	var name = data.name;
-	var position = {
-		x:window.parseFloat(data.x, 10),
-		y:window.parseFloat(data.y, 10)
-	};
-	var textureId = data.texture;
-	var picture = data.picture;
-	var userType = data.userType || "guest";
-	var datatype = data.datatype || "object";
-	var angle = window.parseFloat(data.angle, 10);
-	var layer = this.playerLayer, filterVal=[], sprite;
-	var i, length;
-	var ballSize = 42;
+	var layer = this.playerLayer;
+	var player = null;
+
 	if(data.delflag) {
-		this.removePlayer(id);
+		this.removePlayer(data.id);
 		return null;
 	}
 
-	sprite = (function(){
-		var sprite, mask, container;
-		if(layer.hash[id]) {
-			return layer.hash[id];
-		}
-		container = new PIXI.DisplayObjectContainer();
-		if(userType === "guest") {
-			sprite = new PIXI.Sprite.fromFrame(textureId);
-			sprite.width=ballSize;sprite.height=ballSize;
-			sprite.position.set(0,0);
-			container.addChild(sprite);
-		} else {
-			try {
-				//スプライト作成
-				sprite = new PIXI.Sprite.fromImage(picture);
-				//sprite.width=ballSize;sprite.height=ballSize;
+	if(layer.hash[data.id]) {
+		player = layer.hash[data.id];
+	} else {
+		player = new Player(data);
+		layer.addChild(player);
+	}
+	layer.hash[data.id] = player;
 
-				//マスク作成
-				mask = new PIXI.Graphics();
-				mask.position.set(0,0);
-				mask.beginFill();
-				mask.drawCircle(0,0,ballSize/2);
-				mask.color = 0xffffff;
-				mask.endFill();
-				sprite.mask = mask;
-				container.addChild(sprite);
-				container.addChild(mask);
-			} catch (e){
-				sprite = new PIXI.Sprite.fromFrame(textureId);
-				sprite.width=ballSize;sprite.height=ballSize;
-				sprite.position.set(0,0);
-				container.addChild(sprite);
-			}
-		}
-		//スプライトのアンカーの位置を修正
-		sprite.anchor.set(0.5,0.5);
-		//付加情報をコンテナにつける
-		container.name = name;
-		container.id = id;
-		container.img = picture;
-		//レイヤーにコンテナ登録
-		layer.addChild(container);
-		layer.hash[id] = container;
-		//スプライト、コンテナのサイズ調整
-		container.width=ballSize;container.height=ballSize;
-		return container;
-	}());
-
-	//スプライト情報を更新
-	sprite.position.set(position.x,position.y);
-	sprite.rotation = angle;
+	player.data.sprite.rotation = window.parseFloat(data.angle, 10);
+	player.position.set(
+		window.parseFloat(data.x, 10),
+		window.parseFloat(data.y, 10)
+	);
 
 	//自ボールの場合，プロパティに参照を追加
-	if(datatype === "you") {
-		this.player = sprite;
+	if(data.datatype === "you") {
+		this.player = player;
 	}
-	return sprite;
+	return player;
 
 };
 
@@ -936,9 +1009,11 @@ Game.fn.congratulation = function(rankData){
 				sprite: this.player
 			};
 		}
-		if(topRanker.length >= 3 && myRankData.rank) {
-			break;
-		}
+		//王冠情報更新
+		hash[data.id].updateCrown(i+1);
+		//if(topRanker.length >= 3 && myRankData.rank) {
+		//	break;
+		//}
 	}
 
 	goalAlert = this.alert.createGoalAlert(winner);

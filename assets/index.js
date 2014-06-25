@@ -3,9 +3,10 @@ var name = "srdm";
 
 //オーディオオブジェクト読み込み
 import "audio/";
-
 //アラートメッセージ操作オブジェクト読み込み
 import "alert/";
+//プレイヤーオブジェクト
+import "player/";
 
 //コンストラクタ
 import "constructor";

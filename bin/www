@@ -7,14 +7,17 @@ var tools = require('./tools');
 
 var stages = [];
 stages[0] = require('../stage/stage0.json');
+var nowStageNum = -1;
+var beforeStageNum = -1;
 
 var message = require('../message/time_up.json');
 
 var fs = require('fs');
 fs.readdir('./stage', function(err, files){
+  stages = [];
   for(var i in files){
-  	var stage = require('../stage/' + files[i]);
-  	stages.push(stage);
+    var stage = require('../stage/' + files[i]);
+    stages.push(stage);
   }
 });
 
@@ -35,6 +38,10 @@ var goals = {};
 var kabes = {};
 var message_dot = {};
 var userCount = 0;
+var funnyKabes = {};
+var funnyGoals = {};
+newStageFlag = false;
+
 
 app.set('port', process.env.PORT || 80);
 
@@ -157,9 +164,8 @@ io.sockets.on('connection', function(socket) {
   });
 });
 
-function makeStage(){
-  var stage = stages[Math.floor(Math.random() * stages.length)];
-  nowStage = stage;
+function makeStage(stage){
+//  nowStageNum = stage;
   // メモリリーク起きる？
   kabes = {};
   goals = {};
@@ -175,6 +181,10 @@ function makeStage(){
       case 'kabe':
         // 障害物追加
         kabes[stageObj.id] = engine.createStaticObj(stageObj, world, stageObj.datatype);
+        break;
+      case 'maru':
+        // 丸い障害物追加
+        kabes[stageObj.id] = engine.createStaticObjCircle(stageObj, world, stageObj.datatype);
         break;
       case 'initPoint':
         // ボール初期位置設定
@@ -196,12 +206,35 @@ function makeStage(){
   }
   startTime = new Date();
 }
-makeStage();
+makeStage(getNextStage());
 
-// メッセージ表示するときは外枠つくる
+// ステージローテーション
+function getNextStage(){
+  nowStageNum++;
+  if(nowStageNum > stages.length -1){
+    nowStageNum = 0;
+  }
+  return stages[nowStageNum];
+}
+
+// メッセージ表示するときの枠
+function makeMessageFrame(stage){
+//  var stageCopy = stage.concat();
+  for(var i in stage){
+//    stageCopy[i].id = 'funny_' + stageCopy[i].id;
+    switch(stage[i].datatype){
+      case 'kabe':
+        engine.createStaticObj(stage[i], funnyWorld, stage[i].datatype);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+// パラレルワールドのステージ
 function makeFunnyStage(stage, objType){
   var createObj = {};
-  var funnyStage = stage.concat();
   switch(objType){
     case 'static':
       createObj = engine.createStaticObj;
@@ -213,12 +246,21 @@ function makeFunnyStage(stage, objType){
       break;
   }
 
+  funnyKabes = {};
+  funnyGoals = {};
+//  var stageCopy = stage.concat();
   for(var i in stage){
-    funnyStage[i].id = "funny_" + funnyStage[i].id;
-    switch(funnyStage[i].datatype){
+//    stageCopy[i].id = 'funny_' + stageCopy[i].id;
+    switch(stage[i].datatype){
       case 'kabe':
-        createObj(funnyStage[i], funnyWorld, funnyStage[i].datatype);
-        break;        
+        funnyKabes[stage[i].id] = createObj(stage[i], funnyWorld, stage[i].datatype);
+        break;
+      case 'maru':
+        funnyKabes[stage[i].id] = engine.createNewDynamicObjCircle(stage[i], funnyWorld, stage[i].datatype);
+        break;
+      case 'goal':
+        funnyGoals[stage[i].id] = createObj(stage[i], funnyWorld, stage[i].datatype);
+        break;
       default:
         break;
     }
@@ -236,6 +278,7 @@ function mainLoop() {
     if(funnyWorldIsAlive) funnyWorld.Step(1.0/fps, iterations);
     var msgs = [];
     var sendData = {};
+    var contact = null;
 
     // タイムアウト判定
     if((new Date() - startTime) > maxTime){
@@ -243,7 +286,7 @@ function mainLoop() {
 
       // メッセージ
       funnyWorldIsAlive = true;
-      makeFunnyStage(stages[0], 'static');
+      makeMessageFrame(stages[0]);
       for(var i in message_dot){
         // オブジェクト削除
         sendData = net.makeSendDeleteData(message_dot[i], 'object');
@@ -263,7 +306,7 @@ function mainLoop() {
       }
     }
 
-    // 3秒でメッセージ削除
+    // パラレルワールドは3秒で消滅
     if(tools.getPastTime(startTime) > 3000){
       for(var i in message_dot){
         // オブジェクト削除
@@ -272,11 +315,17 @@ function mainLoop() {
         funnyWorld.DestroyBody(message_dot[i]);
         delete message_dot[i];
       }
+      for(var i in funnyKabes){
+        sendData = net.makeSendDeleteData(funnyKabes[i], 'object');
+        msgs.push(sendData);
+        funnyWorld.DestroyBody(funnyKabes[i]);
+        delete funnyKabes[i];
+      }
       for(var funnyObj = funnyWorld.m_bodyList; funnyObj; funnyObj = funnyObj.m_next){
         funnyWorld.DestroyBody(funnyObj);
       }
       funnyWorldIsAlive = false;
-    }  
+    }
     
     // ゴール判定
     for(var i in goals){
@@ -329,9 +378,25 @@ function mainLoop() {
         sendData = net.makeSendDeleteData(goals[i], 'object');
         msgs.push(sendData);
         world.DestroyBody(goals[i]);
+        delete goals[i];
       }
+      newStageFlag = true;
+      
+      // ステージ崩壊
+      funnyWorldIsAlive = true;
+      startTime = new Date();
+      makeFunnyStage(stages[nowStageNum], 'dynamic');
+      for(var i in funnyKabes){
+        sendData = net.makeSendData(funnyKabes[i], 'object');
+        engine.collapseObjects(funnyKabes[i]);
+        msgs.push(sendData);
+      }
+    }
+
+    if(newStageFlag && (tools.getPastTime(startTime) > 3300)){
       // ステージ再作成
-      makeStage();
+      beforeStageNum = nowStageNum;
+      makeStage(getNextStage());
       for(var i in kabes){
         // 障害物送信データ作成
         sendData = net.makeSendData(kabes[i], 'object');
@@ -352,6 +417,7 @@ function mainLoop() {
         sendData = {datatype:"bestTime", time:"99:99:99.999", stageName:stageName};
         msgs.push(sendData);
       }
+      newStageFlag = false;
     }
     
     // ボール位置update
@@ -364,13 +430,19 @@ function mainLoop() {
     for(var i in message_dot){
       sendData = net.makeSendData(message_dot[i], 'object');
       msgs.push(sendData);
-    }  
+    }
+
+    // 崩壊障害物位置update
+    for(var i in funnyKabes){
+      sendData = net.makeSendData(funnyKabes[i], 'object');
+      msgs.push(sendData);
+    }
 
     // 経過時間表示するやつ
     var nowTime = new Date();
     var pastTime = nowTime - startTime;
     sendData = net.makeSendData({time:pastTime, datatype:'time'}, 'time');
-    msgs.push(sendData);
+    if(!newStageFlag) msgs.push(sendData);
 
     // まとめて送信
     io.sockets.emit('message', {value: msgs});

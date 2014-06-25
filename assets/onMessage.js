@@ -3,6 +3,7 @@
  */
 
 Game.fn.onMessage = function(data) {
+	if(!data){return;}
 	var that = this;
 	data.value.forEach(function(val, index){
 		var datatype = val.datatype || 'object';
