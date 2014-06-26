@@ -6,7 +6,7 @@ var net = require('./gameInterface');
 var tools = require('./tools');
 
 var stages = [];
-stages[0] = require('../stage/stage0.json');
+stages[0] = require('../stage/stage_000.json');
 var nowStageNum = -1;
 var beforeStageNum = -1;
 
