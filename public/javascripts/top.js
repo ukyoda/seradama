@@ -40,7 +40,7 @@
 					// $('#tutorial-msg').text(msg[_conf.i]);
 				} else {
 					_conf.i = _conf.imax;
-					$('.tutrial-img').attr('src', "/images/tutorial" + _conf.i + ".png");
+					$('.tutrial-img').attr('src', "/images/tutorial_" + _conf.i + ".png");
 					$('#tutorial-msg').text(msg[_conf.i]);
 				}
 				return false;
@@ -48,18 +48,18 @@
 			$('.rightallow').click(function(e) {
 				if (_conf.i < _conf.imax) {
 				_conf.i += 1;
-				$('.tutrial-img').attr('src', "/images/tutorial" + _conf.i + ".png");
+				$('.tutrial-img').attr('src', "/images/tutorial_" + _conf.i + ".png");
 				$('#tutorial-msg').text(msg[_conf.i]);
 				} else {
 					_conf.i = 1;
-					$('.tutrial-img').attr('src', "/images/tutorial" + _conf.i + ".png");
+					$('.tutrial-img').attr('src', "/images/tutorial_" + _conf.i + ".png");
 				}
 				return false;
 			});
 		});
 	},
 	tutorial:function(i) {
-		$('.tutrial-img').attr('src', "/images/tutorial" + i + ".png");
+		$('.tutrial-img').attr('src', "/images/tutorial_" + i + ".png");
 		$('#tutorial-msg').text(this.conf.msg.split(",")[i]);
 	}
 }).init();
