@@ -20,7 +20,7 @@ Game.fn.updateObject = function(data){
 	if(filterVal.length) {
 		sprite = filterVal[0];
 	} else {
-		sprite = new PIXI.Sprite.fromFrame(textureId);
+		sprite = util.getSprite(textureId);
 		sprite.id = id;	//固有ID記憶
 		layer.addChild(sprite);
 	}

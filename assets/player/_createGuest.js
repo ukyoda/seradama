@@ -1,6 +1,6 @@
 
 Player.fn._createGuest = function(data){
-	var sprite = new PIXI.Sprite.fromFrame(data.texture);
+	var sprite = util.getSprite(data.texture);
 	sprite.width = this.ballSize;
 	sprite.height = this.ballSize;
 	sprite.position.set(0,0);

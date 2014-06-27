@@ -23,9 +23,6 @@ $(function(){
 		target: "#game-display"
 	});
 
-	window.game = game;
-
-
 	var gravityDirection = Game.getGravityDirection();
 	//即時関数とDeferredを用いてコントローラを決定する
 	(function(){
@@ -82,5 +79,9 @@ $(function(){
 		//非同期で読み込むデータを全て読み込んだらプレイ
 		game.rescale.call(game);
 	});
+
+	//window.game = game;
+	delete srdm;
+
 
 });

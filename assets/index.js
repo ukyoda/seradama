@@ -1,6 +1,9 @@
 (function(namespace){
 var name = "srdm";
 
+//utilクラス
+import "util/";
+
 //オーディオオブジェクト読み込み
 import "audio/";
 //アラートメッセージ操作オブジェクト読み込み

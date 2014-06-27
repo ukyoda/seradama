@@ -2,7 +2,7 @@
 Player.fn._createTwitter = function(data){
 	var sprite, mask;
 	try {
-		sprite = new PIXI.Sprite.fromImage(data.picture);
+		sprite = util.getSprite(data.picture);
 		mask = this._createMask();
 		sprite.mask = mask;
 		this.addChild(sprite);
