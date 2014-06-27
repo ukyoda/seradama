@@ -3,6 +3,7 @@
 	tutorial:{
 		//画像の枚数分メッセージを表示して下さい。
 		msgs:[
+		    "回転禁止",
 			"傾けるとボールが転がります",	//画像１番目のメッセージ
 			"複数人で遊べます",	//画像２番目のメッセージ
 			"エラー"	//画像３番目のメッセージ
@@ -29,7 +30,7 @@
 			return this.msgs[this.current];
 		},
 		getImgUrl: function(){
-			return "/images/tutorial" + (this.current+1) + ".png";
+			return "/images/tutorial_" + (this.current+1) + ".png";
 		},
 		init:function(){
 			//画像読めなかったとき
