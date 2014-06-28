@@ -3,13 +3,16 @@
 	tutorial:{
 		//画像の枚数分メッセージを表示して下さい。
 		msgs:[
-			"傾けるとボールが転がります",	//画像１番目のメッセージ
-			"複数人で遊べます",	//画像２番目のメッセージ
-			"エラー"	//画像３番目のメッセージ
+			"玉を転がしてゴールを目指せ",
+			"スマホを傾けると玉が転がります",	//画像１番目のメッセージ
+			"複数人で遊べます",
+			"画面を固定して遊んでください",
+			"ランキング上位を目指しましょう"
 		],
 		current:0,
 		set: function(){
 			$('.tutrial-img').attr('src', this.getImgUrl());
+			$('.tutorial-page').text(this.getPageNo());
 			$('#tutorial-msg').text(this.getMsg());
 			return this;
 		},
@@ -30,6 +33,9 @@
 		},
 		getImgUrl: function(){
 			return "/images/tutorial" + (this.current+1) + ".png";
+		},
+		getPageNo: function(){
+			return (this.current+1)+"/"+this.msgs.length;
 		},
 		init:function(){
 			//画像読めなかったとき

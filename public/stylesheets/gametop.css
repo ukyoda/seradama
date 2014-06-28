@@ -176,7 +176,15 @@ body .tutrial-index .rightallow i{
 
 body .tutrial-img {
 	display: block;
-	height: 324px;
+	height: 314px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+body .tutorial-page {
+	display:block;
+	text-align: center;
+	font-size: 0.7em;
 }
 
 body #tutorial-msg {
