@@ -32,7 +32,7 @@
 			return this.msgs[this.current];
 		},
 		getImgUrl: function(){
-			return "/images/tutorial" + (this.current+1) + ".png";
+			return "/images/tutorial_" + (this.current+1) + ".png";
 		},
 		getPageNo: function(){
 			return (this.current+1)+"/"+this.msgs.length;
