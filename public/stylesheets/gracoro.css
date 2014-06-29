@@ -14,6 +14,8 @@ body {
 	margin: 0;
 	overflow-y: hidden; 
 	font-family: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", "Lucida Grande", Verdana, "ＭＳ Ｐゴシック", sans-serif;
+	color: rgb(70, 64, 64);
+
 }
 
 body .game-body {

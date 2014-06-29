@@ -10,7 +10,6 @@ body .top-discriptor {
 }
 
 body .top-title {
-	color: rgb(70, 64, 64);
 	padding-top: 30px;
 	font-size: 159%;
 	font-weight: bold;
@@ -115,7 +114,6 @@ body .login-index .login i {
 body .tutrial-page {
 	display: none;
 	position: absolute;
-	height: 400px;
 	width: 300px;
 	top: 10%;
 	left: 50%;
@@ -144,6 +142,7 @@ body .tutrial-index {
 	margin: 0;
 	text-align: center;
 	list-style: none;
+	display: inline;
 }
 body .tutrial-index li {
 	position: absolute;
@@ -174,9 +173,13 @@ body .tutrial-index .rightallow{
 body .tutrial-index .rightallow i{
 }
 
-body .tutrial-img {
+body .div-image {
 	display: block;
 	height: 314px;
+}
+
+body .tutrial-img {
+	height: 100%;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -188,7 +191,8 @@ body .tutorial-page {
 }
 
 body #tutorial-msg {
-	padding-top: 5px;
+	padding-top: 11px;
+	font-weight: 100%;
 	text-align: center;
 }
 
