@@ -21,7 +21,7 @@
 			return this;
 		},
 		prev: function(){
-			this.current = this.current < 0 ?this.msgs.length-1:--this.current;
+			this.current = this.current < 1 ?this.msgs.length-1:--this.current;
 			return this;
 		},
 		next: function(){
