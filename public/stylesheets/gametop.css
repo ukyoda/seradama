@@ -205,15 +205,16 @@ body .top-footer i {
 	padding-right: 5px;
 }
 
-body .top-footer a {
-	display: inline-block;
-	width: 50px;
-	background: rgba(198, 201, 207, 0.8);
+body .feedback {
+	background: rgba(66, 70, 78, 0.8);
 	text-decoration: none;
 	color: #ffffff;
 	border-radius: 7px;
-	padding: 5px 8px;
+	padding: 1px 8px;
 	font-size: 12px;
+	position: absolute;
+	right: 10px;
+	top: 10px;
 }
 body .facebook-button iframe {
 	width: 113px;
