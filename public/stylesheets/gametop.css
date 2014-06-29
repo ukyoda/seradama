@@ -216,6 +216,11 @@ body .feedback {
 	right: 10px;
 	top: 10px;
 }
+
+body .feedback i {
+	padding-right: 4px;
+}
+
 body .facebook-button iframe {
 	width: 113px;
 }
