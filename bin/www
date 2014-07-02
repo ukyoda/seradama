@@ -42,6 +42,7 @@ var funnyKabes = {};
 var funnyGoals = {};
 newStageFlag = false;
 
+var clientCountReal = 0;
 
 app.set('port', process.env.PORT || 80);
 
@@ -116,9 +117,19 @@ io.sockets.on('connection', function(socket) {
     var obj = objs[socket.id];
     if(data.name){
       if(data.picture){
+        if(clientCountReal > 30){
+          // 30人制限
+//          socket.disconnect();
+          var sendData = {datatype:"restrict"};
+          var msgs = [];
+          msgs.push(sendData);
+          socket.emit(msgs);
+          return;
+        }
         // ころころ追加
         var msgs = [];
         userCount++;
+        clientCountReal++;
         data.id = "ball_" + userCount;
         data.texture = player_texture_names[Math.floor(Math.random() * p_t_n_count)];
         var corocoro = engine.createNewCorocoro(data, world, 'player');
@@ -142,10 +153,16 @@ io.sockets.on('connection', function(socket) {
       if(obj){
         //
       }else{
+        // オブジェクトが見つからない場合
+        socket.disconnect();
         return;
       }
       // ボールにユーザーのGravityを反映 
       engine.applyUserGravity(obj, data.gravity.x, data.gravity.y);
+    }else{
+      // 想定外のデータを受信した場合
+      socket.disconnect();
+      return;
     }
   });
 
@@ -154,6 +171,7 @@ io.sockets.on('connection', function(socket) {
     console.log("disconnect:" + socket.id);
     delObj = objs[socket.id];
     if(delObj){
+      clientCountReal--;
       var sendData = net.makeSendDeleteData(delObj, 'player');
       var msgs = [];
       msgs.push(sendData);
