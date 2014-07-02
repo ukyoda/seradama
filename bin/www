@@ -118,8 +118,12 @@ io.sockets.on('connection', function(socket) {
     if(data.name){
       if(data.picture){
         if(clientCountReal > 30){
-          // 30人でdeny
-          socket.disconnect();
+          // 30人制限
+//          socket.disconnect();
+          var sendData = {datatype:"restrict"};
+          var msgs = [];
+          msgs.push(sendData);
+          socket.emit(msgs);
           return;
         }
         // ころころ追加
@@ -149,12 +153,14 @@ io.sockets.on('connection', function(socket) {
       if(obj){
         //
       }else{
+        // オブジェクトが見つからない場合
         socket.disconnect();
         return;
       }
       // ボールにユーザーのGravityを反映 
       engine.applyUserGravity(obj, data.gravity.x, data.gravity.y);
     }else{
+      // 想定外のデータを受信した場合
       socket.disconnect();
       return;
     }
