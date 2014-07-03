@@ -80,7 +80,7 @@ $(function(){
 		game.rescale.call(game);
 	});
 
-	window.game = game;
+	//window.game = game;
 	//delete srdm;
 
 
