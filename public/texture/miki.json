@@ -1,0 +1,58 @@
+{
+	"frames": {
+		"miki_large.png": {
+			"frame": {"x":0,"y":0,"w":84,"h":348},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x":0,
+				"y":0,
+				"w":84,
+				"h":348
+			},
+			"sourceSize":{"w":84,"h":348}
+		},
+		"miki_middle.png": {
+			"frame": {"x":0,"y":0,"w":63,"h":261},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x":0,
+				"y":0,
+				"w":63,
+				"h":261
+			},
+			"sourceSize":{"w":63, "h":261}
+		},
+		"miki_little.png": {
+			"frame": {"x":0,"y":0,"w":42,"h":174},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x":0,
+				"y":0,
+				"w":42,
+				"h":174
+			},
+			"sourceSize":{"w":42, "h":174}
+		},
+		"miki_mini.png": {
+			"frame": {"x":0,"y":0,"w":21,"h":87},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x":0,
+				"y":0,
+				"w":21,
+				"h":87
+			},
+			"sourceSize":{"w":21, "h":87}
+		}
+	},
+	"meta": {
+		"image": "/field/tree/miki.png",
+		"format": "RGBA8888",
+		"size": {"w":84,"h":348},
+		"scale": "1"
+	}
+}

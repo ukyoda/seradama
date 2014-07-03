@@ -15,7 +15,7 @@
 var Game = function Game(manifest) {
 
 	//URL設定
-	this.textureURLs = manifest.textureURLs || ["texture/field1.json", "texture/kabe.json", "texture/player.json", "texture/message.json"];
+	this.textureURLs = manifest.textureURLs || ["texture/field1.json", "texture/kabe.json", "texture/player.json", "texture/message.json", "texture/fruits-lime.json", "texture/fruits-orange.json", "texture/fruits-pink.json", "texture/fruits-skyblue.json", "texture/miki.json"];
 	this.backgroundURL = manifest.backgroundURL || 'texture/background/background.png';
 	this.gameInfoURL = manifest.gameInfoURL || "game/gamedata.json";
 	this.socketURL = manifest.socketURL || "//";
