@@ -22,6 +22,7 @@ import "static/getAgent";
 import "static/getGravityDirection";
 import "static/checkDeviceMotion";
 import "static/scale";
+import "static/modal";
 
 //テクスチャロード
 import "loadTexture";
@@ -36,6 +37,7 @@ import "onCompleteGameData";
 import "socketConnect";
 import "onMessage";
 import "onDisconnected";
+import "onRestrict";
 import "emit";
 
 //コントローラ

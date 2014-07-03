@@ -1,7 +1,6 @@
 /**
  * サーバからデータを取得したとき
  */
-
 Game.fn.onMessage = function(data) {
 	if(!data){return;}
 	var that = this;
@@ -30,6 +29,9 @@ Game.fn.onMessage = function(data) {
 			that.timeInfo.best = val.time;
 			that.timeInfo.bestPlayer = val.userName || "-";
 			break;
+		case "restrict":
+		window.console.log('test');
+			that.onRestrict();
 		}
 	});
 

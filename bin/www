@@ -89,7 +89,7 @@ io.sockets.on('connection', function(socket) {
     var sendData = net.makeSendData(goals[i], 'object');
     msgs.push(sendData);
   }
-  // ユーザデータ送信(画像付き)   
+  // ユーザデータ送信(画像付き)
   for(var i in objs){
     var sendData = net.makeSendData(objs[i], 'player', objs[i].m_userData.picture);
     msgs.push(sendData);
@@ -117,13 +117,13 @@ io.sockets.on('connection', function(socket) {
     var obj = objs[socket.id];
     if(data.name){
       if(data.picture){
-        if(clientCountReal > 30){
+        if(clientCountReal >= 30){  //clientCountReal以上にしないと31人になってしまうので,修正しました
           // 30人制限
 //          socket.disconnect();
           var sendData = {datatype:"restrict"};
           var msgs = [];
           msgs.push(sendData);
-          socket.emit(msgs);
+          socket.emit('message', {value: msgs});  //他のemitと形式が異なっていたので修正しました
           return;
         }
         // ころころ追加
@@ -145,7 +145,7 @@ io.sockets.on('connection', function(socket) {
         msgsAll.push(sendAll);
         io.sockets.emit('message', {value: msgsAll});
 
-        // ボールを初期位置へ 
+        // ボールを初期位置へ
         engine.setPlayerPositionWithRandom(corocoro, initPoint.x, initPoint.y);
 
       }
@@ -157,7 +157,7 @@ io.sockets.on('connection', function(socket) {
         socket.disconnect();
         return;
       }
-      // ボールにユーザーのGravityを反映 
+      // ボールにユーザーのGravityを反映
       engine.applyUserGravity(obj, data.gravity.x, data.gravity.y);
     }else{
       // 想定外のデータを受信した場合
@@ -318,7 +318,7 @@ function mainLoop() {
 //        engine.collapseMessage(message_dot[messageObj.id]);
       }
 
-      // ボール位置を初期位置へ  
+      // ボール位置を初期位置へ
       for(var i in objs){
         engine.setPlayerPositionWithRandom(objs[i], initPoint.x, initPoint.y);
       }
@@ -344,7 +344,7 @@ function mainLoop() {
       }
       funnyWorldIsAlive = false;
     }
-    
+
     // ゴール判定
     for(var i in goals){
       contact = goals[i].m_contactList;
@@ -399,7 +399,7 @@ function mainLoop() {
         delete goals[i];
       }
       newStageFlag = true;
-      
+
       // ステージ崩壊
       funnyWorldIsAlive = true;
       startTime = new Date();
@@ -437,7 +437,7 @@ function mainLoop() {
       }
       newStageFlag = false;
     }
-    
+
     // ボール位置update
     for(var i in objs){
       sendData = net.makeSendData(objs[i], 'player');

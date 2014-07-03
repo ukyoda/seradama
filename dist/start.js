@@ -43,7 +43,7 @@ $(function(){
 		//加速度が利用可能なら重力コントローラを使う
 		game.setController('gravity', gravityDirection);
 	}).fail(function(){
-		window.alert('ご利用の端末では加速度を利用する事が出来ません。画面左下のタッチコントローラを使って操作してください');
+		window.alert('ご利用の端末では加速度を利用する事が出来ません。画面下のタッチコントローラを使って操作してください');
 		//加速度が利用できないならタッチコントローラを使う
 		$('#game-controller').css('display','block');
 		game.setController('touch', "#game-controller");
@@ -81,7 +81,7 @@ $(function(){
 	});
 
 	window.game = game;
-	delete srdm;
+	//delete srdm;
 
 
 });

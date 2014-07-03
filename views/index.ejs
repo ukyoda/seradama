@@ -54,18 +54,25 @@
 			<div class="game-controller" id="game-controller">
 			</div>
 		</section>
+
+		<div class="gracoro modal" id="modal-restrict">
+			<header>
+				ごめんなさい!! m(_ _)m
+			</header>
+			<section>
+				<p class="md-text">現在プレイヤー数が３０人数を超えているため、ゲームをプレイする事が出来ません。</p>
+				<p class="md-text">少し時間をおいてまた遊びにきてね！</p>
+				<p class="xs-text">
+					30秒後にログアウトしてトップ画面に戻ります。
+				</p>
+			</section>
+			<footer>
+				<a href="/logout/twitter" class="backbtn"><i class="fa fa-sign-out"></i>ログアウト</a>
+			</footer>
+		</div>
+
 		<input type="hidden" value="<%= img %>" id="player-picture"/>
 		<input type="hidden" value="<%= user %>" id="player-name"/>
 		<input type="hidden" value="<%= type %>" id="player-type"/>
-		<%/*
-		<!--
-			音源ファイル
-			※「無料効果音」 様の素材をお借りしました。
-			http://taira-komori.jpn.org/
-		-->
-		<div class="gameaudio">
-			<audio src="audio/se_atack.mp3" id="se-atack" class="audio-file" data-key="atack" />
-		</div>
-		*/%>
 	</body>
 </html>

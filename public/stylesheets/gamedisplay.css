@@ -43,5 +43,73 @@ body .game-body .game-controller {
 	height: 100px;
 }
 body.game-body .game-controller canvas {
-	z-index; 1000;
+	z-index: 1000;
+}
+
+body .gracoro.modal-overlay {
+	background: #888;
+	opacity: 0.8;
+	z-index: 1001;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top:0px;
+	left:0px;
+}
+
+body .gracoro.modal {
+	display:none;
+	width: 70%;
+	min-height: 100px;
+	top: 30px;
+	left: 50%;
+	margin-left: -35%;
+	position: absolute;
+	padding: 10px;
+	background: #333;
+	color: #fff;
+	z-index: 1002;
+	border: 1px solid #ddd;
+	border-radius: 10px;
+}
+
+body .gracoro.modal.show {
+	display:block;
+}
+
+body .gracoro.modal header {
+	font-size: 1.2em;
+	margin-bottom: 10px;
+}
+
+body .gracoro.modal section {
+	font-size: 0.8em;
+}
+body .gracoro.modal section .md-text {
+	margin-top:2px;
+	margin-bottom: 2px;
+}
+
+body .gracoro.modal section .xs-text {
+	font-size: 0.7em;
+}
+
+body .gracoro.modal footer {
+	text-align: right;
+	margin-top:10px;
+}
+
+body .gracoro.modal footer button.backbtn,
+body .gracoro.modal footer a.backbtn {
+	border: 1px solid #ddd;
+	padding: 5px;
+	font-size: 0.8em;
+	text-decoration: none;
+	background: #efefef;
+	color: #222;
+}
+
+body .gracoro.modal footer button.backbtn:hover,
+body .gracoro.modal footer a.backbtn:hover {
+	cursor: pointer;
 }
