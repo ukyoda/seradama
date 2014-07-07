@@ -332,6 +332,12 @@ function mainLoop() {
       for(var i in objs){
         engine.setPlayerPositionWithRandom(objs[i], initPoint.x, initPoint.y);
       }
+      // 動くkabe初期位置へ
+      for(var i in stages[nowStageNum]){
+        if(stages[nowStageNum][i].datatype == 'movable'){
+          engine.setObjectPosition(movableKabes[stages[nowStageNum][i].id], stages[nowStageNum][i].x, stages[nowStageNum][i].y, stages[nowStageNum][i].angle);
+        }
+      }
     }
 
     // パラレルワールドは3秒で消滅

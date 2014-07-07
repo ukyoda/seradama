@@ -146,6 +146,12 @@ engine.setPlayerPositionWithRandom = function(obj, x, y){
   obj.SetLinearVelocity(new b2d.b2Vec2(0.0, 0,0));
 };
 
+// オブジェクト位置初期化
+engine.setObjectPosition = function(obj, x, y, angle){
+  obj.SetXForm(new b2d.b2Vec2(x, y), angle);
+  obj.SetLinearVelocity(new b2d.b2Vec2(0.0, 0,0));
+};
+
 // あれをいい感じにする
 engine.collapseObjects = function(obj){
   var x = ((Math.random() * 500.0) - 250.0) * (obj.m_mass);
