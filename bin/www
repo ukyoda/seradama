@@ -404,11 +404,13 @@ function mainLoop() {
         sendData = net.makeSendDeleteData(kabes[i], 'object');
         msgs.push(sendData);
         world.DestroyBody(kabes[i]);
+        delete kabes[i];
       }
       for(var i in movableKabes){
         sendData = net.makeSendDeleteData(movableKabes[i], 'object');
         msgs.push(sendData);
         world.DestroyBody(movableKabes[i]);
+        delete movableKabes[i];
       }
       // ゴール削除
       for(var i in goals){
