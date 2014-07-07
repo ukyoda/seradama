@@ -36,6 +36,7 @@ for(var i in player_textures.frames){
 var objs = {};
 var goals = {};
 var kabes = {};
+var movableKabes = {};
 var message_dot = {};
 var userCount = 0;
 var funnyKabes = {};
@@ -82,6 +83,10 @@ io.sockets.on('connection', function(socket) {
   var msgs = [];
   for(var i in kabes){
     var sendData = net.makeSendData(kabes[i], 'object');
+    msgs.push(sendData);
+  }
+  for(var i in movableKabes){
+    var sendData = net.makeSendData(movableKabes[i], 'object');
     msgs.push(sendData);
   }
   // ゴールデータ送信
@@ -187,6 +192,7 @@ function makeStage(stage){
   // メモリリーク起きる？
   kabes = {};
   goals = {};
+  movableKabes = {};
 
   for(var i in stage){
     var stageObj = stage[i];
@@ -203,6 +209,9 @@ function makeStage(stage){
       case 'maru':
         // 丸い障害物追加
         kabes[stageObj.id] = engine.createStaticObjCircle(stageObj, world, stageObj.datatype);
+        break;
+      case 'movable':
+        movableKabes[stageObj.id] = engine.createNewDynamicObjBox(stageObj, world, stageObj.datatype);
         break;
       case 'initPoint':
         // ボール初期位置設定
@@ -271,6 +280,7 @@ function makeFunnyStage(stage, objType){
 //    stageCopy[i].id = 'funny_' + stageCopy[i].id;
     switch(stage[i].datatype){
       case 'kabe':
+      case 'movable':
         funnyKabes[stage[i].id] = createObj(stage[i], funnyWorld, stage[i].datatype);
         break;
       case 'maru':
@@ -348,8 +358,12 @@ function mainLoop() {
     // ゴール判定
     for(var i in goals){
       contact = goals[i].m_contactList;
-      if(contact){
-        break;
+      for(contact = goals[i].m_contactList; contact; contact = contact.m_next){
+        if(contact){
+          if(contact.other.m_userData.datatype == 'player'){
+            break;
+          }
+        }
       }
     }
     if(contact){
@@ -391,6 +405,11 @@ function mainLoop() {
         msgs.push(sendData);
         world.DestroyBody(kabes[i]);
       }
+      for(var i in movableKabes){
+        sendData = net.makeSendDeleteData(movableKabes[i], 'object');
+        msgs.push(sendData);
+        world.DestroyBody(movableKabes[i]);
+      }
       // ゴール削除
       for(var i in goals){
         sendData = net.makeSendDeleteData(goals[i], 'object');
@@ -418,6 +437,10 @@ function mainLoop() {
       for(var i in kabes){
         // 障害物送信データ作成
         sendData = net.makeSendData(kabes[i], 'object');
+        msgs.push(sendData);
+      }
+      for(var i in movableKabes){
+        sendData = net.makeSendData(movableKabes[i], 'object');
         msgs.push(sendData);
       }
       for(var i in goals){
@@ -453,6 +476,12 @@ function mainLoop() {
     // 崩壊障害物位置update
     for(var i in funnyKabes){
       sendData = net.makeSendData(funnyKabes[i], 'object');
+      msgs.push(sendData);
+    }
+
+    // 動く障害物update
+    for(var i in movableKabes){
+      sendData = net.makeSendData(movableKabes[i], 'object');
       msgs.push(sendData);
     }
 
