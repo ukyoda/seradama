@@ -363,7 +363,11 @@ function mainLoop() {
 
     // ゴール判定
     for(var i in goals){
-      contact = goals[i].m_contactList;
+      if(contact){
+        if(contact.other.m_userData.datatype == 'player'){
+          break;
+        }
+      }
       for(contact = goals[i].m_contactList; contact; contact = contact.m_next){
         if(contact){
           if(contact.other.m_userData.datatype == 'player'){
