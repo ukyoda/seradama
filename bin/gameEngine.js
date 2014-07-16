@@ -144,12 +144,14 @@ engine.applyUserGravity = function(obj, x, y){
 engine.setPlayerPositionWithRandom = function(obj, x, y){
   obj.SetXForm(new b2d.b2Vec2(x + Math.random() - 0.5, y + Math.random() - 0.5), 0.0);
   obj.SetLinearVelocity(new b2d.b2Vec2(0.0, 0,0));
+  obj.SetAngularVelocity(0.0);
 };
 
 // オブジェクト位置初期化
 engine.setObjectPosition = function(obj, x, y, angle){
   obj.SetXForm(new b2d.b2Vec2(x, y), angle);
   obj.SetLinearVelocity(new b2d.b2Vec2(0.0, 0,0));
+  obj.SetAngularVelocity(0.0);
 };
 
 // あれをいい感じにする

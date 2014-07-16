@@ -213,6 +213,9 @@ function makeStage(stage){
       case 'movable':
         movableKabes[stageObj.id] = engine.createNewDynamicObjBox(stageObj, world, stageObj.datatype);
         break;
+      case 'movableMaru':
+        movableKabes[stageObj.id] = engine.createNewDynamicObjCircle(stageObj, world, stageObj.datatype);
+        break;
       case 'initPoint':
         // ボール初期位置設定
         initPoint = {x:stageObj.x, y:stageObj.y};
@@ -284,6 +287,7 @@ function makeFunnyStage(stage, objType){
         funnyKabes[stage[i].id] = createObj(stage[i], funnyWorld, stage[i].datatype);
         break;
       case 'maru':
+      case 'movableMaru':
         funnyKabes[stage[i].id] = engine.createNewDynamicObjCircle(stage[i], funnyWorld, stage[i].datatype);
         break;
       case 'goal':
@@ -334,7 +338,7 @@ function mainLoop() {
       }
       // 動くkabe初期位置へ
       for(var i in stages[nowStageNum]){
-        if(stages[nowStageNum][i].datatype == 'movable'){
+        if(stages[nowStageNum][i].datatype == 'movable' || stages[nowStageNum][i].datatype == 'movableMaru'){
           engine.setObjectPosition(movableKabes[stages[nowStageNum][i].id], stages[nowStageNum][i].x, stages[nowStageNum][i].y, stages[nowStageNum][i].angle);
         }
       }
