@@ -12,6 +12,7 @@ var beforeStageNum = -1;
 
 var message = require('../message/time_up.json');
 
+//ステージ読み込み
 var fs = require('fs');
 fs.readdir('./stage', function(err, files){
   stages = [];
@@ -21,10 +22,12 @@ fs.readdir('./stage', function(err, files){
   }
 });
 
+//ベストタイム用のjsonがなければ新規作成
 if(!fs.existsSync("best_time.json")){
   fs.writeFile('./best_time.json', JSON.stringify({}));
 }
 
+//プレイヤー用のテクスチャ取得
 var player_textures = require('../public/texture/player.json');
 var player_texture_names = [];
 var p_t_n_count = 0;
@@ -124,7 +127,7 @@ io.sockets.on('connection', function(socket) {
       if(data.picture){
         if(clientCountReal >= 30){  //clientCountReal以上にしないと31人になってしまうので,修正しました
           // 30人制限
-//          socket.disconnect();
+          // socket.disconnect();
           var sendData = {datatype:"restrict"};
           var msgs = [];
           msgs.push(sendData);
@@ -188,7 +191,7 @@ io.sockets.on('connection', function(socket) {
 });
 
 function makeStage(stage){
-//  nowStageNum = stage;
+  //  nowStageNum = stage;
   // メモリリーク起きる？
   kabes = {};
   goals = {};
@@ -249,9 +252,9 @@ function getNextStage(){
 
 // メッセージ表示するときの枠
 function makeMessageFrame(stage){
-//  var stageCopy = stage.concat();
+  //  var stageCopy = stage.concat();
   for(var i in stage){
-//    stageCopy[i].id = 'funny_' + stageCopy[i].id;
+    //    stageCopy[i].id = 'funny_' + stageCopy[i].id;
     switch(stage[i].datatype){
       case 'kabe':
         engine.createStaticObj(stage[i], funnyWorld, stage[i].datatype);
@@ -278,9 +281,9 @@ function makeFunnyStage(stage, objType){
 
   funnyKabes = {};
   funnyGoals = {};
-//  var stageCopy = stage.concat();
+  //  var stageCopy = stage.concat();
   for(var i in stage){
-//    stageCopy[i].id = 'funny_' + stageCopy[i].id;
+    //    stageCopy[i].id = 'funny_' + stageCopy[i].id;
     switch(stage[i].datatype){
       case 'kabe':
       case 'movable':
@@ -329,7 +332,7 @@ function mainLoop() {
       for(var i in message){
         var messageObj = message[i];
         message_dot[messageObj.id] = engine.createNewDynamicObjBox(messageObj, funnyWorld, 'object');
-//        engine.collapseMessage(message_dot[messageObj.id]);
+        // engine.collapseMessage(message_dot[messageObj.id]);
       }
 
       // ボール位置を初期位置へ

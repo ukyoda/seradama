@@ -1,6 +1,6 @@
 var b2d = require("box2d");
 var tools = require('./tools');
-var gamedata = require('../public/game/gamedata.json');
+var gamedata = require('../../public/game/gamedata.json');
 
 var engine = {};
 
