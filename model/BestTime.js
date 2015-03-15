@@ -17,19 +17,19 @@ var BestTime = Model.extend({
   },
   /**
    * ベストタイム更新
-   * @param  {string} stageNo ステージNO
+   * @param  {string} stageName ステージ名称(ステージjsonのファイル名)
    * @param  {number} time 時間
    * @param  {string} userName
    * @param  {string} userType guest or not guest
    * @return {boolean} 更新したらtrue
    */
-  update: function(stageNo, time, userName, userType) {
+  update: function(stageName, time, userName, userType) {
     var newData = {
       time: time,
       userName: userName,
       userType: userType
     };
-    var currentBestTime = this.get(stageNo);
+    var currentBestTime = this.get(stageName);
     if(newData.time >= currentBestTime.time) {
       this.set(newData);
       //JSONとしてファイルに保存
@@ -47,4 +47,4 @@ var BestTime = Model.extend({
 
 });
 
-module.exports = new BestTime();
+module.exports = BestTime;
