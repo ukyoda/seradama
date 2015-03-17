@@ -108,10 +108,10 @@ Stage.fn.destroyStage = function() {
   var goals = this.goals || {};
   var id;
   for( id in kabes ) {
-    this.world.DestroyBody(kabes[id]);
+    this.world.DestroyBody(kabes[id].data);
   }
   for( id in goals ) {
-    this.world.DestroyBody(goals[id]);
+    this.world.DestroyBody(goals[id].data);
   }
 
   //オブジェクトを初期化
