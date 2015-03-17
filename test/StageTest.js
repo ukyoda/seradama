@@ -1,20 +1,22 @@
-/**
- * ステージモデルテスト
- */
-var async = require('async');
-var stageLoader = require('./../model/Stage');
+var funcs = require('./../model/GameFunctions');
+var Stage = require('./../model/Stage');
 
-//ステージモデル読み込みテスト(非同期なのでasyncを使ってスケジューリング)
-async.series([
-  function(callback) {  //ステージJSON読み込み
-    stageLoader(function(iterator){
-      callback(null, iterator);
-    });
-  }
-], function(err, results){
-  var stage = results[0];
-  var data = {};
-  for(data = stage.begin();stage.hasNext();data = stage.next()) {
-    console.log(data[0]);
-  }
-});
+//console.log(Stage);
+//console.log(funcs);
+
+//ダミーのワールド作成
+
+var world = funcs.engine.createWorld(0,0,true);
+
+// ステージ作成してみる
+var stage = new Stage(world);
+
+stage.nextStage();
+
+// ステージができているか確認
+//console.log(stage.kabes);
+
+// ステージを進める
+console.log(stage.stageIndex, stage.stageName);
+stage.nextStage();
+console.log(stage.stageIndex, stage.stageName);
