@@ -1,4 +1,4 @@
-var GameObject = require('./base/GameObject');
+var GameObject = require('../base/GameObject');
 
 /**
  * 壁オブジェクト
@@ -7,7 +7,7 @@ var GameObject = require('./base/GameObject');
 var Kabe = GameObject.extend({
   _dataType: 'kabe',
   _create: function(manifest, world) {
-    this._obj = this.engine.createStaticObj(manifest, world, this._dataType);
+    return this._engine.createStaticObj(manifest, world, this._dataType);
   }
 });
 

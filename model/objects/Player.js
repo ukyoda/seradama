@@ -23,7 +23,7 @@ var Player = GameObject.extend({
    * @param {object} world Box2d世界オブジェクト
    */
   _create:function(manifest, world) {
-    this._obj = this.engine.createNewPlayer(manifest, world, this._dataType);
+    return this._engine.createNewPlayer(manifest, world, this._dataType);
   }
 
 });

@@ -16,6 +16,8 @@ var Maru = GameObject.extend({
    * @param  {string} dataType オブジェクトを特定する識別文字列
    */
   _create:function(manifest, world) {
-    this._obj = this.engine.createStaticObjCircle(manifest, world, this._dataType);
+    return this._engine.createStaticObjCircle(manifest, world, this._dataType);
   }
 });
+
+module.exports = Maru;
