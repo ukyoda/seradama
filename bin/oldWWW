@@ -1,0 +1,520 @@
+#!/usr/bin/env node
+var debug = require('debug')('sera-dev2');
+var app = require('../app');
+var engine = require('./gameEngine');
+var net = require('./gameInterface');
+var tools = require('./tools');
+
+var stages = [];
+stages[0] = require('../stage/stage_000.json');
+var nowStageNum = -1;
+var beforeStageNum = -1;
+
+var message = require('../message/time_up.json');
+
+//ステージ読み込み
+var fs = require('fs');
+fs.readdir('./stage', function(err, files){
+  stages = [];
+  for(var i in files){
+    var stage = require('../stage/' + files[i]);
+    stages.push(stage);
+  }
+});
+
+//ベストタイム用のjsonがなければ新規作成
+if(!fs.existsSync("best_time.json")){
+  fs.writeFile('./best_time.json', JSON.stringify({}));
+}
+
+//プレイヤー用のテクスチャ取得
+var player_textures = require('../public/texture/player.json');
+var player_texture_names = [];
+var p_t_n_count = 0;
+for(var i in player_textures.frames){
+  player_texture_names[p_t_n_count] = i;
+  p_t_n_count++;
+}
+
+var objs = {};
+var goals = {};
+var kabes = {};
+var movableKabes = {};
+var message_dot = {};
+var userCount = 0;
+var funnyKabes = {};
+var funnyGoals = {};
+newStageFlag = false;
+
+var clientCountReal = 0;
+
+app.set('port', process.env.PORT || 8080);
+
+var server = app.listen(app.get('port'), function() {
+  debug('Express server listening on port ' + server.address().port);
+});
+
+var startTime = 0;
+var maxTime = 180000;
+var initPoint = {};
+initPoint.x = 0.0;
+initPoint.y = 0.0;
+
+var stageName = "";
+
+// 世界
+var world = engine.createWorld(0.0, 0.0, true);
+
+// 平行世界
+var funnyWorld = engine.createWorld(0.0, -20.0, true);
+var funnyWorldIsAlive = false;
+
+// add start
+var socketIO = require('socket.io');
+var io = socketIO.listen(server);
+io.set("log level", 2);
+
+var getPosition = function(data) {
+  rotation = event.rotation;
+};
+
+// クライアントが接続してきたときの処理
+io.sockets.on('connection', function(socket) {
+  console.log("connection");
+
+  // ステージデータ送信
+  var msgs = [];
+  for(var i in kabes){
+    var sendData = net.makeSendData(kabes[i], 'object');
+    msgs.push(sendData);
+  }
+  for(var i in movableKabes){
+    var sendData = net.makeSendData(movableKabes[i], 'object');
+    msgs.push(sendData);
+  }
+  // ゴールデータ送信
+  for(var i in goals){
+    var sendData = net.makeSendData(goals[i], 'object');
+    msgs.push(sendData);
+  }
+  // ユーザデータ送信(画像付き)
+  for(var i in objs){
+    var sendData = net.makeSendData(objs[i], 'player', objs[i].m_userData.picture);
+    msgs.push(sendData);
+  }
+  // ベストタイム
+  var bestTimes = require('../best_time.json');
+  if(bestTimes[stageName]){
+    var sendData = net.makeSendData(bestTimes[stageName], 'bestTime');
+    msgs.push(sendData);
+  }else{
+    var sendData = {datatype:"bestTime", time:"99:99:99.999"};
+    msgs.push(sendData);
+  }
+  // メッセージデータ送信
+  for(var i in message_dot){
+    var sendData = net.makeSendData(message_dot[i], 'object');
+    msgs.push(sendData);
+  }
+
+  // メッセージ送信
+  socket.emit('message', {value: msgs});
+
+  // メッセージを受けたときの処理
+  socket.on('message', function(data) {
+    console.log(arguments);
+    var obj = objs[socket.id];
+    if(data.name){
+      if(data.picture){
+        if(clientCountReal >= 30){  //clientCountReal以上にしないと31人になってしまうので,修正しました
+          // 30人制限
+          // socket.disconnect();
+          var sendData = {datatype:"restrict"};
+          var msgs = [];
+          msgs.push(sendData);
+          socket.emit('message', {value: msgs});  //他のemitと形式が異なっていたので修正しました
+          return;
+        }
+        // ころころ追加
+        var msgs = [];
+        userCount++;
+        clientCountReal++;
+        data.id = "ball_" + userCount;
+        data.texture = player_texture_names[Math.floor(Math.random() * p_t_n_count)];
+        var corocoro = engine.createNewCorocoro(data, world, 'player');
+        objs[socket.id] = corocoro;
+        var sendData = net.makeSendData(corocoro, 'you', data.picture);
+        msgs.push(sendData);
+        // メッセージ送信
+        socket.emit('message', {value: msgs});
+
+        // 全体に送信
+        var sendAll = net.makeSendData(corocoro, 'player', data.picture);
+        var msgsAll = [];
+        msgsAll.push(sendAll);
+        io.sockets.emit('message', {value: msgsAll});
+
+        // ボールを初期位置へ
+        engine.setPlayerPositionWithRandom(corocoro, initPoint.x, initPoint.y);
+
+      }
+    }else if(data.gravity){
+      if(obj){
+        //
+      }else{
+        // オブジェクトが見つからない場合
+        socket.disconnect();
+        return;
+      }
+      // ボールにユーザーのGravityを反映
+      engine.applyUserGravity(obj, data.gravity.x, data.gravity.y);
+    }else{
+      // 想定外のデータを受信した場合
+      socket.disconnect();
+      return;
+    }
+  });
+
+  // クライアントが切断したときの処理
+  socket.on('disconnect', function(){
+    console.log("disconnect:" + socket.id);
+    delObj = objs[socket.id];
+    if(delObj){
+      clientCountReal--;
+      var sendData = net.makeSendDeleteData(delObj, 'player');
+      var msgs = [];
+      msgs.push(sendData);
+      delete objs[socket.id];
+      io.sockets.emit('message', {value: msgs});
+      world.DestroyBody(delObj);
+    }
+  });
+});
+
+function makeStage(stage){
+  //  nowStageNum = stage;
+  // メモリリーク起きる？
+  kabes = {};
+  goals = {};
+  movableKabes = {};
+
+  for(var i in stage){
+    var stageObj = stage[i];
+
+    switch(stageObj.datatype){
+      case 'goal':
+        // ゴール配置
+        goals[stageObj.id] = engine.createStaticObj(stageObj, world, stageObj.datatype);
+        break;
+      case 'kabe':
+        // 障害物追加
+        kabes[stageObj.id] = engine.createStaticObj(stageObj, world, stageObj.datatype);
+        break;
+      case 'maru':
+        // 丸い障害物追加
+        kabes[stageObj.id] = engine.createStaticObjCircle(stageObj, world, stageObj.datatype);
+        break;
+      case 'movable':
+        movableKabes[stageObj.id] = engine.createNewDynamicObjBox(stageObj, world, stageObj.datatype);
+        break;
+      case 'movableMaru':
+        movableKabes[stageObj.id] = engine.createNewDynamicObjCircle(stageObj, world, stageObj.datatype);
+        break;
+      case 'initPoint':
+        // ボール初期位置設定
+        initPoint = {x:stageObj.x, y:stageObj.y};
+        break;
+      case 'stageName':
+        // すてーじねーむ
+        stageName = stageObj.name;
+        break;
+      default:
+        break;
+    }
+
+    // ボールを初期位置へ
+    for(var i in objs){
+      engine.setPlayerPositionWithRandom(objs[i], initPoint.x, initPoint.y);
+    }
+
+  }
+  startTime = new Date();
+}
+makeStage(getNextStage());
+
+// ステージローテーション
+function getNextStage(){
+  nowStageNum++;
+  if(nowStageNum > stages.length -1){
+    nowStageNum = 0;
+  }
+  return stages[nowStageNum];
+}
+
+// メッセージ表示するときの枠
+function makeMessageFrame(stage){
+  //  var stageCopy = stage.concat();
+  for(var i in stage){
+    //    stageCopy[i].id = 'funny_' + stageCopy[i].id;
+    switch(stage[i].datatype){
+      case 'kabe':
+        engine.createStaticObj(stage[i], funnyWorld, stage[i].datatype);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+// パラレルワールドのステージ
+function makeFunnyStage(stage, objType){
+  var createObj = {};
+  switch(objType){
+    case 'static':
+      createObj = engine.createStaticObj;
+      break;
+    case 'dynamic':
+      createObj = engine.createNewDynamicObjBox;
+      break;
+    default:
+      break;
+  }
+
+  funnyKabes = {};
+  funnyGoals = {};
+  //  var stageCopy = stage.concat();
+  for(var i in stage){
+    //    stageCopy[i].id = 'funny_' + stageCopy[i].id;
+    switch(stage[i].datatype){
+      case 'kabe':
+      case 'movable':
+        funnyKabes[stage[i].id] = createObj(stage[i], funnyWorld, stage[i].datatype);
+        break;
+      case 'maru':
+      case 'movableMaru':
+        funnyKabes[stage[i].id] = engine.createNewDynamicObjCircle(stage[i], funnyWorld, stage[i].datatype);
+        break;
+      case 'goal':
+        funnyGoals[stage[i].id] = createObj(stage[i], funnyWorld, stage[i].datatype);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+// 精度
+var iterations = 10;
+var fps = 15;
+var interval;
+
+function mainLoop() {
+  interval = setInterval(function() {
+    world.Step(1.0/fps, iterations);
+    if(funnyWorldIsAlive) funnyWorld.Step(1.0/fps, iterations);
+    var msgs = [];
+    var sendData = {};
+    var contact = null;
+
+    // タイムアウト判定
+    if((new Date() - startTime) > maxTime){
+      startTime = new Date();
+
+      // メッセージ
+      funnyWorldIsAlive = true;
+      makeMessageFrame(stages[0]);
+      for(var i in message_dot){
+        // オブジェクト削除
+        sendData = net.makeSendDeleteData(message_dot[i], 'object');
+        msgs.push(sendData);
+        funnyWorld.DestroyBody(message_dot[i]);
+        delete message_dot[i];
+      }
+      for(var i in message){
+        var messageObj = message[i];
+        message_dot[messageObj.id] = engine.createNewDynamicObjBox(messageObj, funnyWorld, 'object');
+        // engine.collapseMessage(message_dot[messageObj.id]);
+      }
+
+      // ボール位置を初期位置へ
+      for(var i in objs){
+        engine.setPlayerPositionWithRandom(objs[i], initPoint.x, initPoint.y);
+      }
+      // 動くkabe初期位置へ
+      for(var i in stages[nowStageNum]){
+        if(stages[nowStageNum][i].datatype == 'movable' || stages[nowStageNum][i].datatype == 'movableMaru'){
+          engine.setObjectPosition(movableKabes[stages[nowStageNum][i].id], stages[nowStageNum][i].x, stages[nowStageNum][i].y, stages[nowStageNum][i].angle);
+        }
+      }
+    }
+
+    // パラレルワールドは3秒で消滅
+    if(tools.getPastTime(startTime) > 3000){
+      for(var i in message_dot){
+        // オブジェクト削除
+        sendData = net.makeSendDeleteData(message_dot[i], 'object');
+        msgs.push(sendData);
+        funnyWorld.DestroyBody(message_dot[i]);
+        delete message_dot[i];
+      }
+      for(var i in funnyKabes){
+        sendData = net.makeSendDeleteData(funnyKabes[i], 'object');
+        msgs.push(sendData);
+        funnyWorld.DestroyBody(funnyKabes[i]);
+        delete funnyKabes[i];
+      }
+      for(var funnyObj = funnyWorld.m_bodyList; funnyObj; funnyObj = funnyObj.m_next){
+        funnyWorld.DestroyBody(funnyObj);
+      }
+      funnyWorldIsAlive = false;
+    }
+
+    // ゴール判定
+    for(var i in goals){
+      if(contact){
+        if(contact.other.m_userData.datatype == 'player'){
+          break;
+        }
+      }
+      for(contact = goals[i].m_contactList; contact; contact = contact.m_next){
+        if(contact){
+          if(contact.other.m_userData.datatype == 'player'){
+            break;
+          }
+        }
+      }
+    }
+    if(contact){
+      // ベストタイム系処理
+      if(startTime > 0){
+        var nowTime = new Date();
+        var pastTime = nowTime - startTime;
+        var bestTimes = require('../best_time.json');
+        if(bestTimes[stageName]){
+          var bestTime = bestTimes[stageName].time;
+          if(parseInt(bestTime) > parseInt(pastTime)){
+            bestTimes[stageName] = {time:pastTime, userName:contact.other.m_userData.name, userType:contact.other.m_userData.userType};
+            fs.writeFile('./best_time.json', JSON.stringify(bestTimes));
+          }
+        }else{
+          bestTimes[stageName] = {time:pastTime, userName:contact.other.m_userData.name, userType:contact.other.m_userData.userType};
+          fs.writeFile('./best_time.json', JSON.stringify(bestTimes));
+        }
+      }
+
+      // ランキング処理
+      contact.other.m_userData.win += 1;
+      var ranking = new Array();
+      for(var i in objs){
+        var rank = {id:objs[i].m_userData.id, win:objs[i].m_userData.win};
+        ranking.push(rank);
+      }
+      ranking.sort(
+        function(a,b){
+          return b.win - a.win;
+        }
+      );
+      sendData = {datatype:"ranking", data:ranking, win_id:contact.other.m_userData.id};
+      msgs.push(sendData);
+
+      // ステージ削除
+      for(var i in kabes){
+        sendData = net.makeSendDeleteData(kabes[i], 'object');
+        msgs.push(sendData);
+        world.DestroyBody(kabes[i]);
+        delete kabes[i];
+      }
+      for(var i in movableKabes){
+        sendData = net.makeSendDeleteData(movableKabes[i], 'object');
+        msgs.push(sendData);
+        world.DestroyBody(movableKabes[i]);
+        delete movableKabes[i];
+      }
+      // ゴール削除
+      for(var i in goals){
+        sendData = net.makeSendDeleteData(goals[i], 'object');
+        msgs.push(sendData);
+        world.DestroyBody(goals[i]);
+        delete goals[i];
+      }
+      newStageFlag = true;
+
+      // ステージ崩壊
+      funnyWorldIsAlive = true;
+      startTime = new Date();
+      makeFunnyStage(stages[nowStageNum], 'dynamic');
+      for(var i in funnyKabes){
+        sendData = net.makeSendData(funnyKabes[i], 'object');
+        engine.collapseObjects(funnyKabes[i]);
+        msgs.push(sendData);
+      }
+    }
+
+    if(newStageFlag && (tools.getPastTime(startTime) > 3300)){
+      // ステージ再作成
+      beforeStageNum = nowStageNum;
+      makeStage(getNextStage());
+      for(var i in kabes){
+        // 障害物送信データ作成
+        sendData = net.makeSendData(kabes[i], 'object');
+        msgs.push(sendData);
+      }
+      for(var i in movableKabes){
+        sendData = net.makeSendData(movableKabes[i], 'object');
+        msgs.push(sendData);
+      }
+      for(var i in goals){
+        // ゴール送信データ作成
+        sendData = net.makeSendData(goals[i], 'object');
+        msgs.push(sendData);
+      }
+      // ベストタイム
+      var bestTimes = require('../best_time.json');
+      if(bestTimes[stageName]){
+        sendData = net.makeSendData(bestTimes[stageName], 'bestTime');
+        sendData.stageName = stageName;
+        msgs.push(sendData);
+      }else{
+        sendData = {datatype:"bestTime", time:"99:99:99.999", stageName:stageName};
+        msgs.push(sendData);
+      }
+      newStageFlag = false;
+    }
+
+    // ボール位置update
+    for(var i in objs){
+      sendData = net.makeSendData(objs[i], 'player');
+      msgs.push(sendData);
+    }
+
+    // メッセージ位置update
+    for(var i in message_dot){
+      sendData = net.makeSendData(message_dot[i], 'object');
+      msgs.push(sendData);
+    }
+
+    // 崩壊障害物位置update
+    for(var i in funnyKabes){
+      sendData = net.makeSendData(funnyKabes[i], 'object');
+      msgs.push(sendData);
+    }
+
+    // 動く障害物update
+    for(var i in movableKabes){
+      sendData = net.makeSendData(movableKabes[i], 'object');
+      msgs.push(sendData);
+    }
+
+    // 経過時間表示するやつ
+    var nowTime = new Date();
+    var pastTime = nowTime - startTime;
+    sendData = net.makeSendData({time:pastTime, datatype:'time'}, 'time');
+    if(!newStageFlag) msgs.push(sendData);
+
+    // まとめて送信
+    io.sockets.emit('message', {value: msgs});
+  }, 1000/fps);
+}
+mainLoop();
+
+// add end
