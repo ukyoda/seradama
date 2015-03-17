@@ -1,5 +1,5 @@
 var Model = require('./Model');
-var engine = require('./../functions/gameEngine');
+var engine = require('./../GameFunctions').engine;
 
 /**
  * ゲーム空間ないで使用可能なオブジェクト
@@ -9,12 +9,14 @@ var GameObject = Model.extend({
   _dataType: 'object',
   /**
    * オブジェクト初期化
+   * @param {string} id モデルを識別するためのID
    * @param  {object} manifest オブジェクトの情報が書かれたJSON (engineモジュールに渡すjsonデータ)
    * @param  {object} world Box2d世界オブジェクト
    * @param  {string} dataType オブジェクトを特定する識別文字列
    */
-  initialize: function(manifest, world) {
-    _create(manifest, world, this._dataType);
+  initialize: function(id, manifest, world) {
+    this._id = id;
+    this.set(this._create(manifest, world, this._dataType));
   },
 
   /**
@@ -28,10 +30,10 @@ var GameObject = Model.extend({
   },
 
   /**
-   * ボールを動かす
+   * データタイプ取得
    */
-  update: function(x, y) {
-    this._engine.applyUserGravity(this._obj, x, y);
+  getDataType: function(){
+    return this._dataType;
   },
 
   /**
@@ -41,10 +43,11 @@ var GameObject = Model.extend({
    * @param {object} manifest オブジェクトの情報が書かれたjson  (engineモジュールに渡すjsonデータ)
    * @param {object} world Box2d世界オブジェクト
    * @param  {string} dataType オブジェクトを特定する識別文字列
+   * @return 作成したオブジェクト
    */
   _create:function(manifest, world) {
-    this._obj = this.engine.createStaticObj(manifest, world);
-  },
-
-
+    return this.engine.createStaticObj(manifest, world, this._dataType);
+  }
 });
+
+module.exports = GameObject;
