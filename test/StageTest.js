@@ -1,22 +1,25 @@
 var funcs = require('./../model/GameFunctions');
 var Stage = require('./../model/Stage');
-
-//console.log(Stage);
-//console.log(funcs);
-
-//ダミーのワールド作成
-
 var world = funcs.engine.createWorld(0,0,true);
-
-// ステージ作成してみる
 var stage = new Stage(world);
+var index;
 
+console.log(process.memoryUsage());
+stage.stageIndex = 20;
+//ステージを進めてもメモリリークは大丈夫そうか?
+for(index=0;index<10000;index++) {
 stage.nextStage();
+if(index % 100 == 0) {
+  console.log(index, process.memoryUsage());
+}
+//console.log(stage.stageIndex, stage.stageName);
+}
+if(global.gc) {
+  global.gc();
+}
+console.log(process.memoryUsage());
 
-// ステージができているか確認
-//console.log(stage.kabes);
-
-// ステージを進める
-console.log(stage.stageIndex, stage.stageName);
-stage.nextStage();
-console.log(stage.stageIndex, stage.stageName);
+//時間のテスト
+setTimeout(function(){
+  console.log(stage.getTime());
+}, 4000);
