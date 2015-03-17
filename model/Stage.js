@@ -106,6 +106,7 @@ Stage.fn.nextStage = function() {
 Stage.fn.destroyStage = function() {
   var kabes = this.kabes || {};
   var goals = this.goals || {};
+  var movableKabes = this.movableKabes || {};
   var id;
   for( id in kabes ) {
     this.world.DestroyBody(kabes[id].data);
@@ -113,10 +114,14 @@ Stage.fn.destroyStage = function() {
   for( id in goals ) {
     this.world.DestroyBody(goals[id].data);
   }
+  for( id in movableKabes) {
+    this.world.DestroyBody(movableKabes[id].data);
+  }
 
   //オブジェクトを初期化
   this.kabes = {};
   this.goals = {};
+  this.movableKabes = {};
   this.initPoint = {x: 0, y: 0};  //初期値
   this.stageName = "stage"; //初期値
 
