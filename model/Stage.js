@@ -4,64 +4,146 @@
  * + 読み込み処理が非同期のため、注意
  */
 
-var stageInfoDirectory = './../stage';
 var fs = require('fs');
+var Models = require('./GameObjects');
+var funcs = require('./GameFunctions');
+var BestTime = require('./BestTime');
+var _ = require('underscore');
 
-/**
- * ステージ情報読み込み
- * @param  {Function} callback ロード完了後に実行するコールバック関数
- */
-module.exports = function(callback) {
-  //ファイルfairu読み込み
-  fs.readdir(stageInfoDirectory, function(err, files){
-    var stages = [];
-    files.forEach(function(val, index){ //ファイルをロード
-      var stage = require('./../stage/' + val);
-      stages.push(stage);
-    });
-    var iterator = createIterator(stages);
-    callback(iterator);//コールバック
-  });
+var STAGE_DIR=__dirname+"/../stage";
+var files = fs.readdirSync(STAGE_DIR);
+var stages = [];
+files.forEach(function(fileName){
+  var stage = require(STAGE_DIR+'/'+fileName);
+  stages.push(stage);
+});
+//filesは必要ないので削除する
+files = null;
+
+//ステージ読み込み ※非同期なんでそれなりの対応しないと・・・
+// fs.readdir(STAGE_DIR+'/stage', function(err, files){
+//   stages = [];
+//   for(var i in files){
+//     var stage = require(STAGE_DIR + files[i]);
+//     stages.push(stage);
+//   }
+// });
+
+//ベストタイム ※全体共通にする
+var bestTime = new BestTime();
+
+var Stage = function(world){
+  this.startTime;
+  this.stageIndex = -1;
+  this.bestTime = bestTime;
+  this.world = world;
+  this.kabes = {};
+  this.goals = {};
+  this.movableKabes = {};
+  this.initPoint;
+  this.stageName;
 };
 
+Stage.fn = Stage.prototype;
 
 /**
- * ステージデータを管理するイテレータ作成
- * @param  {Array} stages ステージJSONファイルを読み込んだ結果配列
- * @return {Object}        イテレータオブジェクト
+ * 次のステージにする
  */
-function createIterator(stages) {
-  return {
-    currentStageNo: 0,  //イテレータ進めるための値
-    /**
-     * イテレータ開始
-     * @return
-     */
-    begin: function(){
-      currentStageNo = -1;
-      return this.next();
-    },
-    /**
-     * 次のステージ情報を取得
-     * @return {Object} ステージ情報(取得できない場合はnull)
-     */
-    next: function(){
-      if(this.hasNext()) {
-        return stages[++currentStageNo];
-      } else {
-        return null;
-      }
-    },
-    /**
-     * 最後のステージ
-     * @return 次のステージ情報があればtrue, なければfalse
-     */
-    hasNext: function(){
-      if(currentStageNo+1 < stages.length) {
-        return true;
-      } else {
-        return false;
-      }
+Stage.fn.nextStage = function() {
+  var i;
+  var stageInfo, stageObj, id, dataType;
+  //次のステージにする
+  if( (++this.stageIndex) > stages.length - 1) {
+    this.stageIndex = 0;
+  }
+  stageInfo = stages[this.stageIndex];
+  //ステージ初期化
+  this.destroyStage();
+
+  for(i in stageInfo) {
+    stageObj = stageInfo[i];
+    id = stageObj.id;
+    dataType = stageObj.datatype;
+    switch(dataType) {
+      case 'goal':
+        // ゴール配置
+        this.goals[id] = new Models.Goal(id, stageObj, this.world);
+        break;
+      case 'kabe':
+        // 障害物追加
+        this.kabes[id] = new Models.Kabe(id, stageObj, this.world);
+        break;
+      case 'maru':
+        // 丸い障害物追加
+        this.kabes[id] = new Models.Maru(id, stageObj, this.world);
+        break;
+      case 'movable':
+        this.movableKabes[id] = new Models.Movable(id, stageObj, this.world);
+        break;
+      case 'movableMaru':
+        this.movableKabes[id] = new Models.MovableMaru(id, stageObj, this.world);
+        break;
+      case 'initPoint':
+        // ボール初期位置設定
+        this.initPoint = {x:stageObj.x, y:stageObj.y};
+        break;
+      case 'stageName':
+        // すてーじねーむ
+        this.stageName = stageObj.name;
+        break;
+      default:
+        break;
     }
-  };
-}
+  }
+
+  //時間を初期化
+  this.startTime = new Date();
+};
+
+/**
+ * ステージの障害物を削除する
+ */
+Stage.fn.destroyStage = function() {
+  var kabes = this.kabes || {};
+  var goals = this.goals || {};
+  var id;
+  for( id in kabes ) {
+    this.world.DestroyBody(kabes[id]);
+  }
+  for( id in goals ) {
+    this.world.DestroyBody(goals[id]);
+  }
+
+  //オブジェクトを初期化
+  this.kabes = {};
+  this.goals = {};
+  this.initPoint = {x: 0, y: 0};  //初期値
+  this.stageName = "stage"; //初期値
+
+};
+
+/**
+ * クライアントに送るデータを作成
+ */
+Stage.fn.getSendData = function() {
+  var net = funcs.net;
+  var result = {};
+  //_.each(this.kabes, function(data){
+  //});
+};
+
+/**
+ * 時間を秒単位で進める
+ * @return {[type]}
+ */
+Stage.fn.getTime = function() {
+  var currentDate = new Date();
+  var sub = currentDate.getTime() - this.startTime.getTime();
+  return sub / 1000;
+};
+
+Stage.fn.getBestTimeData = function() {
+  return this.bestTime.get(this.stageName);
+};
+
+module.exports = Stage;
