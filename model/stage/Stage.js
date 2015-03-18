@@ -5,12 +5,12 @@
  */
 
 var fs = require('fs');
-var Models = require('./GameObjects');
-var funcs = require('./GameFunctions');
-var BestTime = require('./BestTime');
+var Models = require('../GameObjects');
+var funcs = require('../GameFunctions');
+var BestTime = require('../BestTime');
 var _ = require('underscore');
 
-var STAGE_DIR=__dirname+"/../stage";
+var STAGE_DIR=__dirname+"/../../stage";
 var files = fs.readdirSync(STAGE_DIR);
 var stages = [];
 files.forEach(function(fileName){
@@ -48,6 +48,7 @@ Stage.fn = Stage.prototype;
 
 /**
  * 次のステージにする
+ * @return {array} 更新データ ※初回なので全データセットを送る
  */
 Stage.fn.nextStage = function() {
   var i;
@@ -58,7 +59,7 @@ Stage.fn.nextStage = function() {
   }
   stageInfo = stages[this.stageIndex];
   //ステージ初期化
-  this.destroyStage();
+  var sendData = this.destroyStage();
 
   for(i in stageInfo) {
     stageObj = stageInfo[i];
@@ -68,20 +69,25 @@ Stage.fn.nextStage = function() {
       case 'goal':
         // ゴール配置
         this.goals[id] = new Models.Goal(id, stageObj, this.world);
+        sendData.push(funcs.net.makeSendData(this.goals[id].get(), 'object'));
         break;
       case 'kabe':
         // 障害物追加
         this.kabes[id] = new Models.Kabe(id, stageObj, this.world);
+        sendData.push(funcs.net.makeSendData(this.kabes[id].get(), 'object'));
         break;
       case 'maru':
         // 丸い障害物追加
         this.kabes[id] = new Models.Maru(id, stageObj, this.world);
+        sendData.push(funcs.net.makeSendData(this.kabes[id].get(), 'object'));
         break;
       case 'movable':
         this.movableKabes[id] = new Models.Movable(id, stageObj, this.world);
+        sendData.push(funcs.net.makeSendData(this.movableKabes[id].get(), 'object'));
         break;
       case 'movableMaru':
         this.movableKabes[id] = new Models.MovableMaru(id, stageObj, this.world);
+        sendData.push(funcs.net.makeSendData(this.movableKabes[id].get(), 'object'));
         break;
       case 'initPoint':
         // ボール初期位置設定
@@ -98,24 +104,30 @@ Stage.fn.nextStage = function() {
 
   //時間を初期化
   this.startTime = new Date();
+  return sendData;
 };
 
 /**
  * ステージの障害物を削除する
+ * @return 削除フラグを立てたデータ
  */
 Stage.fn.destroyStage = function() {
   var kabes = this.kabes || {};
   var goals = this.goals || {};
   var movableKabes = this.movableKabes || {};
   var id;
+  var deleteData = [];
   for( id in kabes ) {
-    this.world.DestroyBody(kabes[id].data);
+    deleteData.push(funcs.net.makeSendDeleteData(kabes[id].get(), 'object'));
+    this.world.DestroyBody(kabes[id].get());
   }
   for( id in goals ) {
-    this.world.DestroyBody(goals[id].data);
+    deleteData.push(funcs.net.makeSendDeleteData(goals[id].get(), 'object'));
+    this.world.DestroyBody(goals[id].get());
   }
   for( id in movableKabes) {
-    this.world.DestroyBody(movableKabes[id].data);
+    deleteData.push(funcs.net.makeSendDeleteData(movableKabes[id].get(), 'object'));
+    this.world.DestroyBody(movableKabes[id].get());
   }
 
   //オブジェクトを初期化
@@ -125,16 +137,32 @@ Stage.fn.destroyStage = function() {
   this.initPoint = {x: 0, y: 0};  //初期値
   this.stageName = "stage"; //初期値
 
+  return deleteData;
 };
 
 /**
- * クライアントに送るデータを作成
+ * ステージを更新する(時間を進める)
+ * @param {number} invFps FPS値の逆数
+ * @param {number} iterations iterateの回数?
+ * @return {array} 動く障害物の更新情報(差分で送信)
  */
-Stage.fn.getSendData = function() {
+Stage.fn.update = function(invFps, iterations){
+  this.world.Step(invFps, iterations);
   var net = funcs.net;
-  var result = {};
-  //_.each(this.kabes, function(data){
-  //});
+  var result = [];
+  //壁追加
+  var result = _.reduce(this.kabes, function(memo, data, id) {
+    result.push(funcs.net.makeSendData(data.data, 'object'));
+    return result;
+  }, result, this);
+  var result = _.reduce(this.kabes, function(memo, data, id) {
+    result.push(funcs.net.makeSendData(data.data, 'object'));
+    return result;
+  }, result, this);
+  var result = _.reduce(this.kabes, function(memo, data, id) {
+    result.push(funcs.net.makeSendData(data.data, 'object'));
+    return result;
+  }, result, this);
 };
 
 /**
@@ -147,6 +175,10 @@ Stage.fn.getTime = function() {
   return sub / 1000;
 };
 
+/**
+ * ベストタイムを取得する
+ * @return {object} ベストタイムの情報
+ */
 Stage.fn.getBestTimeData = function() {
   return this.bestTime.get(this.stageName);
 };
