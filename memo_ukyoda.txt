@@ -1,109 +1,106 @@
 構築メモ
 
 ・ゲーム管理オブジェクト(Game.js)
-  ＜クラスプロパティ Gameにつけるプロパティ＞
-  - _invFps        FPSの逆数
-  - _iterations   繰り返し? Box2Dに渡す値
-  - _maxTime      制限時間
-  - _pastMaxTime  タイムアウト処理時間
-  - 各種イベントの値
-    + EV_UPDATE = 'update'
-    + EV_GOAL = 'goal'
-    + EV_ENTRY = 'entry'
-    + EV_FRAME_UPDATE='frameUpdate'
-    + EV_GOAL='goal'
-    + EV_GOAL_END='goalEnd'
-    + EV_TIMEOUT='timeout'
-    + EV_TIMEOUT_END='timeoutEnd'
-    + EV_STAGE_UPDATED='stageUpdated'
+  ゲームとWebSocket(クライアント)の操作をつなぐコントローラとしての役割を有する。
+
   ＜プロパティ＞
-  - world             Box2Dのワールド情報
-  - funnyWorld        並行世界 （タイムアウト時の処理のやつ）
-  - players           参加しているプレイヤー情報
-  - playersCount      参加しているプレイヤー数
-  - funnyWorldIsAlive 並行世界の存在フラグ
-  - stage             ステージ情報(Stageのインスタンス)
-  - interval          intervalオブジェクト
+  - stage             Stageのインスタンス（コンストラクタで生成する）
+  - timeoutStage      TimeoutStageのインスタンス（コンストラクタで生成する）
+  - playersCount      参加しているプレイヤー数 (初期値0)
+  - socket            SocketServerのインスタンス(コンストラクタの引数から取得する)
+  - interval          intervalオブジェクト ※ Stageで管理する可能性あり
 
-  ＜機能＞
-  ※ 機能がごちゃごちゃするので、「model/game/」下にメソッドを作っていく。
-  - getMessageObject クライアントに送信するデータを作る機能
-                     次の通り作成する
+  ＜Stage の定期更新＞
+  Gameオブジェクトは，setIntervalにより，定期的にステージの情報を更新する。
+  同時に，ステージの更新を抑制する機能も有すること。
 
-  - addPlayer        クライアントが接続してきたらプレイヤーオブジェクトを作成し、
-                     管理オブジェクトに追加する。ただし、ユーザの規定数を超えた場合はデータを作成しない。
-                     プレイヤーの追加が成功すればtrueを返し、失敗すればfalseを返す
-  - playerUpdate     プレイヤーの操作を反映する機能。並行世界が有効の場合はfalse
-  - removePlayer     プレイヤー削除する機能
-  - _loop            Box2Dの物理演算(setIntervalで繰り返し処理する)
-  - nextStage        新しいステージを作成する。※初回はステージ1
+  ＜Stage イベント監視＞
+  Stage(後述)がコールするイベントを監視し、SocketServer経由でクライアントにメッセージを送信する
+
+  doStageUpdate   Stageからイベント「update」を受け取った時に実行する。Gameオブジェクトはソケットサーバにステージの更新情報を渡す
+  doStageTimeup        Stageからイベント「timeup」を受け取った時に実行する。GameオブジェクトはTimeoutStageにステージを作成する
+
+  ＜TimeoutStage イベント監視＞
+  doTimeoutStageUpdate  TimeoutStageからイベント「update」を受け取った時に実行する。Gameオブジェクトはソケットサーバにタイムアップ表示のデータを渡す
+
+  ＜ソケットサーバ イベント監視＞
+  ソケットサーバ経由で受け取ったクライアントからのイベントに対して、ステージを更新する。
+
+  doSocketConnect         SocketServerからイベント「connect」を受け取った時に実行する。GameオブジェクトはStageに新しいユーザを追加する
+                          ただし，ユーザ数が規定値を超えている場合はユーザの追加を実行せず，その旨をSocketServer経由でクライアントに送信する
+  doSocketRecieveMessage  SocketServerからイベント「message」を受け取った時に実行する。ユーザの操作（スマホの傾き）情報をStageオブジェクトに反映する
+  doSocketDisconnect      SocketServerからイベント「disconnect」を受け取った時に実行する。Stageからユーザを除外する
 
   ＜イベント＞
-  - 誰かがゴールしたらイベント（goal）を発生させる
-  - ユーザが追加されたらイベント（entry）を発生させる
-  - １フレーム終わったらイベント（frameUpdate）を発生させる
-  - ゴールイベントが発生したらイベント(goal)を発生させ、ゴール処理をおこなう（ステージをぶっ壊す）
-    ゴールの演出が終わったらイベント（goalEnd）を発生させる
-  - タイムアウトになったらイベント（timeout）を発生させる（タイムアウト表示）
-    タイムアウトの演出が終わったらイベント（timeoutEnd）を発生させる
-  - 新しいステージを作成したらイベント（stageUpdated）を発生させる
-  - 上記のイベントについて、共通イベント（update）を発生させる
-
 
 ・各種ブロックなどのオブジェクト
+  Box2Dに配置するオブジェクトは、model/objects にある次のオブジェクトで構成する。
+  Stageオブジェクト(後述)は、次のオブジェクトをBox2Dに配置することとなる
   - Goal        ゴールオブジェクト
   - Kabe        壁オブジェクト
   - Maru        丸い壁オブジェクト
   - Movable     動く壁オブジェクト
   - MovableMaru 動く丸い壁オブジェクト
   - Player      プレイヤーオブジェクト(コロコロ)
-  - Stage       ステージオブジェクト ※詳細は「ステージオブジェクト」を参照
+  - MessageDot  タイムアウトメッセージで表示するドットオブジェクト
 
-・ステージオブジェクト
+
+・ステージオブジェクト (stage/Stage.js)
+  Box2Dを使ってグラコロの世界を管理するオブジェクト。
+  ステージ上に配置されるオブジェクトの管理及び物理エンジンの更新などを行う
+
+  - _invFps          FPSの逆数
+  - _iterations      繰り返し? Box2Dに渡す値
+  - _maxTime         制限時間
+  - _pastMaxTime     タイムアウト処理時間
+  - _lockFlg         ロックフラグ。trueの場合はゴールしてもゴールイベントを発生させない
+  - _limit           制限時間
+  - 各種イベントの値
+    + EV_UPDATE = 'update' イベントを起こす。コールバック関数に渡す引数として、クライアントに送信するデータ配列を指定する
+
   ＜プロパティ＞
   - stageIndex        ステージ配列のインデックス
-  - world             Box2Dのオブジェクト ※コンストラクタで指定
+  - world             Box2Dのオブジェクト
   - kabes             壁管理
   - goals             ゴール管理
   - movableKabes      壁管理
+  - players           ユーザ管理
   - initPoint         ユーザの初期位置
   - stageName         ステージの名前(ファイル名)
   - startTime         ステージ開始の時間
   - bestTime          そのステージのベストタイム
 
   ＜機能＞
-  - getSendData クライアントに送るステージ情報を返す
-  - nextStage   次のステージを作成する ※ステージ情報JSONファイルを非同期にJSONファイルを読み込んで作成するようにしたい
-  - getTime ステージ開始から何秒経過したかを返す
-  - getBestTimeData ベストタイムの情報を返す
-  - setPlayer プレイヤーを初期値にセットする (引数にユーザ情報をセット)
-  - destroyStage ステージから障害物を削除する
+  - nextStage             次のステージを作成する。
+                          更新後、イベント「update」を発生させ、古いデータの削除データと新しいデータの更新データを返す
+                          ※ステージ情報JSONファイルを非同期にJSONファイルを読み込んで作成するようにしたい
+  - destroyStage          ステージから障害物を削除する。削除する障害物の情報を返す
+  - startGoalAction       プレイヤーがステージをクリアしたらゴールエフェクトを発生させる。
+                          ベストタイムの更新およびゴールしたプレイヤーの勝利回数を更新する
+  - finishGoalAction      ゴールエフェクトを終了する。
+  - getTime               ステージ開始から何秒経過したかを返す
+  - getBestTimeData       ベストタイムの情報を返す
+  - addPlayer             指定されたユーザの情報をBox2Dにセットする
+  - removePlayer          指定されたユーザの情報をBox2Dから除外する
+  - updatePlayerPosition  指定されたユーザの位置情報を更新する
+  - update                次の処理フローに基づいた処理を行う
+                          １.Box2Dの世界を進める
+                          ２.ゴールした人の判定 (_lockFlgがonの場合，ゴール判定を行わない)
+                            - ゴールしたプレイヤーがいればstartGoalEffectを実行する.
+                          ３.タイムアップ判定
+                            - 制限時間を超えていた場合、イベント「timeup」を送信する
+                          ４.updateイベントを発生させ、更新オブジェクトをクライアントに送る
 
-・Socket.io 関連(SocketServer.js)
-  - コンストラクタ
-    - ゲームオブジェクト(Gamen.js)を作成する
-      + とりあえず１固定で処理するが、複数の部屋を作成できるように配列で持っておく
-      + socketを作成する
-      + connectionにイベントを追加する
+・ソケットサーバオブジェクト (SocketServer.js)
+  位置づけとしてはSocket.ioのラッパーオブジェクトのような立ち位置。
+  プロセス内で１つしか作成しないこととする。
 
-  - ソケットイベント「connection」の処理
-    １．Game.jsにプレイヤーオブジェクトを作成させる
-    ２−１．プレイヤーの追加に成功したら、クライアントのソケットに次の処理を連携する
-       + ユーザのソケットイベント「message」に処理を連携する ※詳細はmessageを参照
-       + ユーザのソケットイベント「disconnect」に処理を連携する ※詳細はdisconnectを参照
-    ２−２．プレイヤーの追加に失敗したら、クライアントのソケットにつgのメッセージを送る
-          {
-            value: [
-              {datatype: 'restrict'}
-            ]
-          }
+  ＜プロパティ＞
+  - socket Socket.ioのインスタンス
 
-  - ソケットイベント「message」の処理
-    クライアントから受け取ったデータを使って「playerUpdate」を実行する
-
-  - ソケットイベント「disconnect」の処理
-
-  - ゲームイベント関連の処理
-    イベントupdateが発生したら、全プレイヤーのクライアント側にゲームデータを送信する
-
-
+  ＜機能＞
+  - emit              クライアントにデータを送信する
+  - doConnectUser     クライアントがSocket通信を開始した時に実行する。イベント「connect」を発生させる
+  - doRecieveMessage  クライアントからのメッセージを受け取った時に実行する。イベント「message」」を発生させる
+  - doDisconnectUser  クライアントがSocket通信を切断した時に実行する。イベント「disconnect」を発生させる
+  - emit              クライアントに
