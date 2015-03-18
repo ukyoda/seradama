@@ -23,7 +23,11 @@ util.inherits(Model, EventEmitter);
  * @return {object} データ
  */
 Model.prototype.get = function(key) {
-  return this.data[key];
+  if(typeof key === 'undefined') {
+    return this.data;
+  } else {
+    return this.data[key];
+  }
 };
 
 /**
