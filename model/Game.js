@@ -8,7 +8,7 @@ var tools = require('./functions/tools');
 
 // ゲームに必要なクラス関連
 var Models = require('./GameObjects');
-var Stage = require('./Stage');
+var Stage = require('./stage/Stage');
 
 //Game.js構築
 
