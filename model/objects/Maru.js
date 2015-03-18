@@ -5,7 +5,7 @@ var GameObject = require('../base/GameObject');
  * @class Maru
  */
 var Maru = GameObject.extend({
-  dataType: 'maru',
+  _dataType: 'maru',
 
   /**
    * Box2D上でのオブジェクトデータを作成 ※とりあえず静的障害物を作成するメソッドとして定義
