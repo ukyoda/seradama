@@ -1,29 +1,27 @@
+var util = require('util');
+var Emitter = require('events').EventEmitter;
 var BestTime = require('../BestTime');
-
-
-//ステージ読み込み ※非同期なんでそれなりの対応しないと・・・
-// fs.readdir(STAGE_DIR+'/stage', function(err, files){
-//   stages = [];
-//   for(var i in files){
-//     var stage = require(STAGE_DIR + files[i]);
-//     stages.push(stage);
-//   }
-// });
 
 //ベストタイム ※全体共通にする
 var bestTime = new BestTime();
 
 var Stage = function(world){
-  this.startTime;
   this.stageIndex = -1;
-  this.bestTime = bestTime;
   this.world = world;
+  this.startTime;
+  this.bestTime = bestTime;
+  this.initPoint = {};
+  this.stageName = 'stage';
+
   this.kabes = {};
   this.goals = {};
   this.movableKabes = {};
-  this.initPoint;
-  this.stageName;
+  this.players = {};
+
 };
+
+//EventEmitter を継承
+util.inherits(Stage, Emitter);
 
 Stage.fn = Stage.prototype;
 
@@ -41,5 +39,8 @@ Stage.fn.getTime = require('./Stage/getTime');
 
 //ベストタイムを取得する
 Stage.fn.getBestTimeData = require('./Stage/getBestTimeData');
+
+//現在のステージの情報を取得する
+Stage.fn.getSendData = require('./Stage/getSendData');
 
 module.exports = Stage;
