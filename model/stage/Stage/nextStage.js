@@ -1,9 +1,7 @@
 var fs = require('fs');
 var Models = require('../../GameObjects');
 var funcs = require('../../GameFunctions');
-var BestTime = require('../../BestTime');
 var _ = require('underscore');
-
 var STAGE_DIR=__dirname+"/../../stage";
 var files = fs.readdirSync(STAGE_DIR);
 var stages = [];
