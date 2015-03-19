@@ -1,16 +1,6 @@
 var b2d = require("box2d");
-var tools = require('./tools');
-var gamedata = require('../../public/game/gamedata.json');
 
 var engine = {};
-
-// 精度
-var iterations = 10;
-var fps = 15;
-var interval;
-
-// コールバック関数
-var functions = [];
 
 // 世界
 engine.createWorld = function (x, y, doSleep){
