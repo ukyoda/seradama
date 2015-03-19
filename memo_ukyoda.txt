@@ -26,7 +26,7 @@
   ＜ソケットサーバ イベント監視＞
   ソケットサーバ経由で受け取ったクライアントからのイベントに対して、ステージを更新する。
 
-  doSocketConnect         SocketServerからイベント「connect」を受け取った時に実行する。GameオブジェクトはStageに新しいユーザを追加する
+  doSocketConnect         SocketServerからイベント「connect」を受け取った時に実行する。GameオブジェクトはStageに新しいユーザを追加し，接続したユーザに全ステージ情報を送信する
                           ただし，ユーザ数が規定値を超えている場合はユーザの追加を実行せず，その旨をSocketServer経由でクライアントに送信する
   doSocketRecieveMessage  SocketServerからイベント「message」を受け取った時に実行する。ユーザの操作（スマホの傾き）情報をStageオブジェクトに反映する
   doSocketDisconnect      SocketServerからイベント「disconnect」を受け取った時に実行する。Stageからユーザを除外する
