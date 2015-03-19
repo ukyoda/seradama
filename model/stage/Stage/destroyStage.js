@@ -1,3 +1,4 @@
+var funcs = require('../../GameFunctions');
 
 /**
  * ステージの障害物を削除する
