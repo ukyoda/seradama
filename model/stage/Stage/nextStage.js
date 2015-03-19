@@ -1,8 +1,8 @@
 var fs = require('fs');
+var _ = require('underscore');
 var Models = require('../../GameObjects');
 var funcs = require('../../GameFunctions');
-var _ = require('underscore');
-var STAGE_DIR=__dirname+"/../../stage";
+var STAGE_DIR=__dirname+"/../../../stage";
 var files = fs.readdirSync(STAGE_DIR);
 var stages = [];
 files.forEach(function(fileName){
@@ -27,6 +27,7 @@ module.exports = function() {
   //ステージ初期化
   var sendData = this.destroyStage();
 
+  //新ステージ作成
   for(i in stageInfo) {
     stageObj = stageInfo[i];
     id = stageObj.id;
@@ -68,7 +69,11 @@ module.exports = function() {
     }
   }
 
+  //ユーザの位置初期化
+
   //時間を初期化
   this.startTime = new Date();
-  return sendData;
+  // イベントupdateを発生させる
+  this.emit('update', sendData, this);
+  //return sendData;
 };
