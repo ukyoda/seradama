@@ -4,19 +4,21 @@ var world = funcs.engine.createWorld(0,0,true);
 var stage = new Stage(world);
 var index;
 
+stage.nextStage();
+console.log(stage.getSendData());
 
 console.log(process.memoryUsage());
 
 //ステージを進めてもメモリリークは大丈夫そうか?
-for(index=0;index<10000;index++) {
+for(index=0;index<100000;index++) {
   var data = stage.nextStage();
   if(index % 1000 == 0) {
     console.log(index,world.m_bodyCount, process.memoryUsage());
+    if(global.gc) {
+      global.gc();
+    }
   }
   //console.log(stage.stageIndex, stage.stageName);
-}
-if(global.gc) {
-  global.gc();
 }
 console.log(process.memoryUsage());
 
