@@ -12,27 +12,25 @@ module.exports = function() {
   var players = this.players || {};
   var id;
   var result = [];
+  var callback1 = function(memo, value, key) {
+    if(!value) {
+      return memo;
+    }
+    memo.push(funcs.net.makeSendData(value.get(), 'object'));
+    return memo;
+  };
+  var callback2 = function(memo, value, key) {
+    if(!value) {
+      return memo;
+    }
+    memo.push(funcs.net.makeSendData(value.get(), 'object'));
+    return memo;
+  };
 
-  //壁追加
-  result = _.reduce(goals, function(memo, data, id) {
-    result.push(funcs.net.makeSendData(data.data, 'object'));
-    return result;
-  }, result, this);
-
-  result = _.reduce(kabes, function(memo, data, id) {
-    result.push(funcs.net.makeSendData(data.data, 'object'));
-    return result;
-  }, result, this);
-
-  result = _.reduce(movableKabes, function(memo, data, id) {
-    result.push(funcs.net.makeSendData(data.data, 'object'));
-    return result;
-  }, result, this);
-
-  result = _.reduce(players, function(memo, data, id) {
-    result.push(funcs.net.makeSendData(data.data, 'object'));
-    return result;
-  }, result, this);
+  result = _.reduce(goals, callback1, result);
+  result = _.reduce(kabes, callback1, result);
+  result = _.reduce(movableKabes, callback1, result);
+  result = _.reduce(players, callback2, result);
 
   return result;
 };
