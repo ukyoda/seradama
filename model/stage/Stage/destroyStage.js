@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var funcs = require('../../GameFunctions');
 
 /**
@@ -9,19 +10,19 @@ module.exports = function() {
   var goals = this.goals || {};
   var movableKabes = this.movableKabes || {};
   var id;
-  var deleteData = [];
-  for( id in kabes ) {
-    deleteData.push(funcs.net.makeSendDeleteData(kabes[id].get(), 'object'));
-    this.world.DestroyBody(kabes[id].get());
-  }
-  for( id in goals ) {
-    deleteData.push(funcs.net.makeSendDeleteData(goals[id].get(), 'object'));
-    this.world.DestroyBody(goals[id].get());
-  }
-  for( id in movableKabes) {
-    deleteData.push(funcs.net.makeSendDeleteData(movableKabes[id].get(), 'object'));
-    this.world.DestroyBody(movableKabes[id].get());
-  }
+  var result = [];
+  var world = this.world;
+  var callback1 = function(memo, value, key) {
+    if(!value) {
+      return memo;
+    }
+    memo.push(funcs.net.makeSendDeleteData(value.get(), 'object'));
+    world.DestroyBody(value.get());
+    return memo;
+  };
+  result = _.reduce(kabes, callback1, result);
+  result = _.reduce(goals, callback1, result);
+  result = _.reduce(movableKabes, callback1, result);
 
   //オブジェクトを初期化
   this.kabes = {};
@@ -30,5 +31,5 @@ module.exports = function() {
   this.initPoint = {x: 0, y: 0};  //初期値
   this.stageName = "stage"; //初期値
 
-  return deleteData;
+  return result;
 };
