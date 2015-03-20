@@ -7,7 +7,7 @@ gameInterface.makeSendData = function(obj, datatype, picture){
   var sendData = {};
   switch(datatype){
     case 'object':
-    case 'gaol':
+    case 'goal':
       var position = obj.GetPosition();
       var angle = obj.GetAngle();
       var vPos = tools.b2v(position.x, position.y, angle);
